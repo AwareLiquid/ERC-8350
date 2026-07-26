@@ -1,4 +1,4 @@
-# AwareLiquid 白皮书
+# Awareness 白皮书
 
 ## 一个去中心化的智能体记忆状态协议
 
@@ -26,7 +26,7 @@
 
 然而智能体记忆有一对看似不可调和的诉求：它必须**可验证、可携带、可交易、可追溯**（否则无法在多方之间建立信任、无法沉淀为资产），同时它又**高度私密**（原始文本、向量、偏好、策略、密钥绝不能公开上链）。现有的智能体记忆原型在这两点上全面失败：跨语言实现算出不一致的哈希、链上没有任何合法性校验、任意签名者都能续写同一空间、中继者可以替换未签名的资源地址。
 
-**AwareLiquid** 提出的 **Agent Memory State v1** 协议解决了这对矛盾。它不把记忆本身放上链，而只承诺记忆状态转换的**密码学证明**：
+**Awareness** 提出的 **Agent Memory State v1** 协议解决了这对矛盾。它不把记忆本身放上链，而只承诺记忆状态转换的**密码学证明**：
 
 ```
 prevStateRoot + ExperienceDelta v1  →  transitionId  →  authorized commit  →  nextStateRoot
@@ -76,7 +76,7 @@ APPLY(S, TX) -> S'   （若交易非法则返回 ERROR）
 
 ### 1.3 核心命题
 
-AwareLiquid 的全部设计围绕一句话展开：
+Awareness 的全部设计围绕一句话展开：
 
 > **Memory is the new state, but raw cognition should never be public calldata.**
 
