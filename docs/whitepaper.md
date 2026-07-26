@@ -4,7 +4,7 @@
 
 - **Companion to:** ERC-XXXX (Agent Memory State Registry), `erc/erc-xxxx-agent-memory-state.md`
 - **Author:** Everest An ([@everest-an](https://github.com/everest-an))
-- **Discussions-to:** https://ethereum-magicians.org/t/agent-memory-state-registry/00000
+- **Discussions-to:** https://ethereum-magicians.org/t/agent-memory-state/29098
 - **Status:** Community Draft (pre-ERC)
 - **Reference release:** `1.0.0-alpha.1` (2026-07-14)
 - **License:** CC0 (see `erc/LICENSE.md`)

@@ -11,11 +11,11 @@ left as `xxxx` / `00000` and listed here instead.
 |---|---|---|---|
 | `eip:` preamble field | *absent* | the PR number | EIP-1 assigns the number from the `ethereum/ERCs` pull request; there is no valid value before the PR exists |
 | File name | `erc/erc-xxxx-agent-memory-state.md` | `ERCS/erc-<N>.md` | Must be `erc-<N>.md` — digits only, no descriptive suffix — and must sit in `ERCS/` |
-| `discussions-to:` | `.../agent-memory-state-registry/00000` | the real topic id | The Ethereum Magicians thread must exist first. The title `Agent Memory State Registry` is chosen so the slug already matches; only the trailing id changes |
+| `discussions-to:` | *(placeholder — resolved)* | **done**: https://ethereum-magicians.org/t/agent-memory-state/29098 | The Ethereum Magicians thread must exist first. The title `Agent Memory State Registry` is chosen so the slug already matches; only the trailing id changes |
 
 ## Mechanical steps at submission time
 
-1. Open the Ethereum Magicians thread (category **ERCs**, title exactly
+1. ~~Open the Ethereum Magicians thread~~ **Done** (2026-07-26): https://ethereum-magicians.org/t/agent-memory-state/29098 — `discussions-to` already backfilled. (Original instruction: category **ERCs**, title
    `Agent Memory State Registry`), then set `discussions-to` to its URL.
 2. Fork `ethereum/ERCs`, copy this file to `ERCS/erc-<PR>.md`, and add `eip: <PR>` as the
    first preamble line.

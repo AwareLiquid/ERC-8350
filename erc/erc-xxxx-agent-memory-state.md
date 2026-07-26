@@ -2,7 +2,7 @@
 title: Agent Memory State Registry
 description: Authorized commitments to private agent memory state transitions.
 author: Everest An (@everest-an)
-discussions-to: https://ethereum-magicians.org/t/agent-memory-state-registry/00000
+discussions-to: https://ethereum-magicians.org/t/agent-memory-state/29098
 status: Draft
 type: Standards Track
 category: ERC
