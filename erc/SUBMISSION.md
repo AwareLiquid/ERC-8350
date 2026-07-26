@@ -37,6 +37,6 @@ dependency-free Solidity reference: registry, interface, ERC-1271 interface, ECD
 
 - [ ] ERC editor review on PR #1910 (format only; expect mechanical nits)
 - [ ] After merge: edit the Magicians topic title to `ERC-8337: Agent Memory State`
-- [ ] Sepolia deployment (script ready: `contracts/script/Deploy.s.sol`; needs a key)
+- [x] Sepolia deployment — registry `0xDdf21937ba80b5fF973610877A0955b320C91241`, see `docs/deployment.md` (2026-07-26)
 - [ ] Independent second implementation passing `test-vectors/v1.json`
 - [ ] External Solidity audit

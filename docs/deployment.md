@@ -92,3 +92,27 @@ replay. Record the value the script prints rather than comparing it to the vecto
 Do not put deployment addresses into the ERC draft itself unless the standard is
 specified as a singleton, which this one is not: each deployment is an independent
 registry, and the EIP-712 domain already distinguishes them.
+
+## Deployments
+
+### Sepolia (chainId 11155111) — 2026-07-26
+
+| Contract | Address |
+|---|---|
+| `AgentMemoryStateRegistry` | `0xDdf21937ba80b5fF973610877A0955b320C91241` |
+| `DeletionAttestation` | `0x97cc9b019A089bf7b821d47134020896f9259cc0` |
+| `SpaceDescriptor` | `0x7745e2dDC30e75E1D7B7fBAf4616Fc0F54e571F5` |
+| `AuditGrant` | `0x20145Ab83958CFB321221e8a8C68181C818241B2` |
+
+Domain separator (binds signatures to this chain + registry): `0x4f36e5833f961f835ccd6ac49572ed105e4cdbf865f8904fe3d020724148b6ac`
+
+Verified live against the golden vector — all three typehashes returned by the deployed
+registry match `test-vectors/v1.json` byte-for-byte:
+
+```bash
+cast call 0xDdf21937ba80b5fF973610877A0955b320C91241 "EXPERIENCE_DELTA_TYPEHASH()(bytes32)" \
+  --rpc-url https://ethereum-sepolia-rpc.publicnode.com
+# 0x4f020f86bc06d852f1fde17853b4d92a70214eeab8e09718028124af097d070d
+```
+
+Deployed at commit `100d6ba` (ERC-8337 sync). Etherscan source verification pending.
