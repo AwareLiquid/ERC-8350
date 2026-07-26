@@ -1,54 +1,42 @@
-# Submitting to `ethereum/ERCs`
+# Submission record — ERC-8337
 
-Three preamble facts cannot be fixed in this repository, because each one is only
-assigned during submission. Filling them with plausible placeholders would produce a
-document that *looks* conformant and fails `eipw` at PR time, so they are deliberately
-left as `xxxx` / `00000` and listed here instead.
+This file used to track the three preamble facts that could not be fixed before
+submission. All three are now resolved; it remains as the record and as the checklist
+for keeping the upstream PR and this repository in sync.
 
-## Blocked until submission
+## Resolved
 
-| Item | Current | Becomes | Why it cannot be done earlier |
-|---|---|---|---|
-| `eip:` preamble field | *absent* | the PR number | EIP-1 assigns the number from the `ethereum/ERCs` pull request; there is no valid value before the PR exists |
-| File name | `erc/erc-xxxx-agent-memory-state.md` | `ERCS/erc-<N>.md` | Must be `erc-<N>.md` — digits only, no descriptive suffix — and must sit in `ERCS/` |
-| `discussions-to:` | *(placeholder — resolved)* | **done**: https://ethereum-magicians.org/t/agent-memory-state/29098 | The Ethereum Magicians thread must exist first. The title `Agent Memory State Registry` is chosen so the slug already matches; only the trailing id changes |
+| Item | Value | When |
+|---|---|---|
+| Discussion thread | https://ethereum-magicians.org/t/agent-memory-state/29098 | 2026-07-26 |
+| Upstream PR | https://github.com/ethereum/ERCs/pull/1910 | 2026-07-26 |
+| Number / file | **ERC-8337** → `ERCS/erc-8337.md` + `assets/erc-8337/` | 2026-07-26 |
+| `eip:` preamble | `eip: 8337` (first preamble line) | 2026-07-26 |
+| EIP Walidator | **success** (after `ERC-1271` prefix fix — eipw `markdown-refs` requires the `ERC` prefix for proposals whose category is ERC; 712 is Interface and 7702 is Core, so those keep `EIP-`) | 2026-07-26 |
 
-## Mechanical steps at submission time
+Number assignment note: current `ethereum/ERCs` practice is that authors take the next
+free number themselves (verified against PR #1858 → `erc-8330.md`); the highest number
+claimed across merged files and open PR titles in both repos was 8336 at submission
+time. Numbers are never chosen for aesthetics — picking a far-future number is squatting
+and gets rejected.
 
-1. ~~Open the Ethereum Magicians thread~~ **Done** (2026-07-26): https://ethereum-magicians.org/t/agent-memory-state/29098 — `discussions-to` already backfilled. (Original instruction: category **ERCs**, title
-   `Agent Memory State Registry`), then set `discussions-to` to its URL.
-2. Fork `ethereum/ERCs`, copy this file to `ERCS/erc-<PR>.md`, and add `eip: <PR>` as the
-   first preamble line.
-3. Copy `erc/assets/erc-xxxx/` to `assets/erc-<PR>/` and update the relative links in
-   *Test Cases* and *Reference Implementation* accordingly.
-4. Move the reference contracts into `assets/erc-<PR>/` as well — upstream `eipw` rejects
-   absolute external links, so pointing at this repository on GitHub will not pass.
-5. Confirm `requires: 712, 1271` is still accurate, and re-check that no RFC 2119 keyword
-   appears outside the Specification section:
-   ```bash
-   awk '/^## Rationale/,0' ERCS/erc-<PR>.md | grep -nE '\b(MUST|SHOULD|SHALL|REQUIRED|RECOMMENDED)\b'
-   ```
-   The expected result is no output.
+## Sync discipline
 
-## Already conformant — do not "fix" these
-
-Verified against EIP-1 and against Final ERCs (ERC-7529, ERC-7913) upstream:
-
-- `Copyright and related rights waived via [CC0](../LICENSE.md).` — correct as written.
-- `[EIP-712](./eip-712.md)` / `[EIP-1271](./eip-1271.md)` — correct. The ERCs repository
-  names files `erc-N.md`, but cross-references to EIPs still use `eip-N.md`. Bare
-  `EIP-712` on subsequent mentions is also correct.
-- `title` (29 chars) and `description` (65 chars) are within the 44 / 140 limits, use
-  sentence case, contain no colon, and avoid the word "standard".
-- Section order and the five mandatory sections match `eipw`'s `markdown-order-section`.
-- The RFC 2119 boilerplate wording and placement are verbatim correct.
-
-## Guards
-
-`test-vectors/v1.json` is the single source of truth; `erc/assets/erc-xxxx/` holds a copy
-only because EIP-1 requires test cases under `assets/`. Run the drift check before any
-submission or release:
+`erc/erc-8337.md` in this repository is a byte-copy of the upstream `ERCS/erc-8337.md`.
+If editors request changes on PR #1910, apply them upstream first, then copy the file
+back here verbatim and re-run:
 
 ```bash
 pnpm check:erc-assets
 ```
+
+`erc/assets/erc-8337/` mirrors upstream `assets/erc-8337/` (golden vector + the
+dependency-free Solidity reference: registry, interface, ERC-1271 interface, ECDSA).
+
+## Remaining to Draft-merge and beyond
+
+- [ ] ERC editor review on PR #1910 (format only; expect mechanical nits)
+- [ ] After merge: edit the Magicians topic title to `ERC-8337: Agent Memory State`
+- [ ] Sepolia deployment (script ready: `contracts/script/Deploy.s.sol`; needs a key)
+- [ ] Independent second implementation passing `test-vectors/v1.json`
+- [ ] External Solidity audit

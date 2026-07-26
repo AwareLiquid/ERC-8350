@@ -7,7 +7,7 @@
 > **Memory is the new state, but raw cognition should never be public calldata.**
 > 记忆是新的状态，但原始认知永远不该成为公开的调用数据。
 
-- **规范配套：** ERC-XXXX（Agent Memory State Registry），`erc/erc-xxxx-agent-memory-state.md`
+- **规范配套：** ERC-8337（Agent Memory State Registry），`erc/erc-8337.md`
 - **作者：** Everest An（[@everest-an](https://github.com/everest-an)）
 - **讨论：** https://ethereum-magicians.org/t/agent-memory-state/29098
 - **状态：** 社区草案（pre-ERC）
@@ -539,7 +539,7 @@ cd contracts && forge fmt --check && forge test
 - **协议版本**：Agent Memory State **v1**
 - **当前发布**：`1.0.0-alpha.1`（2026-07-14）
 - **状态**：社区草案（pre-ERC community draft）
-- **规范文档**：`erc/erc-xxxx-agent-memory-state.md`
+- **规范文档**：`erc/erc-8337.md`
 - **参考实现**：Solidity 合约、两个独立链下引擎、Awareness 适配器
 - **仓库**：`AwareLiquid/ERC-AWAR`
 - **版权**：通过 [CC0](../erc/LICENSE.md) 放弃相关权利

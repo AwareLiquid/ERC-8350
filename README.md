@@ -5,7 +5,7 @@
 > Memory is the new state, but raw cognition should never be public calldata.
 
 当前状态是 **pre-ERC community draft**。正式编号由 EIP Editors 在提交流程中分配，
-仓库统一使用 `ERC-XXXX`，不预占数字。
+仓库统一使用 `ERC-8337`，不预占数字。
 
 ## 解决什么
 
@@ -55,7 +55,7 @@ prevStateRoot + ExperienceDelta v1
 - `docs/whitepaper.pdf`: 白皮书 PDF（英文，可下载 / 打印）
 - `docs/whitepaper.html`: 白皮书网页版（离线单文件，双主题）
 - `SPEC.md`: v1 仓库规范与 conformance 条件
-- `erc/erc-xxxx-agent-memory-state.md`: 按 ERC 模板重写的英文草案
+- `erc/erc-8337.md`: 按 ERC 模板重写的英文草案
 - `docs/architecture.md`: 架构、边界与迁移方案
 - `docs/threat-model.md`: 威胁模型与上线安全门槛
 - `docs/refactor-deliverables.md`: 12 项重构交付与验收矩阵

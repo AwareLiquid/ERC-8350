@@ -2,7 +2,7 @@
 
 **A Verifiable, Private State Layer for Autonomous-Agent Memory**
 
-- **Companion to:** ERC-XXXX (Agent Memory State Registry), `erc/erc-xxxx-agent-memory-state.md`
+- **Companion to:** ERC-8337 (Agent Memory State Registry), `erc/erc-8337.md`
 - **Author:** Everest An ([@everest-an](https://github.com/everest-an))
 - **Discussions-to:** https://ethereum-magicians.org/t/agent-memory-state/29098
 - **Status:** Community Draft (pre-ERC)
@@ -19,7 +19,7 @@ This document motivates and explains **Agent Memory State v1**, a minimal protoc
 for committing *authorized, ordered, private* state transitions of autonomous-agent
 memory to Ethereum — **without ever placing raw memory in calldata**.
 
-It is written as a **companion to the ERC** (`erc/erc-xxxx-agent-memory-state.md`):
+It is written as a **companion to the ERC** (`erc/erc-8337.md`):
 the ERC is the normative specification (exact `MUST`/`MUST NOT`, hashes, and test
 vectors); this whitepaper is the narrative — the *why*, the design rationale, and the
 applications that can grow on top. It follows the arc of the original Ethereum
@@ -715,7 +715,7 @@ bit-for-bit against the cross-language `test-vectors/v1.json`.
 - **Protocol version:** Agent Memory State **v1**
 - **Reference release:** `1.0.0-alpha.1` (2026-07-14)
 - **Status:** Community Draft (pre-ERC)
-- **Normative spec:** `erc/erc-xxxx-agent-memory-state.md`
+- **Normative spec:** `erc/erc-8337.md`
 - **Reference implementation:** Solidity registry, two independent off-chain engines,
   Awareness adapter
 - **Repository:** `AwareLiquid/ERC-AWAR`
