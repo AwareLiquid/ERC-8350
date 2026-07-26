@@ -2,10 +2,13 @@
 
 **A Verifiable, Private State Layer for Autonomous-Agent Memory**
 
+**Everest An¹\*, XiaoHai¹, Luo¹, Eric¹**
+
+¹ Awareness (https://awareness.market) · \* Correspondence: [@everest-an](https://github.com/everest-an)
+
 - **Companion to:** ERC-8337 (Agent Memory State Registry), `erc/erc-8337.md`
-- **Author:** Everest An ([@everest-an](https://github.com/everest-an))
 - **Discussions-to:** https://ethereum-magicians.org/t/agent-memory-state/29098
-- **Status:** Community Draft (pre-ERC)
+- **Status:** ERC-8337 Draft — submitted upstream ([ethereum/ERCs#1910](https://github.com/ethereum/ERCs/pull/1910)), Sepolia deployment live
 - **Reference release:** `1.0.0-alpha.1` (2026-07-14)
 - **License:** CC0 (see `erc/LICENSE.md`)
 
@@ -13,7 +16,7 @@
 
 ---
 
-## TL;DR
+## Abstract
 
 This document motivates and explains **Agent Memory State v1**, a minimal protocol
 for committing *authorized, ordered, private* state transitions of autonomous-agent
@@ -714,7 +717,7 @@ bit-for-bit against the cross-language `test-vectors/v1.json`.
 
 - **Protocol version:** Agent Memory State **v1**
 - **Reference release:** `1.0.0-alpha.1` (2026-07-14)
-- **Status:** Community Draft (pre-ERC)
+- **Status:** ERC-8337 Draft — submitted upstream ([ethereum/ERCs#1910](https://github.com/ethereum/ERCs/pull/1910)), Sepolia deployment live
 - **Normative spec:** `erc/erc-8337.md`
 - **Reference implementation:** Solidity registry, two independent off-chain engines,
   Awareness adapter

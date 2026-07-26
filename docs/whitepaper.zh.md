@@ -8,9 +8,9 @@
 > 记忆是新的状态，但原始认知永远不该成为公开的调用数据。
 
 - **规范配套：** ERC-8337（Agent Memory State Registry），`erc/erc-8337.md`
-- **作者：** Everest An（[@everest-an](https://github.com/everest-an)）
+- **作者：** Everest An¹\*、XiaoHai¹、Luo¹、Eric¹ —— ¹ Awareness（https://awareness.market ）· \* 通讯：[@everest-an](https://github.com/everest-an)
 - **讨论：** https://ethereum-magicians.org/t/agent-memory-state/29098
-- **状态：** 社区草案（pre-ERC）
+- **状态：** ERC-8337 Draft —— 已提交上游（[ethereum/ERCs#1910](https://github.com/ethereum/ERCs/pull/1910)），Sepolia 部署已上线
 - **参考发布：** `1.0.0-alpha.1`（2026-07-14）
 - **许可：** CC0（见 `erc/LICENSE.md`）
 
