@@ -50,6 +50,7 @@ prevStateRoot + ExperienceDelta v1
 
 ## 关键文档
 
+- `docs/interop/attestation-refs.md`: 与 WYRIWE（ERC-8299）联合的 attestation_refs 互操作说明（informative，双向零依赖）
 - `docs/roadmap/README.md`: 路线图（Deployed / Specified / Direction 三级诚实标注，含 ZK profile 方向）
 - `docs/whitepaper.md`: Agent Memory State 白皮书（英文，ERC 配套叙事文档，含 Open Questions，参考以太坊白皮书格式）
 - `docs/whitepaper.zh.md`: 白皮书中文版
