@@ -613,7 +613,7 @@ tradable asset without losing its privacy: deletion can be proven *as attested*,
 can be *time-licensed*, and cognition can be *capitalized into assets*. The core stays
 neutral and small; products bloom above it.
 
-> **Memory is the new state. AwareLiquid makes that state, for the first time, both
+> **Memory is the new state. Awareness makes that state, for the first time, both
 > verifiable and private.**
 
 This is the starting point for the trust layer of the agent economy.
