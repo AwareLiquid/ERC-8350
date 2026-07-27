@@ -26,7 +26,7 @@ items graduate only by moving up a label.
 | Etherscan source verification of the Sepolia instance | Todo, mechanical |
 | Independent second implementation passing the golden vectors | **Open call** — the single most valuable external contribution; everything needed is `test-vectors/v1.json` |
 | External Solidity audit | Before any non-test deployment |
-| `attestation_ref` interop with external verdict schemes (WYRIWE et al.) | **Specified** — see `docs/interop/attestation-refs.md` (joint note with WYRIWE): unordered set under `provenanceCommitment`, JCS-canonical, sorted by `decision_ref`, deduped by `(event_id, pubkey)`, `verify_url` advisory-only; never an eighth struct field |
+| `attestation_ref` interop with external verdict schemes (WYRIWE et al.) | **Specified** — see `docs/interop/attestation-refs.md` (joint note with WYRIWE): unordered set under `provenanceCommitment`, JCS-canonical, sorted by `decision_ref`, deduped by `(event_id, pubkey)`, `verify_url` advisory-only; never an eighth struct field. **Fixture Space live on Sepolia** (spaceId `0xfbe2…3564`, 4 witnessed transitions, `docs/interop/fixture-space.md`) |
 
 ## Mid term — ZK profiles (Direction)
 
