@@ -89,6 +89,46 @@ guarantees quietly inflate:
   verdict — not that the underlying memory content is truthful or available.
 - `verify_url` being reachable proves nothing; being unreachable proves nothing.
 
+## 6. Authority is a consumer policy, never an entry property
+
+Two reference sets can be byte-identical in structure while differing entirely in what
+they are worth: one signed by a fixture key derived from a published seed, the other by
+a live verifier whose operator stands behind — and can revoke — its verdicts. A
+consumer must be able to tell these apart even after this note composes into someone
+else's stack. Three mechanisms were considered; the constraint that decides between
+them is temporal:
+
+> **Committed data is immutable; authority is temporal.** Keys rotate, leak, and get
+> revoked. Anything written inside `provenanceBytes` is frozen at authorization time and
+> can never be un-said. Authority membership therefore *cannot* live inside the
+> committed entry — not as a matter of taste, but by construction.
+
+Consequences:
+
+- **No authority flag on entries.** A self-asserted `authority: true` inside the signed
+  set is exactly the self-asserted metadata this protocol strips everywhere else; a
+  synthetic key can claim it as easily as a real one, and a compromised key's flag can
+  never be withdrawn.
+- **No authority-classed registries.** Deciding which keys enter the "authoritative"
+  namespace is a trust-root and governance problem, contradicting "the registry is
+  trusted only to execute its published bytecode" — and it freezes an authority
+  taxonomy the way the core refuses to freeze a memory taxonomy.
+- **`scheme` names the shape, never the authority.** `"wyriwe/l4-v0"` tells a consumer
+  *how to verify* an entry (preimage fields, event format, signature algorithm). It
+  says nothing about whether the signing key deserves belief — fixture entries
+  deliberately exercise this exact shape with keys that carry none.
+- **Authority lives in the consumer's key policy.** A conforming consumer maintains an
+  explicit, revocable mapping `scheme → trusted verifier pubkeys` (its trust store, in
+  the TLS sense), sourced from each scheme operator's published key list. Any entry
+  whose key is outside policy is reported as **structurally valid, zero authority** —
+  a distinct outcome, never collapsed into either "valid" or "invalid".
+
+Conformance tooling should make the distinction visible: take trusted keys as input,
+and emit three-valued results per entry — structurally invalid / structurally valid /
+valid-and-authorized. The fixture Space's synthetic keys are published with their seeds
+precisely so that checkers can pin them as the canonical "structurally valid, zero
+authority" case.
+
 ## Credits
 
 Drafted jointly from the exchange between the ERC-8337 authors and @babyblueviper1
