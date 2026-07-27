@@ -400,6 +400,14 @@ verifyingContract = <Registry 合约地址>
 
 ---
 
+### 5.8 外部判定组合（attestation refs）
+
+与 WYRIWE（ERC-8299）在 Magicians 讨论中联合定稿，成文于 `docs/interop/attestation-refs.md`（informative）：签名的外部判定放进**已承诺载荷内部**——由 `provenanceCommitment` 下的 `provenanceBytes` 承载。因为该承诺位于被签名的 delta 之内，判定是**授权者批准过的因果输入**，而非事后贴上的注解；七字段结构体永久冻结，任何引用都不会成为第八个字段。
+
+引用集是无序集合：JCS 规范化、按 `decision_ref` 排序、按 `(event_id, pubkey)` 去重。`verify_url` 仅为指路信息，**不进任何哈希**——验证只需验证者公钥，无需回调任何一方。针对这些规则的外部一致性检查器正在 `babyblueviper1/preaction-governance-conformance` 中构建，fixture 取自 Sepolia 真实部署而非合成数据。
+
+一条组合非主张，先说在膨胀之前：判定 + 已承诺转换 **≠** 已验证的记忆。两个规范都不做此宣称。
+
 ## 6. 杂项与关切（Miscellanea and Concerns）
 
 ### 6.1 线性模型 vs 并发分支

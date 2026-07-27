@@ -453,6 +453,11 @@ locatorCommitment    = <span class="kw">keccak256</span>(abi.encode(LOCATOR_DOMA
     </table></div>
     <p>A reasonable question is whether the Ethereum Attestation Service already covers this: it offers <code>refUID</code> linking, Private Data Attestations with Merkle multiproofs, and resolvers for arbitrary validation. What it does not offer is <strong>successor uniqueness</strong> — in <code>EAS.sol</code> the only check on <code>refUID</code> is that the referenced attestation <em>exists</em>, so several attestations may reference the same one and the protocol layer permits forking. No sequence number, no prior-state binding, no per-namespace controller/authorizer model. These semantics <em>can</em> be built with a schema plus a custom resolver, but that yields a per-application implementation rather than an interoperable standard.</p>
     <p>The intent throughout is that this protocol can be referenced by any of the proposals above <strong>without any of them taking a dependency on it</strong>.</p>
+
+    <h3><span class="h3n">5.8</span>External verdict composition (attestation refs)</h3>
+    <p>Settled jointly with WYRIWE (ERC-8299) and recorded in <code>docs/interop/attestation-refs.md</code>: a signed external verdict lives <strong>inside the committed payload</strong>, carried by <code>provenanceBytes</code> under <code>provenanceCommitment</code> — <strong>causal input the authorizer approved</strong>, not an annotation glued on after the fact. The seven-field struct stays frozen; no reference ever becomes an eighth field.</p>
+    <p>References form an unordered set: JCS-canonical, sorted by <code>decision_ref</code>, deduplicated by <code>(event_id, pubkey)</code>. <code>verify_url</code> is advisory only and excluded from every hash — verification needs only the verifier's public key. An external conformance checker for these rules is being built in <code>preaction-governance-conformance</code>, with fixtures drawn from the live Sepolia registry rather than synthetic data.</p>
+    <p>One composition non-claim, stated before anyone inflates it: verdict + committed transition does <strong>not</strong> equal verified memory. Neither specification claims that.</p>
   </section>
 
   <section id="s6">

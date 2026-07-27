@@ -4,7 +4,7 @@
 
 **Everest An¹\*, XiaoHai¹, Luo¹, Eric¹**
 
-¹ Awareness (https://awareness.market) · \* Correspondence: [@everest-an](https://github.com/everest-an)
+¹ Awareness (https://awareness.market) — XiaoHai ([@XiaoHai67890](https://github.com/XiaoHai67890)), Luo ([@lucas1968](https://github.com/lucas1968)) · \* Correspondence: [@everest-an](https://github.com/everest-an)
 
 - **Companion to:** ERC-8337 (Agent Memory State Registry), `erc/erc-8337.md`
 - **Discussions-to:** https://ethereum-magicians.org/t/agent-memory-state/29098
@@ -563,6 +563,26 @@ The intent throughout is that this protocol can be referenced by any of the prop
 above without any of them taking a dependency on it.
 
 ---
+
+### 5.8 External verdict composition (attestation refs)
+
+Settled jointly with WYRIWE (ERC-8299) on the Magicians threads and recorded as an
+informative note in `docs/interop/attestation-refs.md`: a signed external verdict lives
+**inside the committed payload**, carried by `provenanceBytes` under
+`provenanceCommitment`. Because that commitment sits inside the signed delta, the
+verdict is **causal input the authorizer approved** — not an annotation glued on after
+the fact — and the seven-field struct stays frozen; no reference ever becomes an eighth
+field.
+
+References form an unordered set: JCS-canonical, sorted by `decision_ref`, deduplicated
+by `(event_id, pubkey)`. The `verify_url` endpoint is advisory only and excluded from
+every hash — verification needs only the verifier's public key, never a call back to
+anyone. An external conformance checker for these rules is being built in
+`babyblueviper1/preaction-governance-conformance`, with fixtures drawn from the live
+Sepolia registry rather than synthetic data.
+
+One composition non-claim, stated before anyone inflates it: verdict + committed
+transition does **not** equal verified memory. Neither specification claims that.
 
 ## 6. Miscellanea and concerns
 
