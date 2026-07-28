@@ -23,6 +23,7 @@ instead of synthetic in-memory data.
 | Controller = authorizer | `0x3d0ab53241A2913D7939ae02f7083169fE7b823B` (direct-call auth path, empty signature) |
 | Space salt | `keccak256("erc-8337-fixture-space-v1")` |
 | Head after setup | sequence `4`, state root `0x280889644f1f2748a27bb973df0c1efde465ae2a1334e705f7cb4c7a72ad5bc0` |
+| Verifier key policy (zero authority) | [`test-vectors/fixture-keys-v1.json`](../../test-vectors/fixture-keys-v1.json) |
 | Witness bundle | [`test-vectors/sepolia-fixture-v1.json`](../../test-vectors/sepolia-fixture-v1.json) |
 | Builder (fully reproduces the bundle) | `scripts/fixture/build-fixture-witness.mjs` |
 | On-chain committer (self-verifying) | `contracts/script/FixtureSpace.s.sol` |

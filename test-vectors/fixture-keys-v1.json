@@ -1,0 +1,32 @@
+{
+  "schema": "erc-8337/verifier-key-policy/v1",
+  "_what_this_is": "A machine-readable key policy fragment: the canonical ZERO-AUTHORITY verifier set. Per docs/interop/attestation-refs.md §6, authority is never a property of a committed entry — it lives in the consumer's key policy. This file is the first executable instance of that rule, and exists so conformance tooling can pin the 'structurally valid, zero authority' case programmatically instead of transcribing pubkeys out of prose.",
+  "authority": "none",
+  "_authority_meaning": "These keys are DERIVED FROM PUBLISHED SEEDS. Anyone can reproduce them and sign anything with them. A valid BIP-340 signature from these keys proves the entry is STRUCTURALLY well-formed and nothing else. A checker must report such entries as 'structurally valid, zero authority' — a distinct third outcome, never collapsed into either 'valid' or 'invalid'.",
+  "scheme": "wyriwe/l4-v0",
+  "curve": "secp256k1-bip340-xonly",
+  "derivation": "privkey = sha256(utf8(seed)); pubkey = schnorr.getPublicKey(privkey) (32-byte x-only, lowercase hex, no 0x prefix)",
+  "verifiers": [
+    {
+      "label": "fixture-verifier-A",
+      "pubkey": "8fdd1ae42f097599812b2e60fc4467274d2e21dc18d233f22b320308ba14c2b5",
+      "seed": "erc-8337-fixture-verifier-A-v1-NO-AUTHORITY",
+      "authority": "none"
+    },
+    {
+      "label": "fixture-verifier-B",
+      "pubkey": "be33385e8aa402312c4617e6705d516f4261657876e1c4d48e937262deff2aee",
+      "seed": "erc-8337-fixture-verifier-B-v1-NO-AUTHORITY",
+      "authority": "none"
+    }
+  ],
+  "applies_to": {
+    "network": "sepolia",
+    "chainId": 11155111,
+    "registry": "0xDdf21937ba80b5fF973610877A0955b320C91241",
+    "spaceId": "0xfbe20b841e2cb8d5e8094da6a9be9ebe19bb4d52c6155f465b40aa7bf1c13564",
+    "witnessBundle": "test-vectors/sepolia-fixture-v1.json"
+  },
+  "expected_checker_outcome": "valid_zero_authority",
+  "_not_a_registry": "This is one publisher's policy fragment, not a protocol-level authority list. The core registry has no notion of trusted keys and never will — see §6. A consumer composes its own policy from the published key lists of the schemes it chooses to believe; real verifiers publish their own file of this shape with authority set accordingly."
+}

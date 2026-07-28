@@ -123,6 +123,13 @@ Consequences:
   whose key is outside policy is reported as **structurally valid, zero authority** —
   a distinct outcome, never collapsed into either "valid" or "invalid".
 
+A machine-readable instance of such a policy ships with the fixture:
+[`test-vectors/fixture-keys-v1.json`](../../test-vectors/fixture-keys-v1.json) declares the two
+synthetic verifier keys with `"authority": "none"` in-band, plus the seeds they derive
+from — so a checker can pin the canonical zero-authority set programmatically rather
+than transcribing it out of prose. It is one publisher’s policy fragment, never a
+protocol-level authority list.
+
 Conformance tooling should make the distinction visible: take trusted keys as input,
 and emit three-valued results per entry — structurally invalid / structurally valid /
 valid-and-authorized. The fixture Space's synthetic keys are published with their seeds
