@@ -7,10 +7,10 @@
 > **Memory is the new state, but raw cognition should never be public calldata.**
 > 记忆是新的状态，但原始认知永远不该成为公开的调用数据。
 
-- **规范配套：** ERC-8337（Agent Memory State Registry），`erc/erc-8337.md`
+- **规范配套：** ERC-8350（Agent Memory State Registry），`erc/erc-8350.md`
 - **作者：** Everest An¹\*、XiaoHai¹、Luo¹、Eric¹ —— ¹ Awareness（https://awareness.market ）· \* 通讯：[@everest-an](https://github.com/everest-an)
-- **讨论：** https://ethereum-magicians.org/t/agent-memory-state/29098
-- **状态：** ERC-8337 Draft —— 已提交上游（[ethereum/ERCs#1910](https://github.com/ethereum/ERCs/pull/1910)），Sepolia 部署已上线
+- **讨论：** https://ethereum-magicians.org/t/erc-8350-agent-memory-state-registry/29098
+- **状态：** ERC-8350 Draft —— 已提交上游（[ethereum/ERCs#1910](https://github.com/ethereum/ERCs/pull/1910)），Sepolia 部署已上线
 - **参考发布：** `1.0.0-alpha.1`（2026-07-14）
 - **许可：** CC0（见 `erc/LICENSE.md`）
 
@@ -547,7 +547,7 @@ cd contracts && forge fmt --check && forge test
 - **协议版本**：Agent Memory State **v1**
 - **当前发布**：`1.0.0-alpha.1`（2026-07-14）
 - **状态**：社区草案（pre-ERC community draft）
-- **规范文档**：`erc/erc-8337.md`
+- **规范文档**：`erc/erc-8350.md`
 - **参考实现**：Solidity 合约、两个独立链下引擎、Awareness 适配器
 - **仓库**：`AwareLiquid/ERC-AWAR`
 - **版权**：通过 [CC0](../erc/LICENSE.md) 放弃相关权利

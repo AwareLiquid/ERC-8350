@@ -1,11 +1,11 @@
-# ERC-8337 Roadmap
+# ERC-8350 Roadmap
 
 Status labels are strict, in the same discipline as the rest of this repository:
 **Deployed** (live, verifiable), **Specified** (normative text or ADR exists, no code),
 **Direction** (design intent; no spec, no code). Nothing here is a commitment to ship —
 items graduate only by moving up a label.
 
-- Discussion: https://ethereum-magicians.org/t/agent-memory-state/29098
+- Discussion: https://ethereum-magicians.org/t/erc-8350-agent-memory-state-registry/29098
 - Upstream: https://github.com/ethereum/ERCs/pull/1910
 
 ## Now — Deployed

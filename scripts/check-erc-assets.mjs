@@ -8,7 +8,7 @@
 
 import {readFileSync} from 'node:fs';
 
-const PAIRS = [['test-vectors/v1.json', 'erc/assets/erc-8337/test-vectors-v1.json']];
+const PAIRS = [['test-vectors/v1.json', 'erc/assets/erc-8350/test-vectors-v1.json']];
 
 let failed = false;
 

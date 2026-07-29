@@ -2,7 +2,7 @@
 
 A live, deliberately-public Memory Space whose complete witnesses are published, so
 that external conformance tooling — starting with
-`babyblueviper1/preaction-governance-conformance` — can check a **real ERC-8337
+`babyblueviper1/preaction-governance-conformance` — can check a **real ERC-8350
 deployment** against the rules in [`attestation-refs.md`](./attestation-refs.md)
 instead of synthetic in-memory data.
 
@@ -21,7 +21,7 @@ instead of synthetic in-memory data.
 | Registry | `0xDdf21937ba80b5fF973610877A0955b320C91241` |
 | Space id | `0xfbe20b841e2cb8d5e8094da6a9be9ebe19bb4d52c6155f465b40aa7bf1c13564` |
 | Controller = authorizer | `0x3d0ab53241A2913D7939ae02f7083169fE7b823B` (direct-call auth path, empty signature) |
-| Space salt | `keccak256("erc-8337-fixture-space-v1")` |
+| Space salt | `keccak256("erc-8337-fixture-space-v1")` — historical preimage from before the editor assigned ERC-8350; an opaque constant of the live Space, do **not** rename |
 | Head after setup | sequence `4`, state root `0x280889644f1f2748a27bb973df0c1efde465ae2a1334e705f7cb4c7a72ad5bc0` |
 | Verifier key policy (zero authority) | [`test-vectors/fixture-keys-v1.json`](../../test-vectors/fixture-keys-v1.json) |
 | Witness bundle | [`test-vectors/sepolia-fixture-v1.json`](../../test-vectors/sepolia-fixture-v1.json) |

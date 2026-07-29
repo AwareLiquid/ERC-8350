@@ -1,15 +1,15 @@
 # Attestation References in Committed Payloads
 
-**An informative interop note, jointly authored by the ERC-8337 (Agent Memory State) and
+**An informative interop note, jointly authored by the ERC-8350 (Agent Memory State) and
 WYRIWE (ERC-8299) projects.** Neither specification depends on the other; this note
 records the composition discipline both have agreed to, so that independent
 implementations compose the two the same way.
 
-- ERC-8337 discussion: https://ethereum-magicians.org/t/agent-memory-state/29098
+- ERC-8350 discussion: https://ethereum-magicians.org/t/erc-8350-agent-memory-state-registry/29098
 - WYRIWE / attestation_ref discussion: https://ethereum-magicians.org/t/erc-8004-trustless-agents/25098
 - Companion conformance repository: `babyblueviper1/preaction-governance-conformance`
 
-Status: **informative**. Nothing here modifies ERC-8337's normative core.
+Status: **informative**. Nothing here modifies ERC-8350's normative core.
 
 ## 1. Placement — never an eighth field
 
@@ -138,6 +138,6 @@ authority" case.
 
 ## Credits
 
-Drafted jointly from the exchange between the ERC-8337 authors and @babyblueviper1
+Drafted jointly from the exchange between the ERC-8350 authors and @babyblueviper1
 (WYRIWE / ERC-8299) on the threads linked above. Either project may cite this note;
 neither takes a dependency on the other by doing so.

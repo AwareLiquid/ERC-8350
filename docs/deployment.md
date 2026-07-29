@@ -115,4 +115,4 @@ cast call 0xDdf21937ba80b5fF973610877A0955b320C91241 "EXPERIENCE_DELTA_TYPEHASH(
 # 0x4f020f86bc06d852f1fde17853b4d92a70214eeab8e09718028124af097d070d
 ```
 
-Deployed at commit `100d6ba` (ERC-8337 sync). Etherscan source verification pending.
+Deployed at commit `100d6ba` (ERC-8350 sync). Etherscan source verification pending.

@@ -6,9 +6,9 @@
 
 ¹ Awareness (https://awareness.market) — XiaoHai ([@XiaoHai67890](https://github.com/XiaoHai67890)), Luo ([@lucas1968](https://github.com/lucas1968)) · \* Correspondence: [@everest-an](https://github.com/everest-an)
 
-- **Companion to:** ERC-8337 (Agent Memory State Registry), `erc/erc-8337.md`
-- **Discussions-to:** https://ethereum-magicians.org/t/agent-memory-state/29098
-- **Status:** ERC-8337 Draft — submitted upstream ([ethereum/ERCs#1910](https://github.com/ethereum/ERCs/pull/1910)), Sepolia deployment live
+- **Companion to:** ERC-8350 (Agent Memory State Registry), `erc/erc-8350.md`
+- **Discussions-to:** https://ethereum-magicians.org/t/erc-8350-agent-memory-state-registry/29098
+- **Status:** ERC-8350 Draft — submitted upstream ([ethereum/ERCs#1910](https://github.com/ethereum/ERCs/pull/1910)), Sepolia deployment live
 - **Reference release:** `1.0.0-alpha.1` (2026-07-14)
 - **License:** CC0 (see `erc/LICENSE.md`)
 
@@ -22,7 +22,7 @@ This document motivates and explains **Agent Memory State v1**, a minimal protoc
 for committing *authorized, ordered, private* state transitions of autonomous-agent
 memory to Ethereum — **without ever placing raw memory in calldata**.
 
-It is written as a **companion to the ERC** (`erc/erc-8337.md`):
+It is written as a **companion to the ERC** (`erc/erc-8350.md`):
 the ERC is the normative specification (exact `MUST`/`MUST NOT`, hashes, and test
 vectors); this whitepaper is the narrative — the *why*, the design rationale, and the
 applications that can grow on top. It follows the arc of the original Ethereum
@@ -737,8 +737,8 @@ bit-for-bit against the cross-language `test-vectors/v1.json`.
 
 - **Protocol version:** Agent Memory State **v1**
 - **Reference release:** `1.0.0-alpha.1` (2026-07-14)
-- **Status:** ERC-8337 Draft — submitted upstream ([ethereum/ERCs#1910](https://github.com/ethereum/ERCs/pull/1910)), Sepolia deployment live
-- **Normative spec:** `erc/erc-8337.md`
+- **Status:** ERC-8350 Draft — submitted upstream ([ethereum/ERCs#1910](https://github.com/ethereum/ERCs/pull/1910)), Sepolia deployment live
+- **Normative spec:** `erc/erc-8350.md`
 - **Reference implementation:** Solidity registry, two independent off-chain engines,
   Awareness adapter
 - **Repository:** `AwareLiquid/ERC-AWAR`
