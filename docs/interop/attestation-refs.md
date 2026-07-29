@@ -50,6 +50,14 @@ An entry's **identity is `(event_id, pubkey)`**. `decision_ref` binds the entry 
 specific verdict, not a class of them; it is content-addressed, so an entry cannot be
 re-pointed at a different verdict without its hash changing.
 
+**Normalization (added 2026-07-29).** Producers may render the same 32 hash bytes under
+different prefixes in their own systems — `0x…` here, `sha256:…` in WYRIWE's proof
+events (verified byte-identical by recomputation against the fixture's sequence-2
+event, `preaction-governance-conformance` commit `1d8a14d`). When an entry is embedded
+in an `attestation_refs` set, `decision_ref` MUST be normalized to the 0x-prefixed
+lowercase hex form; the §3 sort runs over that normalized string. A scheme prefix is
+presentation, not identity.
+
 ## 3. Set semantics — a list treated as an unordered set
 
 `provenanceBytes` MAY carry multiple references. To keep hashing deterministic without
