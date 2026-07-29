@@ -1,4 +1,4 @@
-# ERC-AWAR: Agent Memory State v1
+# ERC-8350: Agent Memory State v1
 
 面向 AI Agent 私有记忆状态转移的 ERC 社区草案与参考实现。
 

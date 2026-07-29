@@ -549,7 +549,7 @@ cd contracts && forge fmt --check && forge test
 - **状态**：社区草案（pre-ERC community draft）
 - **规范文档**：`erc/erc-8350.md`
 - **参考实现**：Solidity 合约、两个独立链下引擎、Awareness 适配器
-- **仓库**：`AwareLiquid/ERC-AWAR`
+- **仓库**：`AwareLiquid/ERC-8350`
 - **版权**：通过 [CC0](../erc/LICENSE.md) 放弃相关权利
 
 ---

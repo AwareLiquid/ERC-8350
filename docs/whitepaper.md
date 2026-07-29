@@ -741,7 +741,7 @@ bit-for-bit against the cross-language `test-vectors/v1.json`.
 - **Normative spec:** `erc/erc-8350.md`
 - **Reference implementation:** Solidity registry, two independent off-chain engines,
   Awareness adapter
-- **Repository:** `AwareLiquid/ERC-AWAR`
+- **Repository:** `AwareLiquid/ERC-8350`
 - **Copyright:** waived via [CC0](../erc/LICENSE.md)
 
 ---
