@@ -2,9 +2,6 @@ packages:
   - "packages/*"
   - "implementations/*"
 
-overrides:
-  postcss: 8.5.18
-
 onlyBuiltDependencies:
   - esbuild
 allowBuilds:
