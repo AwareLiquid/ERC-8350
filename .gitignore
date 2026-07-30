@@ -12,6 +12,7 @@ contracts/lib/
 broadcast/
 release-artifacts/
 artifacts/conformance/
+artifacts/external-reproductions/
 
 # logs / env
 *.log

@@ -47,11 +47,14 @@ prevStateRoot + ExperienceDelta v1
 
 仓库内第二实现证明了算法不依赖 Awareness 或核心 SDK，但它仍由同一仓库维护。
 在对外宣称生态采用前，还需要一个由其他团队独立维护的实现。
+外部研究者已经从规范和 Sepolia 链上状态独立重算核心哈希与状态链；这解决了
+`R-002` 的“无外部复现证据”问题，但不等同于完整的外部第二客户端。
 
 ## 关键文档
 
 - `docs/interop/fixture-space.md`: Sepolia 公开 fixture Space（4 条自验证转换 + 全公开见证，供外部 conformance checker 使用）
 - `docs/interop/attestation-refs.md`: 与 WYRIWE（ERC-8299）联合的 attestation_refs 互操作说明（informative，双向零依赖）
+- `docs/interop/external-reproduction.md`: R-002 外部独立复现证据、固定来源与可执行验证方法
 - `docs/roadmap/README.md`: 路线图（Deployed / Specified / Direction 三级诚实标注，含 ZK profile 方向）
 - `docs/whitepaper.md`: Agent Memory State 白皮书（英文，ERC 配套叙事文档，含 Open Questions，参考以太坊白皮书格式）
 - `docs/whitepaper.zh.md`: 白皮书中文版
@@ -88,6 +91,12 @@ pnpm conformance:clean
 ```bash
 pnpm test:ts
 cd contracts && forge fmt --check && forge test
+```
+
+外部证据验证是独立的网络任务，不属于日常单元测试：
+
+```bash
+node scripts/external-reproduction-gate.mjs
 ```
 
 ## 社区提交前还需完成
