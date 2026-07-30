@@ -28,7 +28,11 @@ jobs:
         run: cd contracts && forge install foundry-rs/forge-std@v1.16.2 --no-git
       - run: pnpm install --frozen-lockfile
       - run: pnpm release:check
+        env:
+          CONFORMANCE_CLEAN_CHECKOUT: "1"
       - run: mkdir -p release-artifacts
+      - name: Include conformance record
+        run: tar -czf release-artifacts/erc-8350-conformance.tar.gz -C artifacts conformance
       - run: pnpm --dir packages/core pack --pack-destination ../../release-artifacts
       - run: pnpm --dir packages/reference-engine pack --pack-destination ../../release-artifacts
       - run: pnpm --dir packages/awareness-adapter pack --pack-destination ../../release-artifacts

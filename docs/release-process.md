@@ -17,13 +17,14 @@ the draft an accepted ERC and do not imply that contracts are production ready.
 
 1. Freeze the intended commit and update `CHANGELOG.md`.
 2. Run `pnpm install --frozen-lockfile` in a fresh checkout.
-3. Run `pnpm release:check` and confirm zero dependency advisories.
-4. Verify the Solidity and both TypeScript implementations against the same
-   `test-vectors/v1.json`.
-5. Review storage layout, ABI changes, threat model, and migration notes.
-6. Create a signed `v*` tag. The release workflow builds package tarballs,
+3. Run `pnpm conformance:clean` and retain its JSON and Markdown records.
+4. Run `pnpm release:check` and confirm zero dependency advisories.
+5. Verify the clean-checkout record shows the Solidity and both TypeScript
+   implementations matched the same `test-vectors/v1.json` SHA-256.
+6. Review storage layout, ABI changes, threat model, and migration notes.
+7. Create a signed `v*` tag. The release workflow builds package tarballs,
    contract sources, and SHA-256 checksums without publishing automatically.
-7. Attach audit and testnet deployment references before labeling an artifact
+8. Attach audit and testnet deployment references before labeling an artifact
    production ready.
 
 Package publication and contract deployment require a separate human approval.

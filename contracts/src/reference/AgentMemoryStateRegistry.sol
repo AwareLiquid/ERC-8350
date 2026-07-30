@@ -327,8 +327,8 @@ contract AgentMemoryStateRegistry is IAgentMemoryState {
     {
         (bool success, bytes memory result) =
             signer.staticcall(abi.encodeCall(IERC1271.isValidSignature, (digest, signature)));
-        return success && result.length >= 32
-            && abi.decode(result, (bytes4)) == _ERC1271_MAGIC_VALUE;
+        return
+            success && result.length >= 32 && abi.decode(result, (bytes4)) == _ERC1271_MAGIC_VALUE;
     }
 
     function _digest(bytes32 structHash) private view returns (bytes32) {

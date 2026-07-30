@@ -15,11 +15,17 @@
     "typecheck": "pnpm build && pnpm -r --if-present typecheck",
     "test:ts": "pnpm build && pnpm -r --if-present test",
     "test:contracts": "cd contracts && forge test",
+    "test:golden:core": "pnpm --filter @erc-awar/core test:golden",
+    "test:golden:minimal": "pnpm --filter @erc-awar/minimal-independent test:golden",
+    "test:golden:solidity": "cd contracts && forge test --match-path test/unit/GoldenVector.t.sol -vv",
+    "format:check": "cd contracts && forge fmt --check",
     "check:erc-assets": "node scripts/check-erc-assets.mjs",
     "test": "pnpm test:ts && pnpm test:contracts",
-    "check": "pnpm clean && pnpm build && pnpm -r --if-present typecheck && pnpm -r --if-present test && pnpm check:erc-assets && pnpm test:contracts",
+    "check": "pnpm clean && pnpm build && pnpm -r --if-present typecheck && pnpm -r --if-present test && pnpm check:erc-assets && pnpm format:check && pnpm test:contracts",
+    "conformance:gate": "node scripts/conformance-gate.mjs",
+    "conformance:clean": "node scripts/clean-checkout-conformance.mjs",
     "audit": "pnpm audit --audit-level=moderate",
-    "release:check": "pnpm check && pnpm audit --audit-level=moderate"
+    "release:check": "pnpm conformance:gate && pnpm audit --audit-level=moderate"
   },
   "devDependencies": {
     "@noble/curves": "^2.2.0",
