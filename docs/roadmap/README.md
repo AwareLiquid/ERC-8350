@@ -14,7 +14,7 @@ items graduate only by moving up a label.
 |---|---|
 | Core registry: linear, authorized, private state transitions | Sepolia `0xDdf21937ba80b5fF973610877A0955b320C91241`, reproduces `test-vectors/v1.json` byte-for-byte |
 | Behavioral recording as commitments — actions enter `deltaCommitment` payloads (`TOOL_TRACE` / `EPISODIC` profiles), ordering pinned by `sequence` | Core + adapter vocabulary |
-| Selective, provably-complete audit disclosure — `AuditGrant` binds a `[from,to]` range to one `witnessSetRoot`; withholding or substituting any witness changes the root | Sepolia `0x20145Ab83958CFB321221e8a8C68181C818241B2` |
+| Selective, provably-complete audit disclosure — `AuditGrant` binds a `[from,to]` range to one `witnessSetRoot`; withholding or substituting any witness changes the root | Corrected source frozen at `af5a75f`; the older Sepolia `0x20145A…41B2` deployment has a cross-Space authorization defect and is deprecated |
 | **First production adopter** — Awareness (awareness.market) anchors real knowledge-card state from its local daemon: pull-based snapshot diff → outbox → CLI-signed broadcast, witnesses never leaving the user machine | Live on Sepolia 2026-07-28: Space `0xfdd18b37…`, tx `0x98f1cf76…`, head verified byte-for-byte against local precomputation by three independent paths |
 | **Independent reproduction evidence (R-002)** — externally maintained, commit-pinned Python implementations replay the public state machine and recompute a cross-ERC composition without importing this repository | ERC8312 Sepolia replay + Invinoveritas saved-artifact recompute; both clean-checkout suites pass, see `docs/interop/external-reproduction.md` |
 | Opt-in space description | `SpaceDescriptor`, Sepolia `0x7745e2dDC30e75E1D7B7fBAf4616Fc0F54e571F5` |
@@ -27,7 +27,7 @@ items graduate only by moving up a label.
 | ERC editor review → Draft merge | Waiting (all CI green) |
 | Etherscan source verification of the Sepolia instance | Todo, mechanical |
 | Independent second implementation passing the golden vectors | **Open call** — external reproduction evidence now exists, but neither external project implements the complete interface or directly consumes every field in `test-vectors/v1.json` |
-| External Solidity audit | Before any non-test deployment |
+| External Solidity audit | **G4 preparation complete; independent report pending** — exact source/scope, internal finding, residual-risk register, evidence gate, and open request are in `audits/g4/`; `pnpm security:rc` remains blocked |
 | `attestation_ref` interop with external verdict schemes (WYRIWE et al.) | **Specified** — see `docs/interop/attestation-refs.md` (joint note with WYRIWE): unordered set under `provenanceCommitment`, JCS-canonical, sorted by `decision_ref`, deduped by `(event_id, pubkey)`, `verify_url` advisory-only; never an eighth struct field. **Fixture Space live on Sepolia** (spaceId `0xfbe2…3564`, 4 witnessed transitions, `docs/interop/fixture-space.md`) |
 
 ## Mid term — ZK profiles (Direction)

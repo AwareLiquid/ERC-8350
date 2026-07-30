@@ -97,12 +97,17 @@ registry, and the EIP-712 domain already distinguishes them.
 
 ### Sepolia (chainId 11155111) — 2026-07-26
 
+> Security notice (2026-07-31): these are pre-audit test deployments. The
+> `AuditGrant` address below predates the fix that binds each grant to its origin
+> Space. It is deprecated and MUST NOT be used for new grants or treated as G4
+> evidence. The corrected candidate has not been redeployed.
+
 | Contract | Address |
 |---|---|
 | `AgentMemoryStateRegistry` | `0xDdf21937ba80b5fF973610877A0955b320C91241` |
 | `DeletionAttestation` | `0x97cc9b019A089bf7b821d47134020896f9259cc0` |
 | `SpaceDescriptor` | `0x7745e2dDC30e75E1D7B7fBAf4616Fc0F54e571F5` |
-| `AuditGrant` | `0x20145Ab83958CFB321221e8a8C68181C818241B2` |
+| `AuditGrant` (**deprecated**) | `0x20145Ab83958CFB321221e8a8C68181C818241B2` |
 
 Domain separator (binds signatures to this chain + registry): `0x4f36e5833f961f835ccd6ac49572ed105e4cdbf865f8904fe3d020724148b6ac`
 
@@ -116,3 +121,6 @@ cast call 0xDdf21937ba80b5fF973610877A0955b320C91241 "EXPERIENCE_DELTA_TYPEHASH(
 ```
 
 Deployed at commit `100d6ba` (ERC-8350 sync). Etherscan source verification pending.
+The `AuditGrant` defect is fixed in frozen G4 source commit
+`af5a75fb2db532fd5603554083d8895a825c2de2`; a replacement deployment is blocked
+until the independent G4 Solidity review is complete.

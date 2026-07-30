@@ -23,12 +23,15 @@
     "evidence:validate": "node scripts/external-reproduction-gate.mjs --validate-only",
     "evidence:test": "node --test scripts/external-reproduction-gate.test.mjs",
     "evidence:external": "node scripts/external-reproduction-gate.mjs",
+    "security:scope": "node scripts/security-rc-gate.mjs --scope-only",
+    "security:test": "node --test scripts/security-rc-gate.test.mjs",
+    "security:rc": "node scripts/security-rc-gate.mjs",
     "test": "pnpm test:ts && pnpm test:contracts",
-    "check": "pnpm clean && pnpm build && pnpm -r --if-present typecheck && pnpm -r --if-present test && pnpm check:erc-assets && pnpm evidence:validate && pnpm evidence:test && pnpm format:check && pnpm test:contracts",
+    "check": "pnpm clean && pnpm build && pnpm -r --if-present typecheck && pnpm -r --if-present test && pnpm check:erc-assets && pnpm evidence:validate && pnpm evidence:test && pnpm security:scope && pnpm security:test && pnpm format:check && pnpm test:contracts",
     "conformance:gate": "node scripts/conformance-gate.mjs",
     "conformance:clean": "node scripts/clean-checkout-conformance.mjs",
     "audit": "pnpm audit --audit-level=moderate",
-    "release:check": "pnpm conformance:gate && pnpm audit --audit-level=moderate"
+    "release:check": "pnpm conformance:gate && pnpm security:rc && pnpm audit --audit-level=moderate"
   },
   "devDependencies": {
     "@noble/curves": "^2.2.0",

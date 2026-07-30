@@ -1,0 +1,288 @@
+{
+  "schema": "erc-8350/residual-risk-register/v1",
+  "candidate": "G4-rc1",
+  "asOf": "2026-07-31",
+  "policy": {
+    "unresolvedCriticalOrHighAllowed": false,
+    "acceptedSeverities": [
+      "medium",
+      "low",
+      "informational"
+    ],
+    "reviewRequiredAfterSourceChange": true
+  },
+  "risks": [
+    {
+      "id": "G4-R-001",
+      "title": "Controller compromise or irreversible rotation error",
+      "severity": "medium",
+      "likelihood": "low",
+      "status": "accepted",
+      "affectedComponents": [
+        "AgentMemoryStateRegistry",
+        "all extensions"
+      ],
+      "description": "A controller can replace both controller and authorizer. The one-step rotation has no on-chain acceptance handshake, so compromise or an incorrect destination can transfer control or make recovery impossible.",
+      "existingControls": [
+        "EIP-712 domain separation",
+        "per-Space configNonce",
+        "non-zero destination checks",
+        "controller-only authorization"
+      ],
+      "deploymentRequirements": [
+        "Use a reviewed multisignature or policy contract for valuable Spaces.",
+        "Simulate and independently verify both replacement addresses before rotation.",
+        "Document an operational recovery and key-compromise procedure."
+      ],
+      "owner": "Space deployer",
+      "reviewTrigger": "Controller model, rotation flow, or recovery policy changes"
+    },
+    {
+      "id": "G4-R-002",
+      "title": "Compromised or overly permissive transition authorizer",
+      "severity": "medium",
+      "likelihood": "low",
+      "status": "accepted",
+      "affectedComponents": [
+        "AgentMemoryStateRegistry"
+      ],
+      "description": "The Registry proves authorization and ordering, not that an authorized memory transition is true or desirable. A compromised authorizer can append valid-looking state.",
+      "existingControls": [
+        "controller-controlled authorizer rotation",
+        "exact sequence and previous-root checks",
+        "EIP-712 signed transition fields"
+      ],
+      "deploymentRequirements": [
+        "Separate controller and authorizer duties.",
+        "Use threshold, rate-limited, or session-scoped policy for valuable Spaces.",
+        "Monitor TransitionCommitted events and define incident response."
+      ],
+      "owner": "Space deployer",
+      "reviewTrigger": "Authorizer implementation or policy changes"
+    },
+    {
+      "id": "G4-R-003",
+      "title": "EIP-7702 fallback preserves the underlying ECDSA authorization path",
+      "severity": "medium",
+      "likelihood": "medium",
+      "status": "accepted",
+      "affectedComponents": [
+        "AgentMemoryStateRegistry"
+      ],
+      "description": "ERC-8350 requires trying ERC-1271 before canonical ECDSA. For a delegated EOA, a valid underlying-key signature is therefore accepted even when delegate code would reject the same action. Delegate policy is not exclusive.",
+      "existingControls": [
+        "behavior is explicit in the ERC and reference implementation",
+        "ERC-1271 is attempted first",
+        "canonical low-s ECDSA validation"
+      ],
+      "deploymentRequirements": [
+        "Do not use a delegated EOA when delegate-exclusive policy is a security requirement.",
+        "Use a contract-account authorizer address for multisignature or policy-only control.",
+        "Treat the delegated EOA key as fully privileged."
+      ],
+      "owner": "Space deployer",
+      "reviewTrigger": "ERC-8350 signature-validation rules or EIP-7702 semantics change"
+    },
+    {
+      "id": "G4-R-004",
+      "title": "Relayer censorship and delay",
+      "severity": "low",
+      "likelihood": "medium",
+      "status": "accepted",
+      "affectedComponents": [
+        "AgentMemoryStateRegistry"
+      ],
+      "description": "A relayer cannot alter signed Delta fields but can withhold, reorder pending submissions, or delay inclusion.",
+      "existingControls": [
+        "all ExperienceDelta fields are signed",
+        "strict sequence and prior-root validation"
+      ],
+      "deploymentRequirements": [
+        "Maintain a direct-submission path or multiple relayers.",
+        "Alert on stalled outbox entries and sequence gaps."
+      ],
+      "owner": "Application operator",
+      "reviewTrigger": "Relayer architecture changes"
+    },
+    {
+      "id": "G4-R-005",
+      "title": "Metadata leakage and weak commitment secrets",
+      "severity": "medium",
+      "likelihood": "medium",
+      "status": "accepted",
+      "affectedComponents": [
+        "AgentMemoryStateRegistry",
+        "PrivateCommitment"
+      ],
+      "description": "Timing, sequence, profile identifiers, and commitment equality are public. Low-entropy payloads remain dictionary-attackable when salts are weak or reused.",
+      "existingControls": [
+        "domain-separated baseline commitments",
+        "raw payloads and locators are absent from core calldata",
+        "locatorCommitment is signed"
+      ],
+      "deploymentRequirements": [
+        "Use fresh cryptographically random 32-byte salts for every commitment domain.",
+        "Encrypt sensitive witnesses before storage and rotate encryption nonces and keys.",
+        "Use opaque per-Space profile identifiers when kind privacy is required."
+      ],
+      "owner": "Profile and application implementer",
+      "reviewTrigger": "Commitment profile or public event schema changes"
+    },
+    {
+      "id": "G4-R-006",
+      "title": "Witness and locator unavailability",
+      "severity": "medium",
+      "likelihood": "medium",
+      "status": "accepted",
+      "affectedComponents": [
+        "off-chain witness storage",
+        "AuditGrant"
+      ],
+      "description": "A valid on-chain commitment can become permanently unopenable if encrypted witnesses, salts, keys, or locators are lost. The contracts do not provide data availability.",
+      "existingControls": [
+        "locator commitment prevents relayer substitution",
+        "AuditGrant can bind an out-of-band disclosure set"
+      ],
+      "deploymentRequirements": [
+        "Use redundant encrypted storage and tested restoration procedures.",
+        "Define retention, key escrow, and availability service levels per profile."
+      ],
+      "owner": "Application operator",
+      "reviewTrigger": "Storage or key-management architecture changes"
+    },
+    {
+      "id": "G4-R-007",
+      "title": "Fork replay before operational finality",
+      "severity": "low",
+      "likelihood": "low",
+      "status": "accepted",
+      "affectedComponents": [
+        "AgentMemoryStateRegistry"
+      ],
+      "description": "The EIP-712 domain binds chain ID and Registry address, but two branches of the same chain can temporarily share both values.",
+      "existingControls": [
+        "chain ID and verifying-contract domain binding",
+        "linear state-root chain"
+      ],
+      "deploymentRequirements": [
+        "Apply an application-specific confirmation/finality policy.",
+        "Reconcile transition heads after a material chain reorganization."
+      ],
+      "owner": "Application operator",
+      "reviewTrigger": "Target chain or finality assumptions change"
+    },
+    {
+      "id": "G4-R-008",
+      "title": "External smart-account validation defects or gas griefing",
+      "severity": "medium",
+      "likelihood": "low",
+      "status": "accepted",
+      "affectedComponents": [
+        "AgentMemoryStateRegistry",
+        "configured ERC-1271 accounts"
+      ],
+      "description": "Authorization depends on external ERC-1271 code. A wallet can be buggy, mutable, unexpectedly permissive, or consume enough gas to make operations unreliable.",
+      "existingControls": [
+        "STATICCALL",
+        "exact ERC-1271 magic-value check",
+        "state mutation occurs after authorization"
+      ],
+      "deploymentRequirements": [
+        "Use a reviewed wallet implementation and pin its upgrade authority.",
+        "Test valid, invalid, reverting, and malformed-return behavior before registration."
+      ],
+      "owner": "Space deployer",
+      "reviewTrigger": "Wallet implementation or upgrade authority changes"
+    },
+    {
+      "id": "G4-R-009",
+      "title": "Wrappers and proxies can change immutable reference semantics",
+      "severity": "medium",
+      "likelihood": "low",
+      "status": "accepted",
+      "affectedComponents": [
+        "deployment architecture"
+      ],
+      "description": "The reference Registry is non-upgradeable. A third-party proxy, wrapper, or modified deployment can introduce admin powers or behavior not covered by the review.",
+      "existingControls": [
+        "dependency-free immutable reference implementation",
+        "verifying-contract address in the EIP-712 domain"
+      ],
+      "deploymentRequirements": [
+        "Publish and monitor deployed bytecode hashes.",
+        "Treat proxy or wrapper deployments as a new audit scope."
+      ],
+      "owner": "Deployment operator",
+      "reviewTrigger": "Any bytecode, proxy, wrapper, or compiler-setting change"
+    },
+    {
+      "id": "G4-R-010",
+      "title": "Public extension metadata can disclose sensitive context",
+      "severity": "low",
+      "likelihood": "medium",
+      "status": "accepted",
+      "affectedComponents": [
+        "SpaceDescriptor",
+        "AuditGrant",
+        "DeletionAttestation"
+      ],
+      "description": "Descriptor URIs, audit participants and ranges, acknowledgement timing, and deletion-attestation timing are public by construction.",
+      "existingControls": [
+        "extensions are opt-in",
+        "AuditGrant stores witness roots rather than witnesses",
+        "DeletionAttestation stores a commitment rather than evidence"
+      ],
+      "deploymentRequirements": [
+        "Never place secrets, salts, keys, private locators, or raw evidence in extension calldata.",
+        "Use the core without metadata extensions when relationship privacy is required."
+      ],
+      "owner": "Application operator",
+      "reviewTrigger": "Extension event or calldata schema changes"
+    },
+    {
+      "id": "G4-R-011",
+      "title": "Attestations and audit acknowledgements are limited claims",
+      "severity": "low",
+      "likelihood": "medium",
+      "status": "accepted",
+      "affectedComponents": [
+        "AuditGrant",
+        "DeletionAttestation"
+      ],
+      "description": "AuditGrant does not prove witness truth, auditor competence, or receipt. DeletionAttestation does not prove universal erasure and allows one immutable evidence commitment per transition.",
+      "existingControls": [
+        "limitations documented in contract NatSpec",
+        "auditor-only acknowledgement",
+        "controller-only deletion attestation"
+      ],
+      "deploymentRequirements": [
+        "Present these records as scoped attestations, never as truth or universal deletion proofs.",
+        "Define off-chain auditor identity, evidence, and correction policy."
+      ],
+      "owner": "Application and verifier",
+      "reviewTrigger": "Claim semantics or user-facing representations change"
+    },
+    {
+      "id": "G4-R-012",
+      "title": "Legacy Sepolia AuditGrant predates the cross-Space fix",
+      "severity": "high",
+      "likelihood": "medium",
+      "status": "mitigated",
+      "affectedComponents": [
+        "AuditGrant at 0x20145Ab83958CFB321221e8a8C68181C818241B2 on Sepolia"
+      ],
+      "description": "The 2026-07-26 test deployment does not bind grant IDs to their origin Space during revoke and acknowledge. A controller of another registered Space can revoke a grant, and an auditor can misattribute its acknowledgement event.",
+      "existingControls": [
+        "fixed in source commit af5a75fb2db532fd5603554083d8895a825c2de2",
+        "cross-Space regression tests"
+      ],
+      "deploymentRequirements": [
+        "Treat the legacy address as deprecated test evidence only.",
+        "Do not create or rely on grants at the legacy address.",
+        "Deploy the reviewed candidate to a new address only after G4 passes."
+      ],
+      "owner": "Maintainers",
+      "reviewTrigger": "New AuditGrant deployment or legacy-address documentation changes"
+    }
+  ]
+}

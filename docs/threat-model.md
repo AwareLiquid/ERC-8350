@@ -28,6 +28,7 @@ implicitly trusted by the core protocol.
 | Configuration replay | Per-Space `configNonce` | Compromised controller can still authorize a malicious update |
 | ECDSA malleability | Low-s validation and non-zero recovery | Wallet implementation defects |
 | Contract-wallet spoofing | EIP-1271 exact magic value and malformed-return checks | Bugs in the authorizer contract itself |
+| Delegate policy treated as exclusive | ERC-1271 is attempted first, then the ERC-8350 canonical ECDSA fallback | A delegated EOA's underlying key remains an authorization path; use a contract-account authorizer when policy must be exclusive |
 | Dictionary attack on short memory | Secret salt or encrypted payload with fresh key and nonce | Public metadata and timing remain visible |
 | Locator disclosure | Only a salted locator commitment is public | Out-of-band witness recipients can disclose it |
 | Equality linkage | Fresh independent salts | Reused ciphertext, salts, or payload-side identifiers |
@@ -48,6 +49,12 @@ implicitly trusted by the core protocol.
 5. Explicit controller and authorizer recovery procedures.
 6. Testnet monitoring for event/indexer compatibility.
 7. External Solidity audit before a Registry is presented as production-ready.
+
+The complete G4 operational register, including owners, controls, deployment
+requirements, and review triggers, is
+[`docs/security/residual-risks.md`](security/residual-risks.md). G4 remains
+incomplete until `pnpm security:rc` accepts independent review evidence for the
+exact frozen source.
 
 ## Non-claims
 

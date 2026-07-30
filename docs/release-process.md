@@ -22,10 +22,27 @@ the draft an accepted ERC and do not imply that contracts are production ready.
 5. Verify the clean-checkout record shows the Solidity and both TypeScript
    implementations matched the same `test-vectors/v1.json` SHA-256.
 6. Review storage layout, ABI changes, threat model, and migration notes.
-7. Create a signed `v*` tag. The release workflow builds package tarballs,
+7. Run `pnpm security:rc`. For an RC this requires a report by an independent
+   reviewer against the exact commit and scope digest, all findings dispositioned,
+   every accepted finding mapped to the residual-risk register, and no unresolved
+   Critical or High finding.
+8. Manually verify reviewer identity, expertise, conflict disclosure, report
+   quality, and the public attestation. Passing JSON validation alone is not an
+   audit.
+9. Create a signed `v*` tag. The release workflow builds package tarballs,
    contract sources, and SHA-256 checksums without publishing automatically.
-8. Attach audit and testnet deployment references before labeling an artifact
+10. Attach audit and testnet deployment references before labeling an artifact
    production ready.
 
 Package publication and contract deployment require a separate human approval.
 Never deploy by reusing development keys or unrevealed commitment salts.
+
+## G4 evidence
+
+The live status and completion procedure are in
+[`audits/g4/README.md`](../audits/g4/README.md). `pnpm security:scope` is a
+preparation check and may pass before an external audit. Only
+`pnpm security:rc` is the full G4 gate, and `release:check` invokes it.
+
+Any change to an in-scope Solidity file, `Deploy.s.sol`, or the pinned compiler
+configuration invalidates the current report and requires a new frozen candidate.
