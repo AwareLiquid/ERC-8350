@@ -11,8 +11,9 @@ All notable implementation and protocol changes are recorded here.
   source commit/tree, vector SHA-256, tool versions, canonical outputs, suite
   results, and logs as JSON and Markdown.
 - R-002 independent reproduction evidence: a machine-readable manifest, isolated
-  clean-checkout runner, scheduled GitHub Actions workflow, and recorded results
-  for two externally maintained, commit-pinned implementations.
+  clean-checkout runner, pull-request/manual/scheduled GitHub Actions workflow,
+  hash-pinned runtime dependencies, and recorded results for two externally
+  maintained, commit-pinned implementations.
 - Whitepaper as a narrative companion to the ERC, following the Ethereum
   whitepaper structure (state transition systems → memory as state → protocol →
   applications → concerns → conclusion) and closing with an Open Questions

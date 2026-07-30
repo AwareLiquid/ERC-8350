@@ -1,5 +1,5 @@
 SOURCE https://github.com/babyblueviper1/invinoveritas.git@81a2e0f7898e429d2d15ec421379f3446ae6869c
-COMMAND /var/folders/mt/nvrf2d3j25l70gkg9hyp1_m80000gn/T/erc8350-external-reproduction-GTIKwe/invinoveritas-composition-recompute/venv/bin/python /var/folders/mt/nvrf2d3j25l70gkg9hyp1_m80000gn/T/erc8350-external-reproduction-GTIKwe/invinoveritas-composition-recompute/checkout/examples/erc8274-erc8350-composition/compose_and_verify.py --verify
+COMMAND /var/folders/mt/nvrf2d3j25l70gkg9hyp1_m80000gn/T/erc8350-external-reproduction-2Dd2Jm/invinoveritas-composition-recompute/venv/bin/python -I /var/folders/mt/nvrf2d3j25l70gkg9hyp1_m80000gn/T/erc8350-external-reproduction-2Dd2Jm/invinoveritas-composition-recompute/checkout/examples/erc8274-erc8350-composition/compose_and_verify.py --verify
 STDOUT
 
 recomputing ERC-8350 math from scratch (no trust in this script's own prior run)...

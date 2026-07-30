@@ -1,11 +1,11 @@
 SOURCE https://github.com/ERC8312/bounded-agent-actions.git@cd6100da171e682b1abd6757c12a7df1356f80fa
-COMMAND /var/folders/mt/nvrf2d3j25l70gkg9hyp1_m80000gn/T/erc8350-external-reproduction-GTIKwe/erc8312-sepolia-state-replay/venv/bin/python /var/folders/mt/nvrf2d3j25l70gkg9hyp1_m80000gn/T/erc8350-external-reproduction-GTIKwe/erc8312-sepolia-state-replay/checkout/recompute/erc8350_sepolia.py --rpc-url <rpc:sepolia.gateway.tenderly.co> --cross-check-rpc <rpc:ethereum-sepolia-rpc.publicnode.com>
+COMMAND /var/folders/mt/nvrf2d3j25l70gkg9hyp1_m80000gn/T/erc8350-external-reproduction-2Dd2Jm/erc8312-sepolia-state-replay/venv/bin/python -I /var/folders/mt/nvrf2d3j25l70gkg9hyp1_m80000gn/T/erc8350-external-reproduction-2Dd2Jm/erc8312-sepolia-state-replay/checkout/recompute/erc8350_sepolia.py --rpc-url <rpc:sepolia.gateway.tenderly.co> --cross-check-rpc <rpc:ethereum-sepolia-rpc.publicnode.com>
 STDOUT
 registry            0xDdf21937ba80b5fF973610877A0955b320C91241
 TransitionCommitted 7 logs across 3 Memory Spaces
-observation block   11384945
-block hash          0xde23fe65c3fff1fde2d252f429f31d8da8919f23e0d2a4056e039fef8292808a   <- check this against any explorer
-stateRoot           0x7874906963425a373af523b6a8bb15944afb706cdbc27d8a48c66471038b4f14   (proven inside that header)
+observation block   11385129
+block hash          0xe2163a48e2517dbe0a70a6eae91419f5826df783196f4de5bf4288410aff0056   <- check this against any explorer
+stateRoot           0xb285cbfe7a384b927048c6ae4159da1e52280081ae23ceca260bff0a60df4763   (proven inside that header)
 cross-check         <rpc:ethereum-sepolia-rpc.publicnode.com> agrees
 
 ==============================================================================
