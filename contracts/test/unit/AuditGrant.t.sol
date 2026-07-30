@@ -11,18 +11,22 @@ contract AuditGrantTest is Test {
     AuditGrant internal extension;
 
     address internal controller = address(0xA11CE);
+    address internal otherController = address(0xB0B);
     address internal auditor = address(0xAD170);
     address internal stranger = address(0xBEEF);
 
     bytes32 internal constant SPACE_SALT = keccak256("space");
+    bytes32 internal constant OTHER_SPACE_SALT = keccak256("other-space");
     bytes32 internal constant PROFILE = keccak256("profile/text/v1");
 
     bytes32 internal SPACE;
+    bytes32 internal OTHER_SPACE;
     bytes32[] internal transitionIds;
 
     function setUp() public {
         registry = new AgentMemoryStateRegistry();
         SPACE = registry.deriveSpaceId(controller, SPACE_SALT);
+        OTHER_SPACE = registry.deriveSpaceId(otherController, OTHER_SPACE_SALT);
         extension = new AuditGrant(IAgentMemoryState(address(registry)));
 
         vm.startPrank(controller);
@@ -44,6 +48,9 @@ contract AuditGrantTest is Test {
             prevRoot = nextRoot;
         }
         vm.stopPrank();
+
+        vm.prank(otherController);
+        registry.registerSpace(OTHER_SPACE, otherController, otherController, OTHER_SPACE_SALT, "");
     }
 
     /// Fold the witness set the way an off-chain verifier would.
@@ -73,6 +80,7 @@ contract AuditGrantTest is Test {
         assertEq(grantId, extension.deriveGrantId(SPACE, auditor, 1, 3));
 
         AuditGrant.Grant memory g = extension.grantOf(grantId);
+        assertEq(extension.spaceOf(grantId), SPACE);
         assertEq(g.auditor, auditor);
         assertEq(g.witnessSetRoot, root);
         assertEq(g.acknowledgedAt, 0);
@@ -165,6 +173,30 @@ contract AuditGrantTest is Test {
         vm.prank(auditor);
         vm.expectRevert(AuditGrant.GrantIsRevoked.selector);
         extension.acknowledge(SPACE, grantId, root);
+    }
+
+    function test_RevertWhen_AcknowledgementUsesAnotherSpace() public {
+        bytes32 root = _foldAll(3);
+
+        vm.prank(controller);
+        bytes32 grantId = extension.grant(SPACE, auditor, 1, 3, root);
+
+        vm.prank(auditor);
+        vm.expectRevert(abi.encodeWithSelector(AuditGrant.WrongSpace.selector, SPACE, OTHER_SPACE));
+        extension.acknowledge(OTHER_SPACE, grantId, root);
+    }
+
+    function test_RevertWhen_OtherSpaceControllerRevokesGrant() public {
+        bytes32 root = _foldAll(3);
+
+        vm.prank(controller);
+        bytes32 grantId = extension.grant(SPACE, auditor, 1, 3, root);
+
+        vm.prank(otherController);
+        vm.expectRevert(abi.encodeWithSelector(AuditGrant.WrongSpace.selector, SPACE, OTHER_SPACE));
+        extension.revoke(OTHER_SPACE, grantId);
+
+        assertFalse(extension.grantOf(grantId).revoked);
     }
 
     function test_RevertWhen_EmptyRootOrZeroAuditor() public {

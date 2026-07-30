@@ -294,14 +294,16 @@ contract AgentMemoryStateRegistry is IAgentMemoryState {
     ///      delegated under EIP-7702 has non-empty code (`0xef0100 || delegate`), so
     ///      branching on `code.length` alone would route every 7702 account into
     ///      ERC-1271 and revert for the many delegates that implement no signature
-    ///      policy. Trying ERC-1271 first still lets a delegate that *does* implement a
-    ///      policy enforce it; the ECDSA fallback then covers plain EOAs and 7702
-    ///      accounts whose delegate is signature-agnostic.
+    ///      policy. Trying ERC-1271 first accepts signatures approved by a delegate that
+    ///      implements a policy; the ECDSA fallback then covers plain EOAs and 7702
+    ///      accounts whose delegate is signature-agnostic. It does not make that delegate
+    ///      policy the exclusive authorization path.
     ///
     ///      Security note: delegation does not revoke the underlying key, so for a 7702
     ///      account a valid ECDSA signature authorizes even when the delegate's policy
-    ///      would have rejected it. That is a property of EIP-7702 itself, not of this
-    ///      registry, but deployments relying on a delegate policy must account for it.
+    ///      would have rejected it. Preserving that residual key path is an explicit
+    ///      registry rule. Deployments requiring delegate-exclusive policy must use a
+    ///      contract-account authorizer instead of a delegated EOA.
     function _requireAuthorization(
         address signer,
         bytes32 digest,
