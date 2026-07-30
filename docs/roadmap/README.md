@@ -27,7 +27,7 @@ items graduate only by moving up a label.
 | ERC editor review → Draft merge | Waiting (all CI green) |
 | Etherscan source verification of the Sepolia instance | Todo, mechanical |
 | Independent second implementation passing the golden vectors | **Open call** — external reproduction evidence now exists, but neither external project implements the complete interface or directly consumes every field in `test-vectors/v1.json` |
-| External Solidity audit | **G4 preparation complete; independent report pending** — exact source/scope, internal finding, residual-risk register, evidence gate, and open request are in `audits/g4/`; `pnpm security:rc` remains blocked |
+| External Solidity audit | **G4 preparation complete; independent report pending** — exact source/scope, internal finding, residual-risk register, and evidence gate are in `audits/g4/`; public review request [#11](https://github.com/AwareLiquid/ERC-8350/issues/11); `pnpm security:rc` remains blocked |
 | `attestation_ref` interop with external verdict schemes (WYRIWE et al.) | **Specified** — see `docs/interop/attestation-refs.md` (joint note with WYRIWE): unordered set under `provenanceCommitment`, JCS-canonical, sorted by `decision_ref`, deduped by `(event_id, pubkey)`, `verify_url` advisory-only; never an eighth struct field. **Fixture Space live on Sepolia** (spaceId `0xfbe2…3564`, 4 witnessed transitions, `docs/interop/fixture-space.md`) |
 
 ## Mid term — ZK profiles (Direction)

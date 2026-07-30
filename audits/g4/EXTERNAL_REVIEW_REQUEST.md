@@ -7,6 +7,9 @@ contracts can be called a security-ready release candidate. This request is open
 to an established auditor, security researcher, or independent Solidity team
 with no maintainer role in AwareLiquid/ERC-8350.
 
+Public coordination issue:
+[AwareLiquid/ERC-8350#11](https://github.com/AwareLiquid/ERC-8350/issues/11).
+
 ## Frozen target
 
 - Repository: https://github.com/AwareLiquid/ERC-8350
