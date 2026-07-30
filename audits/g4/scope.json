@@ -1,0 +1,116 @@
+{
+  "schema": "erc-8350/security-review-scope/v1",
+  "candidate": "G4-rc1",
+  "repository": "https://github.com/AwareLiquid/ERC-8350",
+  "source": {
+    "commit": "af5a75fb2db532fd5603554083d8895a825c2de2",
+    "tree": "f8d66277123391ea54de3f53842256e17e2a497e",
+    "ref": "refs/tags/audit/g4-rc1-source"
+  },
+  "toolchain": {
+    "solidity": "0.8.24",
+    "foundry": "1.7.1",
+    "optimizer": true,
+    "optimizerRuns": 200,
+    "evmVersion": "cancun"
+  },
+  "acceptanceCriteria": {
+    "independentReviewerRequired": true,
+    "externalRepositoryRequired": true,
+    "exactSourceCommitRequired": true,
+    "sourceHashesRequired": true,
+    "publicReportRequired": true,
+    "reportDigestRequired": true,
+    "noUnresolvedCriticalOrHigh": true,
+    "allOtherFindingsDispositioned": true,
+    "residualRiskMappingRequired": true
+  },
+  "inScope": [
+    {
+      "path": "contracts/src/ECDSA.sol",
+      "kind": "library",
+      "sha256": "fdf13dd3c50b06ec54f0260dfd10f3a8c1349380ae878d73966981994cbb632d"
+    },
+    {
+      "path": "contracts/src/interfaces/IAgentMemoryState.sol",
+      "kind": "interface",
+      "sha256": "b0fe1be9c7c958004eb500899d2995532a9b3c955cead4c1ac3a829d5610a46a"
+    },
+    {
+      "path": "contracts/src/interfaces/IERC1271.sol",
+      "kind": "interface",
+      "sha256": "2c384028dc25b3e2968254332d2f3d8ca499f868f50387a5ee9efb292e5fa8f6"
+    },
+    {
+      "path": "contracts/src/reference/AgentMemoryStateRegistry.sol",
+      "kind": "runtime",
+      "sha256": "d0f1493f0c5a7eac5a33ebb1320d21fcd1d7799ada3f18647da76af569762ae6"
+    },
+    {
+      "path": "contracts/src/reference/PrivateCommitment.sol",
+      "kind": "library",
+      "sha256": "af5c1e5bb9a1c6fb11655367084bc1079deabe30cb961b6b73932a0d2b13deca"
+    },
+    {
+      "path": "contracts/src/extensions/AuditGrant.sol",
+      "kind": "runtime-extension",
+      "sha256": "33aac29f9b1ed3604951667256e096de8e289cc09754eb38dc0bf02a4307f513"
+    },
+    {
+      "path": "contracts/src/extensions/DeletionAttestation.sol",
+      "kind": "runtime-extension",
+      "sha256": "6d1f48ed11851a0030eb064f39d6c8a81bd6e48c20d97560c9c44ce28d37b94f"
+    },
+    {
+      "path": "contracts/src/extensions/SpaceDescriptor.sol",
+      "kind": "runtime-extension",
+      "sha256": "91dd7c31db67d0fa37a3b0af604b395aca14d50398e7aff452fdda711f0d7d30"
+    },
+    {
+      "path": "contracts/script/Deploy.s.sol",
+      "kind": "deployment",
+      "sha256": "6351686f1a47fcef0505e3ea1e07c70c28826c0d580a7e8e73864f31468f8a37"
+    },
+    {
+      "path": "contracts/foundry.toml",
+      "kind": "build-configuration",
+      "sha256": "bfaa78533173670143902f4335f1c3e86646717c2122848e7f246074e50430a8"
+    }
+  ],
+  "supportingEvidence": [
+    {
+      "path": "test-vectors/v1.json",
+      "sha256": "09b865b082b198606b0b005eec0df995d277f76f1e6b06550907472a9dcd2872"
+    },
+    {
+      "path": "contracts/test/unit/AuditGrant.t.sol",
+      "sha256": "c409d590f94df5bd426a4980c957fe6b3656ce0a77598fc0afe3be19e3e4904b"
+    },
+    {
+      "path": "contracts/test/unit/AgentMemoryStateRegistry.t.sol",
+      "sha256": "09a8d658f1e24b598235ae808b59d7ec3086e38a8d68c06f4878ad206ed8a474"
+    },
+    {
+      "path": "contracts/test/invariant/StateMachineInvariant.t.sol",
+      "sha256": "e20069adbc3ca4c5da375dffadb8e0e78d241497b661277a6afd109f642c447d"
+    }
+  ],
+  "excluded": [
+    {
+      "path": "contracts/src/experimental/MemoryMarket.sol",
+      "reason": "Experimental value-transfer contract with a separate trust model; it is not deployed by Deploy.s.sol and is not part of G4."
+    },
+    {
+      "path": "packages/",
+      "reason": "TypeScript products, adapters, and SDK code are covered by conformance testing, not this Solidity review."
+    },
+    {
+      "path": "implementations/",
+      "reason": "Independent TypeScript implementation; covered by the Golden Vector conformance gate."
+    },
+    {
+      "path": "witness-storage-and-encryption-profiles",
+      "reason": "Off-chain key management, storage availability, and profile-specific cryptography are deployment responsibilities."
+    }
+  ]
+}

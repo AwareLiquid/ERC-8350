@@ -97,12 +97,17 @@ registry, and the EIP-712 domain already distinguishes them.
 
 ### Sepolia (chainId 11155111) — 2026-07-26
 
+> Security notice (2026-07-31): these are pre-audit test deployments. The
+> `AuditGrant` address below predates the fix that binds each grant to its origin
+> Space. It is deprecated and MUST NOT be used for new grants or treated as G4
+> evidence. The corrected candidate has not been redeployed.
+
 | Contract | Address | Source |
 |---|---|---|
 | `AgentMemoryStateRegistry` | `0xDdf21937ba80b5fF973610877A0955b320C91241` | [verified](https://sepolia.etherscan.io/address/0xDdf21937ba80b5fF973610877A0955b320C91241#code) |
 | `DeletionAttestation` | `0x97cc9b019A089bf7b821d47134020896f9259cc0` | [verified](https://sepolia.etherscan.io/address/0x97cc9b019A089bf7b821d47134020896f9259cc0#code) |
 | `SpaceDescriptor` | `0x7745e2dDC30e75E1D7B7fBAf4616Fc0F54e571F5` | [verified](https://sepolia.etherscan.io/address/0x7745e2dDC30e75E1D7B7fBAf4616Fc0F54e571F5#code) |
-| `AuditGrant` | `0x20145Ab83958CFB321221e8a8C68181C818241B2` | [verified](https://sepolia.etherscan.io/address/0x20145Ab83958CFB321221e8a8C68181C818241B2#code) |
+| `AuditGrant` (**deprecated**) | `0x20145Ab83958CFB321221e8a8C68181C818241B2` | [verified](https://sepolia.etherscan.io/address/0x20145Ab83958CFB321221e8a8C68181C818241B2#code) |
 
 Domain separator (binds signatures to this chain + registry): `0x4f36e5833f961f835ccd6ac49572ed105e4cdbf865f8904fe3d020724148b6ac`
 
@@ -143,3 +148,8 @@ Verification is what turns "the bytecode at this address behaves as specified" f
 claim into something a reader can check: the published source recompiles to the deployed
 bytecode under the stated settings, so the golden-vector agreement above is auditable
 rather than asserted.
+
+The `AuditGrant` defect is fixed in frozen G4 source commit
+`af5a75fb2db532fd5603554083d8895a825c2de2`; a replacement deployment is blocked
+until the independent G4 Solidity review is complete. The deprecated instance above
+remains source-verified so the defect itself is auditable.
