@@ -7,6 +7,11 @@ The independent external Solidity review is still open. Until a qualifying repor
 is accepted, `pnpm security:rc` and `pnpm release:check` fail by design, and no
 artifact from this branch may be described as security-ready or production-ready.
 
+- Implementation and evidence PR:
+  [AwareLiquid/ERC-8350#10](https://github.com/AwareLiquid/ERC-8350/pull/10)
+- Public independent-review request:
+  [AwareLiquid/ERC-8350#11](https://github.com/AwareLiquid/ERC-8350/issues/11)
+
 ## Gate status
 
 | Requirement | Evidence | Status |
