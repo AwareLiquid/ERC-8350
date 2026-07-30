@@ -1,14 +1,17 @@
 # ERC-8350 R-002 External Reproduction Report
 
 - Result: **PASS**
-- Generated: `2026-07-30T21:06:25.226Z`
-- Manifest SHA-256: `cee7eba1f4237bea5095693d97e33c22ebe3f16d31e3319f5e67e4fb7b5dcbcf`
-- Runner SHA-256: `d781062495e52b7c7e2c530d81610077b0ae5fbe43bf1d1d857c5c5c101a48a9`
+- Generated: `2026-07-30T21:43:13.281Z`
+- Manifest SHA-256: `3dfb7f65627a74473e2679897dbcaab2fe5a38243a3d49e7f05efe0487da9e98`
+- Runner SHA-256: `6c035e56a628073368a57145380db4ee0945ab1ecf396e1fa0b29a8b5bb47482`
 - External executable suites: 2
+- Child-process environment: **ALLOWLISTED**
+- Python isolated mode: **ENABLED**
+- Dependency artifact hashes: **REQUIRED**
 
 | Suite | Result | Pinned commit | Assertions | Observation |
 |---|---|---|---:|---|
-| erc8312-sepolia-state-replay | PASS | `cd6100da171e` | 3/3 | 7 transitions / 3 Spaces / block 11384945 |
+| erc8312-sepolia-state-replay | PASS | `cd6100da171e` | 3/3 | 7 transitions / 3 Spaces / block 11385129 |
 | invinoveritas-composition-recompute | PASS | `81a2e0f7898e` | 6/6 | 5 independent hash checks |
 
 ## Sources

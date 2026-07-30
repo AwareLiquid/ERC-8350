@@ -14,10 +14,12 @@ R-002 is resolved only when the evidence:
 
 1. is authored and hosted outside the `AwareLiquid` GitHub namespace;
 2. pins a full external commit SHA and every executed source-file digest;
-3. does not import code from this repository;
-4. exits nonzero on a mismatch;
-5. can be executed from a clean external checkout; and
-6. records machine-readable results, logs, environment versions, and live-chain
+3. pins every Python dependency by exact version and allowed artifact SHA-256;
+4. uses at least two external repository owners;
+5. does not import code from this repository;
+6. exits nonzero on a mismatch;
+7. can be executed from a clean external checkout; and
+8. records machine-readable results, logs, environment versions, and live-chain
    observation data where applicable.
 
 The canonical source list is
@@ -41,6 +43,7 @@ Requirements are Git, Node.js 22 or later, Python 3.12 or later, and network
 access to GitHub, PyPI, and two Sepolia RPC endpoints.
 
 ```bash
+pnpm evidence:validate
 node scripts/external-reproduction-gate.mjs
 ```
 
@@ -50,8 +53,9 @@ The runner:
 2. fetches only the pinned external commits;
 3. verifies every declared source SHA-256;
 4. creates isolated Python virtual environments;
-5. installs exact Python dependency versions;
-6. executes both external verifiers; and
+5. installs exact Python dependency versions from SHA-256 allowlisted artifacts;
+6. executes both external verifiers with Python isolated mode and an allowlisted
+   child-process environment; and
 7. writes `report.json`, `report.md`, and per-suite logs under
    `artifacts/external-reproductions/`.
 
@@ -64,7 +68,11 @@ node scripts/external-reproduction-gate.mjs
 ```
 
 Reports retain only endpoint hostnames and redact complete RPC URLs from logs.
-The scheduled/manual
+The external verifier receives the selected RPC URLs as command-line arguments.
+Use public or narrowly scoped read-only endpoints; credentials embedded in an RPC
+URL are necessarily visible to the external verifier.
+
+The pull-request, scheduled, and manual
 [`external-reproduction.yml`](../../.github/workflows/external-reproduction.yml)
 workflow publishes the same files as a GitHub Actions artifact.
 

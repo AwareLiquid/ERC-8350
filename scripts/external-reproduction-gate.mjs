@@ -1,7 +1,15 @@
 import { createHash } from "node:crypto";
 import { spawn } from "node:child_process";
-import { mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import {
+  lstat,
+  mkdtemp,
+  mkdir,
+  readFile,
+  realpath,
+  rm,
+  writeFile,
+} from "node:fs/promises";
+import { devNull, tmpdir } from "node:os";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
@@ -25,10 +33,15 @@ function parseArgs(argv) {
       "external-reproductions",
       timestamp,
     ),
+    validateOnly: false,
   };
 
   for (let index = 0; index < argv.length; index += 1) {
     const argument = argv[index];
+    if (argument === "--validate-only") {
+      parsed.validateOnly = true;
+      continue;
+    }
     if (argument === "--manifest" || argument === "--output") {
       const value = argv[index + 1];
       if (!value) {
@@ -92,6 +105,136 @@ async function runChecked(command, args, options = {}) {
   return result;
 }
 
+function parseGitHubRepository(repository) {
+  const parsed = new URL(repository);
+  const parts = parsed.pathname
+    .replace(/\/+$/u, "")
+    .replace(/\.git$/u, "")
+    .split("/")
+    .filter(Boolean);
+  if (
+    parsed.protocol !== "https:" ||
+    parsed.hostname !== "github.com" ||
+    parsed.username ||
+    parsed.password ||
+    parsed.port ||
+    parsed.search ||
+    parsed.hash ||
+    !/^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$/u.test(parts[0] ?? "") ||
+    !/^[A-Za-z0-9._-]+$/u.test(parts[1] ?? "") ||
+    parts.length !== 2
+  ) {
+    throw new Error(`Invalid GitHub repository URL: ${repository}`);
+  }
+  return { owner: parts[0], repository: parts[1] };
+}
+
+function assertSourceUrl(suite, repository) {
+  const parsed = new URL(suite.sourceUrl);
+  const parts = parsed.pathname.split("/").filter(Boolean);
+  if (
+    parsed.protocol !== "https:" ||
+    parsed.hostname !== "github.com" ||
+    parsed.username ||
+    parsed.password ||
+    parsed.port ||
+    parsed.search ||
+    parsed.hash ||
+    parts.length < 4 ||
+    parts[0].toLowerCase() !== repository.owner.toLowerCase() ||
+    parts[1].toLowerCase() !== repository.repository.toLowerCase() ||
+    parts[2] !== "tree" ||
+    parts[3] !== suite.commit
+  ) {
+    throw new Error(`${suite.id} sourceUrl is not bound to its repository and commit`);
+  }
+}
+
+function isSafeRelativePath(value) {
+  return (
+    typeof value === "string" &&
+    value.length > 0 &&
+    !path.isAbsolute(value) &&
+    !value.split(/[\\/]/u).includes("..") &&
+    !value.includes("\0")
+  );
+}
+
+function assertHttpsUrl(label, value, expectedHostname) {
+  if (typeof value !== "string") {
+    throw new Error(`${label} must be an HTTPS URL`);
+  }
+  const parsed = new URL(value);
+  if (
+    parsed.protocol !== "https:" ||
+    parsed.username ||
+    parsed.password ||
+    (expectedHostname &&
+      (parsed.hostname !== expectedHostname || parsed.port !== ""))
+  ) {
+    throw new Error(`${label} must be an HTTPS URL without embedded credentials`);
+  }
+  return parsed;
+}
+
+function assertMinimumVersion(label, rawVersion, requiredMajor, requiredMinor) {
+  const match = rawVersion.match(/(\d+)\.(\d+)(?:\.\d+)?/u);
+  if (!match) {
+    throw new Error(`Unable to parse ${label} version: ${rawVersion}`);
+  }
+  const major = Number(match[1]);
+  const minor = Number(match[2]);
+  if (major < requiredMajor || (major === requiredMajor && minor < requiredMinor)) {
+    throw new Error(
+      `${label} ${requiredMajor}.${requiredMinor} or later is required; received ${rawVersion}`,
+    );
+  }
+}
+
+function externalEnvironment(home, temporaryDirectory) {
+  const environment = {
+    HOME: home,
+    TMPDIR: temporaryDirectory,
+    TMP: temporaryDirectory,
+    TEMP: temporaryDirectory,
+    XDG_CACHE_HOME: path.join(home, ".cache"),
+    XDG_CONFIG_HOME: path.join(home, ".config"),
+    GIT_CONFIG_NOSYSTEM: "1",
+    GIT_TERMINAL_PROMPT: "0",
+    PIP_CONFIG_FILE: devNull,
+    PIP_DISABLE_PIP_VERSION_CHECK: "1",
+    PIP_NO_INPUT: "1",
+    PYTHONDONTWRITEBYTECODE: "1",
+    PYTHONHASHSEED: "0",
+    PYTHONNOUSERSITE: "1",
+  };
+  for (const key of [
+    "PATH",
+    "LANG",
+    "LC_ALL",
+    "SSL_CERT_FILE",
+    "SSL_CERT_DIR",
+    "REQUESTS_CA_BUNDLE",
+    "CURL_CA_BUNDLE",
+  ]) {
+    if (process.env[key]) {
+      environment[key] = process.env[key];
+    }
+  }
+  return environment;
+}
+
+function requirementsText(suite) {
+  return `${suite.pythonPackages
+    .map((dependency) => {
+      const hashes = suite.pythonPackageHashes[dependency];
+      return `${dependency} \\\n${hashes
+        .map((hash) => `    --hash=sha256:${hash}`)
+        .join(" \\\n")}`;
+    })
+    .join("\n")}\n`;
+}
+
 function assertManifest(manifest) {
   if (manifest.schema !== "erc8350.external-reproduction-evidence.v1") {
     throw new Error(`Unsupported manifest schema: ${manifest.schema}`);
@@ -102,12 +245,77 @@ function assertManifest(manifest) {
   if (!Array.isArray(manifest.suites)) {
     throw new Error("Manifest suites must be an array");
   }
+  if (
+    !Number.isInteger(manifest.criteria?.minimumExecutableSuites) ||
+    manifest.criteria.minimumExecutableSuites < 2
+  ) {
+    throw new Error("Manifest must require at least two executable suites");
+  }
   if (manifest.suites.length < manifest.criteria.minimumExecutableSuites) {
     throw new Error("Manifest does not meet minimumExecutableSuites");
   }
+  if (
+    !Number.isInteger(manifest.criteria.minimumIndependentRepositoryOwners) ||
+    manifest.criteria.minimumIndependentRepositoryOwners < 2
+  ) {
+    throw new Error("Manifest must require at least two independent repository owners");
+  }
+  for (const criterion of [
+    "externalRepositoryRequired",
+    "fullCommitShaRequired",
+    "sourceDigestRequired",
+    "dependencyHashesRequired",
+    "machineCheckableExitRequired",
+  ]) {
+    if (manifest.criteria[criterion] !== true) {
+      throw new Error(`Manifest criterion ${criterion} must be true`);
+    }
+  }
+  if (manifest.criteria.importsFromErc8350RepositoryAllowed !== false) {
+    throw new Error(
+      "Manifest criterion importsFromErc8350RepositoryAllowed must be false",
+    );
+  }
+  const primaryRpc = assertHttpsUrl(
+    "defaults.primaryRpc",
+    manifest.defaults?.primaryRpc,
+  );
+  const crossCheckRpc = assertHttpsUrl(
+    "defaults.crossCheckRpc",
+    manifest.defaults?.crossCheckRpc,
+  );
+  if (primaryRpc.hostname === crossCheckRpc.hostname) {
+    throw new Error("Default RPC endpoints must use distinct hosts");
+  }
 
   const ids = new Set();
+  const repositoryOwners = new Set();
   for (const suite of manifest.suites) {
+    if (
+      !suite.maintainer ||
+      typeof suite.maintainer.repositoryOwner !== "string" ||
+      typeof suite.repository !== "string" ||
+      typeof suite.sourceUrl !== "string" ||
+      typeof suite.discussionUrl !== "string"
+    ) {
+      throw new Error("Every suite must declare its maintainer and public URLs");
+    }
+    if (!Array.isArray(suite.pythonPackages)) {
+      throw new Error(`${suite.id} must declare pythonPackages`);
+    }
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/u.test(suite.id ?? "")) {
+      throw new Error(`Invalid suite id: ${suite.id}`);
+    }
+    if (!["live-chain-replay", "saved-artifact-recompute"].includes(suite.kind)) {
+      throw new Error(`${suite.id} has an unsupported suite kind`);
+    }
+    if (
+      suite.arguments !== undefined &&
+      (!Array.isArray(suite.arguments) ||
+        suite.arguments.some((argument) => typeof argument !== "string"))
+    ) {
+      throw new Error(`${suite.id} arguments must be an array of strings`);
+    }
     if (ids.has(suite.id)) {
       throw new Error(`Duplicate suite id: ${suite.id}`);
     }
@@ -115,24 +323,28 @@ function assertManifest(manifest) {
     if (!/^[0-9a-f]{40}$/.test(suite.commit)) {
       throw new Error(`${suite.id} must pin a full 40-character commit SHA`);
     }
-    if (suite.maintainer.repositoryOwner.toLowerCase() === "awareliquid") {
+    const repository = parseGitHubRepository(suite.repository);
+    if (repository.owner.toLowerCase() === "awareliquid") {
       throw new Error(`${suite.id} is not hosted in an external namespace`);
     }
-    if (!suite.repository.startsWith("https://github.com/")) {
-      throw new Error(`${suite.id} must use an HTTPS GitHub repository`);
-    }
     if (
-      !suite.sourceUrl.startsWith("https://github.com/") ||
-      !suite.discussionUrl.startsWith("https://ethereum-magicians.org/")
+      suite.maintainer.repositoryOwner.toLowerCase() !==
+      repository.owner.toLowerCase()
     ) {
-      throw new Error(`${suite.id} has an invalid public evidence URL`);
+      throw new Error(`${suite.id} repositoryOwner does not match repository URL`);
     }
+    repositoryOwners.add(repository.owner.toLowerCase());
+    assertSourceUrl(suite, repository);
+    assertHttpsUrl(
+      `${suite.id} discussionUrl`,
+      suite.discussionUrl,
+      "ethereum-magicians.org",
+    );
     if (!suite.files?.length || !suite.assertions?.length) {
       throw new Error(`${suite.id} must declare source files and assertions`);
     }
     if (
-      path.isAbsolute(suite.entrypoint) ||
-      suite.entrypoint.split("/").includes("..") ||
+      !isSafeRelativePath(suite.entrypoint) ||
       !suite.files.some((file) => file.path === suite.entrypoint)
     ) {
       throw new Error(`${suite.id} must digest its repository-relative entrypoint`);
@@ -141,18 +353,48 @@ function assertManifest(manifest) {
       if (!/^[A-Za-z0-9_.-]+==[A-Za-z0-9_.+-]+$/.test(dependency)) {
         throw new Error(`${suite.id} has an unpinned Python dependency`);
       }
+      const hashes = suite.pythonPackageHashes?.[dependency];
+      if (
+        !Array.isArray(hashes) ||
+        hashes.length === 0 ||
+        hashes.some((hash) => !/^[0-9a-f]{64}$/u.test(hash))
+      ) {
+        throw new Error(`${suite.id}:${dependency} must pin SHA-256 artifacts`);
+      }
+    }
+    for (const dependency of Object.keys(suite.pythonPackageHashes ?? {})) {
+      if (!suite.pythonPackages.includes(dependency)) {
+        throw new Error(`${suite.id} has hashes for undeclared dependency ${dependency}`);
+      }
     }
     for (const file of suite.files) {
-      if (path.isAbsolute(file.path) || file.path.split("/").includes("..")) {
-        throw new Error(`${suite.id}:${file.path} escapes the external checkout`);
+      if (
+        !file ||
+        typeof file !== "object" ||
+        !isSafeRelativePath(file.path)
+      ) {
+        throw new Error(`${suite.id} has an unsafe source-file path`);
       }
       if (!/^[0-9a-f]{64}$/.test(file.sha256)) {
         throw new Error(`${suite.id}:${file.path} has an invalid SHA-256`);
       }
     }
     for (const assertion of suite.assertions) {
+      if (
+        !assertion ||
+        typeof assertion.id !== "string" ||
+        !assertion.id ||
+        typeof assertion.pattern !== "string"
+      ) {
+        throw new Error(`${suite.id} has an invalid assertion`);
+      }
       new RegExp(assertion.pattern, "m");
     }
+  }
+  if (
+    repositoryOwners.size < manifest.criteria.minimumIndependentRepositoryOwners
+  ) {
+    throw new Error("Manifest does not meet minimumIndependentRepositoryOwners");
   }
 }
 
@@ -213,6 +455,9 @@ function reportMarkdown(report, manifest) {
 - Manifest SHA-256: \`${report.manifest.sha256}\`
 - Runner SHA-256: \`${report.runner.sha256}\`
 - External executable suites: ${report.suites.length}
+- Child-process environment: **ALLOWLISTED**
+- Python isolated mode: **ENABLED**
+- Dependency artifact hashes: **REQUIRED**
 
 | Suite | Result | Pinned commit | Assertions | Observation |
 |---|---|---|---:|---|
@@ -240,32 +485,66 @@ async function verifySuite({
   const started = Date.now();
   const checkout = path.join(root, suite.id, "checkout");
   const venv = path.join(root, suite.id, "venv");
+  const home = path.join(root, suite.id, "home");
+  const temporaryDirectory = path.join(root, suite.id, "tmp");
+  const requirements = path.join(root, suite.id, "requirements.txt");
+  const environment = externalEnvironment(home, temporaryDirectory);
   let log = "";
   const sourceFiles = [];
 
   try {
-    await mkdir(path.dirname(checkout), { recursive: true });
-    await runChecked("git", ["init", "-q", checkout]);
-    await runChecked("git", ["-C", checkout, "remote", "add", "origin", suite.repository]);
-    await runChecked("git", [
-      "-C",
-      checkout,
-      "fetch",
-      "-q",
-      "--depth=1",
-      "origin",
-      suite.commit,
-    ]);
-    await runChecked("git", ["-C", checkout, "checkout", "-q", "--detach", "FETCH_HEAD"]);
+    await mkdir(home, { recursive: true });
+    await mkdir(temporaryDirectory, { recursive: true });
+    await runChecked("git", ["init", "-q", checkout], { env: environment });
+    await runChecked(
+      "git",
+      ["-C", checkout, "remote", "add", "origin", suite.repository],
+      { env: environment },
+    );
+    await runChecked(
+      "git",
+      [
+        "-C",
+        checkout,
+        "fetch",
+        "-q",
+        "--depth=1",
+        "origin",
+        suite.commit,
+      ],
+      { env: environment },
+    );
+    await runChecked(
+      "git",
+      ["-C", checkout, "checkout", "-q", "--detach", "FETCH_HEAD"],
+      { env: environment },
+    );
 
-    const headResult = await runChecked("git", ["-C", checkout, "rev-parse", "HEAD"]);
+    const headResult = await runChecked(
+      "git",
+      ["-C", checkout, "rev-parse", "HEAD"],
+      { env: environment },
+    );
     const observedCommit = headResult.stdout.trim();
     if (observedCommit !== suite.commit) {
       throw new Error(`Expected ${suite.commit}, checked out ${observedCommit}`);
     }
 
+    const checkoutRealPath = await realpath(checkout);
     for (const expected of suite.files) {
       const absolutePath = path.join(checkout, expected.path);
+      const fileStatus = await lstat(absolutePath);
+      const fileRealPath = await realpath(absolutePath);
+      const relativeRealPath = path.relative(checkoutRealPath, fileRealPath);
+      if (
+        !fileStatus.isFile() ||
+        fileStatus.isSymbolicLink() ||
+        relativeRealPath.startsWith(`..${path.sep}`) ||
+        relativeRealPath === ".." ||
+        path.isAbsolute(relativeRealPath)
+      ) {
+        throw new Error(`${suite.id}:${expected.path} is not a regular checkout file`);
+      }
       const observedSha256 = sha256(await readFile(absolutePath));
       const matched = observedSha256 === expected.sha256;
       sourceFiles.push({ ...expected, observedSha256, matched });
@@ -276,20 +555,28 @@ async function verifySuite({
       }
     }
 
-    await runChecked(python, ["-m", "venv", venv]);
+    await writeFile(requirements, requirementsText(suite));
+    await runChecked(python, ["-m", "venv", venv], { env: environment });
     const venvPython = path.join(venv, "bin", "python");
-    const install = await runChecked(venvPython, [
-      "-m",
-      "pip",
-      "install",
-      "--disable-pip-version-check",
-      "--no-input",
-      "--quiet",
-      ...suite.pythonPackages,
-    ]);
+    const install = await runChecked(
+      venvPython,
+      [
+        "-m",
+        "pip",
+        "install",
+        "--disable-pip-version-check",
+        "--no-input",
+        "--quiet",
+        "--require-hashes",
+        "--only-binary=:all:",
+        "--requirement",
+        requirements,
+      ],
+      { env: environment },
+    );
 
     const entrypoint = path.join(checkout, suite.entrypoint);
-    const runtimeArgs = [entrypoint, ...(suite.arguments ?? [])];
+    const runtimeArgs = ["-I", entrypoint, ...(suite.arguments ?? [])];
     const redactions = [];
     const endpointHosts = {};
     if (suite.kind === "live-chain-replay") {
@@ -306,7 +593,7 @@ async function verifySuite({
 
     const execution = await run(venvPython, runtimeArgs, {
       cwd: path.dirname(entrypoint),
-      env: { ...process.env, PYTHONDONTWRITEBYTECODE: "1" },
+      env: environment,
     });
     const assertions = suite.assertions.map((assertion) => ({
       id: assertion.id,
@@ -344,7 +631,10 @@ async function verifySuite({
       license: suite.license,
       commit: suite.commit,
       sourceFiles,
-      dependencies: suite.pythonPackages,
+      dependencies: suite.pythonPackages.map((dependency) => ({
+        requirement: dependency,
+        sha256: suite.pythonPackageHashes[dependency],
+      })),
       exitCode: execution.exitCode,
       assertions,
       observations: parseObservations(suite, execution.stdout),
@@ -372,7 +662,10 @@ async function verifySuite({
       license: suite.license,
       commit: suite.commit,
       sourceFiles,
-      dependencies: suite.pythonPackages,
+      dependencies: suite.pythonPackages.map((dependency) => ({
+        requirement: dependency,
+        sha256: suite.pythonPackageHashes[dependency],
+      })),
       exitCode: null,
       assertions: suite.assertions.map((assertion) => ({
         id: assertion.id,
@@ -397,11 +690,19 @@ async function main() {
   const manifestBytes = await readFile(args.manifest);
   const manifest = JSON.parse(manifestBytes);
   assertManifest(manifest);
+  assertMinimumVersion("Node.js", process.versions.node, 22, 0);
+
+  if (args.validateOnly) {
+    process.stdout.write(
+      `Validated ${manifest.suites.length} external reproduction suites from ${path.relative(
+        repoRoot,
+        args.manifest,
+      )}\n`,
+    );
+    return;
+  }
 
   await mkdir(path.join(args.output, "logs"), { recursive: true });
-  const temporaryRoot = await mkdtemp(
-    path.join(tmpdir(), "erc8350-external-reproduction-"),
-  );
   const python = process.env.PYTHON || "python3";
   const primaryRpc =
     process.env.ERC8350_PRIMARY_RPC || manifest.defaults.primaryRpc;
@@ -413,7 +714,11 @@ async function main() {
   const pythonVersion = (
     pythonVersionResult.stdout || pythonVersionResult.stderr
   ).trim();
+  assertMinimumVersion("Python", pythonVersion, 3, 12);
   const gitVersion = (await runChecked("git", ["--version"])).stdout.trim();
+  const temporaryRoot = await mkdtemp(
+    path.join(tmpdir(), "erc8350-external-reproduction-"),
+  );
   const suites = [];
 
   try {
@@ -456,6 +761,9 @@ async function main() {
       node: nodeVersion,
       python: pythonVersion,
       git: gitVersion,
+      externalProcessEnvironment: "allowlisted",
+      pythonIsolatedMode: true,
+      dependencyArtifactsHashPinned: true,
     },
     criteria: manifest.criteria,
     suites,

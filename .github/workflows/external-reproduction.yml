@@ -1,6 +1,13 @@
 name: External reproduction evidence
 
 on:
+  pull_request:
+    paths:
+      - ".github/workflows/external-reproduction.yml"
+      - "scripts/external-reproduction-gate.mjs"
+      - "evidence/external-reproductions/**"
+      - "docs/interop/external-reproduction.md"
+      - "package.json"
   workflow_dispatch:
   schedule:
     - cron: "17 3 * * 1"
@@ -19,12 +26,16 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: 22
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Validate evidence manifest
+        run: node scripts/external-reproduction-gate.mjs --validate-only
       - name: Run pinned external reproductions
         run: >-
           node scripts/external-reproduction-gate.mjs
