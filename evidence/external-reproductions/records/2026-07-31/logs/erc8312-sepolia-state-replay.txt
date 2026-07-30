@@ -1,0 +1,52 @@
+SOURCE https://github.com/ERC8312/bounded-agent-actions.git@cd6100da171e682b1abd6757c12a7df1356f80fa
+COMMAND /var/folders/mt/nvrf2d3j25l70gkg9hyp1_m80000gn/T/erc8350-external-reproduction-GTIKwe/erc8312-sepolia-state-replay/venv/bin/python /var/folders/mt/nvrf2d3j25l70gkg9hyp1_m80000gn/T/erc8350-external-reproduction-GTIKwe/erc8312-sepolia-state-replay/checkout/recompute/erc8350_sepolia.py --rpc-url <rpc:sepolia.gateway.tenderly.co> --cross-check-rpc <rpc:ethereum-sepolia-rpc.publicnode.com>
+STDOUT
+registry            0xDdf21937ba80b5fF973610877A0955b320C91241
+TransitionCommitted 7 logs across 3 Memory Spaces
+observation block   11384945
+block hash          0xde23fe65c3fff1fde2d252f429f31d8da8919f23e0d2a4056e039fef8292808a   <- check this against any explorer
+stateRoot           0x7874906963425a373af523b6a8bb15944afb706cdbc27d8a48c66471038b4f14   (proven inside that header)
+cross-check         <rpc:ethereum-sepolia-rpc.publicnode.com> agrees
+
+==============================================================================
+Memory Space 0xd9ca70f79ff795f78c1dfd3a9ca6e10e3b44cc69d17d4b1672e1e54e98364656
+  [OK  ] seq   1  id=ok root=ok link=ok seq=ok  authorizer=0xb37937573a6f770cc1f38adae8217a7e4e99cb2e  block=11381838
+  [OK  ] seq   2  id=ok root=ok link=ok seq=ok  authorizer=0x9975b11685b3a1f3477be2d83ea0bee846015f18  block=11381838
+  storage proof: account proof 9 nodes, walked storageRoot 0x711d4133bd48c810...
+    stored transitionId 0x174edae03d92db1582da0c701b051eb82090b188fdc365b511b2937585a30c32
+    replayed            0x174edae03d92db1582da0c701b051eb82090b188fdc365b511b2937585a30c32  MATCH
+    stored stateRoot    0x2804c53b5f6f99a71acd5e230f8cc28b8f460be9b7bea3bd74496c9cbec93c26
+    replayed            0x2804c53b5f6f99a71acd5e230f8cc28b8f460be9b7bea3bd74496c9cbec93c26  MATCH
+    stored sequence     2   replayed 2  MATCH
+    controller 0xde3882770130045f8ec733b46441b15bbae48f6f  authorizer 0x9975b11685b3a1f3477be2d83ea0bee846015f18  configNonce 1
+  ==> VERIFIED-GOOD: every advance recomputes, the chain is gapless, and the stored head equals the replayed path
+==============================================================================
+Memory Space 0xfbe20b841e2cb8d5e8094da6a9be9ebe19bb4d52c6155f465b40aa7bf1c13564
+  [OK  ] seq   1  id=ok root=ok link=ok seq=ok  authorizer=0x3d0ab53241a2913d7939ae02f7083169fe7b823b  block=11362262
+  [OK  ] seq   2  id=ok root=ok link=ok seq=ok  authorizer=0x3d0ab53241a2913d7939ae02f7083169fe7b823b  block=11362262
+  [OK  ] seq   3  id=ok root=ok link=ok seq=ok  authorizer=0x3d0ab53241a2913d7939ae02f7083169fe7b823b  block=11362262
+  [OK  ] seq   4  id=ok root=ok link=ok seq=ok  authorizer=0x3d0ab53241a2913d7939ae02f7083169fe7b823b  block=11362262
+  storage proof: account proof 9 nodes, walked storageRoot 0x711d4133bd48c810...
+    stored transitionId 0x154c1e643dfec801e4e227f52ae24147a1cca0260533d258916c07337c2bd09d
+    replayed            0x154c1e643dfec801e4e227f52ae24147a1cca0260533d258916c07337c2bd09d  MATCH
+    stored stateRoot    0x280889644f1f2748a27bb973df0c1efde465ae2a1334e705f7cb4c7a72ad5bc0
+    replayed            0x280889644f1f2748a27bb973df0c1efde465ae2a1334e705f7cb4c7a72ad5bc0  MATCH
+    stored sequence     4   replayed 4  MATCH
+    controller 0x3d0ab53241a2913d7939ae02f7083169fe7b823b  authorizer 0x3d0ab53241a2913d7939ae02f7083169fe7b823b  configNonce 0
+  ==> VERIFIED-GOOD: every advance recomputes, the chain is gapless, and the stored head equals the replayed path
+==============================================================================
+Memory Space 0xfdd18b375f4c92fb622f8e7ea96ec5f8189b362ef654f47c046c42162dcd5d5b
+  [OK  ] seq   1  id=ok root=ok link=ok seq=ok  authorizer=0x3d0ab53241a2913d7939ae02f7083169fe7b823b  block=11367238
+  storage proof: account proof 9 nodes, walked storageRoot 0x711d4133bd48c810...
+    stored transitionId 0xcacd5fb1e62a2282bbba49e11fc589b1457d73a9126fa28abfe094216d62e16e
+    replayed            0xcacd5fb1e62a2282bbba49e11fc589b1457d73a9126fa28abfe094216d62e16e  MATCH
+    stored stateRoot    0xea79abdda178443fa386f416604e4fb76f12f5ce305db54f570688b10d7306af
+    replayed            0xea79abdda178443fa386f416604e4fb76f12f5ce305db54f570688b10d7306af  MATCH
+    stored sequence     1   replayed 1  MATCH
+    controller 0x3d0ab53241a2913d7939ae02f7083169fe7b823b  authorizer 0x3d0ab53241a2913d7939ae02f7083169fe7b823b  configNonce 0
+  ==> VERIFIED-GOOD: every advance recomputes, the chain is gapless, and the stored head equals the replayed path
+
+==============================================================================
+RESULT: ALL SPACES VERIFIED-GOOD
+
+STDERR

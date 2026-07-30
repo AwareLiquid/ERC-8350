@@ -43,5 +43,6 @@ dependency-free Solidity reference: registry, interface, ERC-1271 interface, ECD
 - [ ] ERC editor review on PR #1910 (number assignment applied 2026-07-29; awaiting one more editor review for Draft merge)
 - [x] Magicians topic retitled with the assigned number (done by the editor, 2026-07-29)
 - [x] Sepolia deployment — registry `0xDdf21937ba80b5fF973610877A0955b320C91241`, see `docs/deployment.md` (2026-07-26)
+- [x] Independent reproduction evidence — two external, commit-pinned executable suites pass; see `docs/interop/external-reproduction.md` (2026-07-31)
 - [ ] Independent second implementation passing `test-vectors/v1.json`
 - [ ] External Solidity audit
