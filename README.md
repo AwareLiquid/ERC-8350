@@ -61,6 +61,7 @@ prevStateRoot + ExperienceDelta v1
 - `erc/erc-8350.md`: 按 ERC 模板重写的英文草案
 - `docs/architecture.md`: 架构、边界与迁移方案
 - `docs/threat-model.md`: 威胁模型与上线安全门槛
+- `docs/conformance.md`: 三套 Golden Vector 与 clean-checkout conformance gate
 - `docs/refactor-deliverables.md`: 12 项重构交付与验收矩阵
 - `docs/release-process.md`: 版本和候选发布流程
 - `docs/adr/`: 关键设计决策记录
@@ -74,6 +75,12 @@ prevStateRoot + ExperienceDelta v1
 ```bash
 pnpm install --frozen-lockfile
 pnpm check
+```
+
+从当前提交创建干净 worktree 并记录三套实现的可复现一致性结果：
+
+```bash
+pnpm conformance:clean
 ```
 
 也可以分开运行：
