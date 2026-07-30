@@ -12,7 +12,7 @@ evm_version = "cancun"
 # Read-only, and scoped to the vectors directory: VectorsV2.t.sol drives the
 # published test-vectors file itself rather than regenerated constants, so the
 # suite fails if the shipped artifact and the implementation ever diverge.
-fs_permissions = [{access = "read", path = "../test-vectors"}]
+fs_permissions = [{ access = "read", path = "../test-vectors" }]
 
 [fmt]
 line_length = 100

@@ -13,8 +13,8 @@
 | 加强隐私承诺 | 代码完成 | 域隔离 salted commitment 与 encrypted-payload profile | Core commitment、`PrivateCommitment.sol`、威胁模型 |
 | 支持合约钱包 | 代码完成 | EOA、EIP-1271、多签和智能账户授权路径 | Mock ERC-1271 单测 |
 | 拆分协议与产品 | 代码完成 | Core、Extensions、Experimental、Adapters 四层 | `docs/architecture.md` 与目录结构 |
-| 建立互操作测试 | 代码完成 | Solidity、核心 TS、隔离 TS 共用 `test-vectors/v1.json` | 三套 Golden Vector 测试 |
-| 修复工程流程 | 代码完成 | pnpm frozen lock、固定 Foundry 依赖、CI、候选发布包 | `pnpm release:check`、GitHub workflows |
+| 建立互操作测试 | 代码完成 | Solidity、核心 TS、隔离 TS 直接读取同一份 `test-vectors/v1.json` | `pnpm conformance:clean`、JSON/Markdown 结果记录 |
+| 修复工程流程 | 代码完成 | pnpm frozen lock、固定 Foundry 依赖、clean-checkout gate、CI、候选发布包 | `pnpm conformance:clean`、`pnpm release:check`、GitHub workflows |
 | 重写 ERC 文档 | 草案完成 | 符合模板结构的 `ERC-XXXX` 英文草案 | `erc/erc-xxxx-agent-memory-state.md` |
 | 建立外部实现 | 技术接口完成 | Awareness adapter 与不依赖 Core SDK 的第二 TS 实现 | `packages/awareness-adapter`、`implementations/minimal-ts` |
 

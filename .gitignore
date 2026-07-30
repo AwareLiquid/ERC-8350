@@ -11,6 +11,7 @@ contracts/cache/
 contracts/lib/
 broadcast/
 release-artifacts/
+artifacts/conformance/
 
 # logs / env
 *.log

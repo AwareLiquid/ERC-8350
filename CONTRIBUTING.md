@@ -10,6 +10,7 @@ Install Node.js 22 or later, pnpm 11.7.0, and Foundry 1.7.1. Then run:
 ```bash
 pnpm install --frozen-lockfile
 pnpm check
+pnpm conformance:clean
 pnpm audit --audit-level=moderate
 ```
 
@@ -25,7 +26,8 @@ forge install foundry-rs/forge-std@v1.16.2 --no-git
 Core changes MUST update `SPEC.md`, the ERC draft, Solidity, the TypeScript core,
 the dependency-isolated implementation, and `test-vectors/v1.json` in the same
 pull request. A normative hash change requires a new protocol version; published
-v1 encodings MUST NOT be silently reinterpreted.
+v1 encodings MUST NOT be silently reinterpreted. The pull request MUST include a
+passing clean-checkout conformance record for the changed commit.
 
 Extension, Experimental, and Adapter code MUST NOT add fields to the core Delta
 or change the canonical Transition ID. Product vocabulary belongs in adapters.
