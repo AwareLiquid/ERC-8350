@@ -24,5 +24,10 @@ G4 does not permit an unresolved Critical or High finding in the candidate. The
 legacy Sepolia issue is marked mitigated because the address is deprecated and
 excluded from production use; it is not an accepted risk in the corrected source.
 
+`G4-R-003` is specifically an EIP-7702 delegated-EOA rule. ERC-1271 rejection,
+revert, pause, or malformed return from the delegate does not veto a canonical
+signature from the delegated EOA's underlying key. An ordinary independently
+deployed contract account does not normally have that residual EOA-key path.
+
 An independent reviewer must assess the complete accepted-risk set and map every
 additional accepted finding back into the canonical register before G4 can pass.

@@ -1,9 +1,12 @@
 # G4 Security-Ready Release Candidate
 
-Current status: **PREPARED, NOT COMPLETE**
+Current status: **PROVISIONAL REVIEW RECEIVED, NOT COMPLETE**
 
 The source target, internal review, risk register, and evidence gate are ready.
-The independent external Solidity review is still open. Until a qualifying report
+An external-review email was received on 2026-07-31, but its scope/API references
+and evidence package require correction before acceptance. See the
+[`review intake`](external/REVIEW_INTAKE_2026-07-31.md) and
+[`reviewer follow-up`](external/REVIEWER_FOLLOWUP.md). Until a qualifying report
 is accepted, `pnpm security:rc` and `pnpm release:check` fail by design, and no
 artifact from this branch may be described as security-ready or production-ready.
 
@@ -20,9 +23,9 @@ artifact from this branch may be described as security-ready or production-ready
 | Internal review and regression fix | [`INTERNAL_REVIEW.md`](INTERNAL_REVIEW.md) | Pass |
 | Remaining risks explicitly registered | [`residual-risks.json`](residual-risks.json) | Pass |
 | Scope/evidence gate has adversarial tests | `scripts/security-rc-gate*.mjs` | Pass |
-| Independent external Solidity report | [`EXTERNAL_REVIEW_REQUEST.md`](EXTERNAL_REVIEW_REQUEST.md) | **Pending** |
+| Independent external Solidity report | Preliminary email received; [`intake`](external/REVIEW_INTAKE_2026-07-31.md) | **Pending corrections/evidence** |
 | No unresolved Critical/High external findings | Requires accepted external report | **Pending** |
-| G4 full gate | `pnpm security:rc` | **Blocked by pending review** |
+| G4 full gate | `pnpm security:rc` | **Blocked by unaccepted review** |
 
 ## Frozen source
 

@@ -6,6 +6,9 @@ All notable implementation and protocol changes are recorded here.
 
 ### Added
 
+- Provisional external-review intake and reviewer follow-up for G4, plus focused
+  regression tests proving ERC-1271 `STATICCALL` blocks state-changing callbacks
+  and invalid ECDSA `v` values are rejected.
 - G4 security-ready RC preparation: a commit- and SHA-256-pinned Solidity audit
   scope, internal review record, canonical residual-risk register, external-review
   request/template, evidence-integrity workflow, and an adversarially tested gate.
@@ -35,6 +38,9 @@ All notable implementation and protocol changes are recorded here.
 
 ### Changed
 
+- The EIP-7702 residual ECDSA path is now called out prominently in the security
+  policy. The preliminary external-review email does not satisfy the G4 gate
+  until its scope/API discrepancies and reviewer-owned evidence are corrected.
 - Release checks now require the complete G4 external-review gate. The 2026-07-26
   Sepolia `AuditGrant` address is explicitly deprecated and cannot be used as
   evidence for the corrected candidate.
