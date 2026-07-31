@@ -144,6 +144,42 @@ valid-and-authorized. The fixture Space's synthetic keys are published with thei
 precisely so that checkers can pin them as the canonical "structurally valid, zero
 authority" case.
 
+## 7. What counts as an acceptable "why" is also consumer policy
+
+A worked ERC-8274 / ERC-8350 composition ([`invinoveritas/examples/erc8274-erc8350-composition`](https://github.com/babyblueviper1/invinoveritas/tree/main/examples/erc8274-erc8350-composition))
+raised the question directly: when a signed verdict is the recorded reason for a
+privileged action such as a verifier switch, should either specification *require*
+that `provenanceBytes` carry a signed verdict, rather than leaving its contents open?
+
+**Not as a normative requirement, for a structural reason.** A registry sees
+`provenanceCommitment` — 32 bytes. It cannot inspect the preimage, so it cannot reject a
+transition whose provenance is a signed verdict, an empty object, or a lie. A `MUST`
+about payload contents stated at the chain layer is unenforceable *by the party the
+sentence is addressed to*; such rules degrade into folklore that conforming
+implementations quietly diverge on. The same reasoning removed typed memory categories
+from the core: the chain manages the verifiable history of state, never the meaning of
+the state.
+
+**But "fully open-ended" is not the alternative.** The constraint is real and belongs
+where it is checkable — at verification time, in the consumer's policy, exactly as
+§6 places authority there:
+
+- `scheme` already names the shape of an entry, so "the why is a signed verdict of
+  kind X" is expressible as a profile, not as a new field or a spec-level `MUST`.
+- A consumer — or a deployment profile, or an adjacent standard's *deployment*
+  guidance — MAY require that a transition of a given `profileId` carry at least one
+  authorized entry under a named scheme, and treat its absence as unauthorized. That is
+  a policy a checker can actually evaluate, because it runs where the preimage exists.
+- Consequently the useful asymmetry: privileged operations (a verifier switch under
+  ERC-8274 being the motivating case) are exactly where a deployment SHOULD demand a
+  signed, recomputable why — while the interface stays silent, so the same mechanism
+  serves a low-stakes memory write without ceremony.
+
+Stated as one rule: **the specifications fix what a reason must look like to be
+checkable; they never fix what counts as a good enough reason.** The first is
+interoperability, the second is governance, and freezing the second into an interface
+is how an interface acquires a policy it can never revoke.
+
 ## Credits
 
 Drafted jointly from the exchange between the ERC-8350 authors and @babyblueviper1
