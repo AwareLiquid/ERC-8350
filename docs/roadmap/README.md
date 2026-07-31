@@ -25,9 +25,9 @@ items graduate only by moving up a label.
 |---|---|
 | ERC editor review → Draft merge | Waiting (all CI green) |
 | Etherscan source verification of the Sepolia instance | Todo, mechanical |
-| Independent second implementation passing the golden vectors | **Open call** — the single most valuable external contribution; everything needed is `test-vectors/v1.json` |
+| Independent second implementation passing the golden vectors | **Open call, partially answered** — a full independent registry implementation is still wanted. Two external recomputations now exist: `babyblueviper1/preaction-governance-conformance` checks the live fixture against the interop rules, and [`invinoveritas/examples/erc8274-erc8350-composition`](https://github.com/babyblueviper1/invinoveritas/tree/main/examples/erc8274-erc8350-composition) derives `transitionId` / `provenanceCommitment` / `nextStateRoot` from the published formulas alone — re-verified against `@erc-awar/core` on this side, every value matching. Everything needed is still `test-vectors/v1.json` |
 | External Solidity audit | Before any non-test deployment |
-| `attestation_ref` interop with external verdict schemes (WYRIWE et al.) | **Specified** — see `docs/interop/attestation-refs.md` (joint note with WYRIWE): unordered set under `provenanceCommitment`, JCS-canonical, sorted by `decision_ref`, deduped by `(event_id, pubkey)`, `verify_url` advisory-only; never an eighth struct field. **Fixture Space live on Sepolia** (spaceId `0xfbe2…3564`, 4 witnessed transitions, `docs/interop/fixture-space.md`) |
+| `attestation_ref` interop with external verdict schemes (WYRIWE et al.) | **Specified** — see `docs/interop/attestation-refs.md` (joint note with WYRIWE): unordered set under `provenanceCommitment`, JCS-canonical, sorted by `decision_ref`, deduped by `(event_id, pubkey)`, `verify_url` advisory-only; never an eighth struct field. **Fixture Space live on Sepolia** (spaceId `0xfbe2…3564`, 5 witnessed transitions — seq 5 is an externally contributed attestation signed by a live operator key, exercising the three-valued authority outcome on real data; `docs/interop/fixture-space.md`) |
 
 ## Mid term — ZK profiles (Direction)
 

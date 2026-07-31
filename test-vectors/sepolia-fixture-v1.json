@@ -49,7 +49,7 @@
         ]
       ],
       "content": "{\"artifact_hash\":\"0x3cd2def85bc3365f3484d11cf8d17d49e0cabf6d6327d54c8b8203ade8c71d52\",\"artifact_type\":\"fixture/synthetic\",\"policy_version\":\"l4-v0\",\"source_class\":\"primary\",\"vantage_limitation\":\"none\",\"verdict\":\"approve\"}",
-      "sig": "0fc150482db1c73994573b15a5e47cd3e2909afd6ec13e5cf3f7cc86afc9f5bb5dba2fa3cd8dda6e37cb644c9ab37044bb82985705945b0f1d3024a40b7a6c45"
+      "sig": "c2dfbbed3d4f4c3d55af8fa0762746551b7583857f24b905535e24ffa3d736a23047c7a857467a12919db1e0b292a4f17c76705824a1577c1bd89c9a9acedb77"
     },
     {
       "id": "10356f77f4e860512f116e0ad95b6dba2297b31382349e9a85ef7b46dd4d2dc7",
@@ -63,7 +63,7 @@
         ]
       ],
       "content": "{\"artifact_hash\":\"0xceb3a9646b0a3291d82dc3776c3977971c0306f2fe550d5687268fb0893117c9\",\"artifact_type\":\"fixture/synthetic\",\"policy_version\":\"l4-v0\",\"source_class\":\"primary\",\"vantage_limitation\":\"none\",\"verdict\":\"approve\"}",
-      "sig": "dc6d4b4839d92faa85fde3452080f8cdeea738f5c4842cd545b113b05b97008c4ba0cdf00bfae11df8f126d03c2e205949c1c09c23240cd869367e02c61fda95"
+      "sig": "40b69dbb07ed15b0eff2c7d15653214c708937e84c38ad80a79ded9e8c2e0b6f8e268165819e49c3e9e10a914e3f0b61ff2e2821cd32cf82dcf980d73bb16042"
     },
     {
       "id": "4fcf89332d0faaad66461fa3edf39deb08899142523ac19bbdf4bbe603df127f",
@@ -77,7 +77,7 @@
         ]
       ],
       "content": "{\"artifact_hash\":\"0xceb3a9646b0a3291d82dc3776c3977971c0306f2fe550d5687268fb0893117c9\",\"artifact_type\":\"fixture/synthetic\",\"policy_version\":\"l4-v0\",\"source_class\":\"secondary\",\"vantage_limitation\":\"single-run\",\"verdict\":\"approve_with_notes\"}",
-      "sig": "835617aa502b771accd94821024f9b21b32cc7fd0463deefe767d989b93f317ced5b1e4861e45550f74eef5e8705ed69ca383d2286cc61e933d2761360c76347"
+      "sig": "b03a882d476ee238a4503b05369122d159807c90b0aba852d1c100d43bcc4271d5c3ed745d5af4e5262ac4a18c23fcad1f77d2d29d60147d58bd042d44900095"
     },
     {
       "id": "29c227b8d27fd272f2a7f6137aa6b870f425b52ea900768024331954572e413e",
@@ -91,7 +91,7 @@
         ]
       ],
       "content": "{\"artifact_hash\":\"0x1462114068d2911ac9f9605706fc88ab701db4854103ba281c69735cd63bf5a6\",\"artifact_type\":\"fixture/synthetic\",\"policy_version\":\"l4-v0\",\"source_class\":\"primary\",\"vantage_limitation\":\"none\",\"verdict\":\"approve\"}",
-      "sig": "17142fce49447c4f7d71f4848e8c699d0b05e36db03813b4b77de2bbad5972241dd32a177dfc602f6aff92e4f9fa2bd50c6c7205ad452cb92395ae1e50c92ecf"
+      "sig": "83f639be64b7a8fc858f3f26199c7bfe9ba722246cef018e5143939bb0f9a815d61a58c05d536c4dfe3f10bde6a921d720bab0bf5db959e32c193f2d7b722ce7"
     },
     {
       "id": "1eedbb486f549169319af2c351c45d59df6cd12fe71180a36f06441e60b47084",

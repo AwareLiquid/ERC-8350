@@ -139,7 +139,17 @@ function makeEvent(verifier, verdictObj, createdAt, dTag) {
   const serial = JSON.stringify([0, verifier.pub, createdAt, KIND, tags, content]);
   const idBytes = sha256(utf8ToBytes(serial));
   const id = bytesToHex(idBytes);
-  const sig = bytesToHex(schnorr.sign(idBytes, verifier.priv));
+  // BIP-340 auxiliary randomness is supplied explicitly and derived from the tag,
+  // NOT left to the default CSPRNG. Without this the signature bytes differ on
+  // every run: still valid, but the published bundle would then fail its own
+  // reproducibility claim, and a checker that regenerates and diffs would see
+  // phantom drift. (Event ids and every committed byte are unaffected either way
+  // — an id hashes the serialization, which excludes `sig` — which is exactly why
+  // the defect could sit here unnoticed.) Deterministic aux is safe here for the
+  // same reason everything else in this fixture is public: these keys carry zero
+  // authority and their seeds are published.
+  const aux = sha256(utf8ToBytes("erc-8337-fixture-aux:" + dTag));
+  const sig = bytesToHex(schnorr.sign(idBytes, verifier.priv, aux));
   return {
     event: {id, pubkey: verifier.pub, created_at: createdAt, kind: KIND, tags, content, sig},
   };

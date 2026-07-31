@@ -22,11 +22,11 @@ instead of synthetic in-memory data.
 | Space id | `0xfbe20b841e2cb8d5e8094da6a9be9ebe19bb4d52c6155f465b40aa7bf1c13564` |
 | Controller = authorizer | `0x3d0ab53241A2913D7939ae02f7083169fE7b823B` (direct-call auth path, empty signature) |
 | Space salt | `keccak256("erc-8337-fixture-space-v1")` — historical preimage from before the editor assigned ERC-8350; an opaque constant of the live Space, do **not** rename |
-| Head after setup | sequence `4`, state root `0x280889644f1f2748a27bb973df0c1efde465ae2a1334e705f7cb4c7a72ad5bc0` |
+| Head | sequence `5`, state root `0x55b383709c4dbe8ee08d3e229d4f14d0c65659eac4198a44f1810f517dce6699`, transition `0xbabfa1db25980fe00dfa1c3fc08665ecb81df997f6fd7c439f1c4cc56241ac7d` (appended 2026-07-31, tx [`0x98d4ecc9…`](https://sepolia.etherscan.io/tx/0x98d4ecc95ff0380453f9afb6085a820fd9745fd2ed63302e68ce6c707abdfa2f)) |
 | Verifier key policy (zero authority) | [`test-vectors/fixture-keys-v1.json`](../../test-vectors/fixture-keys-v1.json) |
 | Witness bundle | [`test-vectors/sepolia-fixture-v1.json`](../../test-vectors/sepolia-fixture-v1.json) |
 | Builder (fully reproduces the bundle) | `scripts/fixture/build-fixture-witness.mjs` |
-| On-chain committer (self-verifying) | `contracts/script/FixtureSpace.s.sol` |
+| On-chain committer (self-verifying) | `contracts/script/FixtureSpace.s.sol` (seq 1–4, also registers the Space), `contracts/script/FixtureAppend.s.sol` (seq 5; append-only, refuses to run unless the live head is where the builder assumed) |
 
 ## What each transition exercises
 
@@ -36,6 +36,7 @@ instead of synthetic in-memory data.
 | 2 | TEXT | 1 reference (verifier A) | absent | Minimal single-ref set |
 | 3 | TOOL_TRACE | raw input `[r3, r2, r2]` → canonical `[…]` **sorted by `decision_ref`, duplicate dropped** | absent | §3 core rules: JCS canonical form, bytewise sort, dedupe by `(event_id, pubkey)` |
 | 4 | EPISODIC | 1 reference (verifier B) | **present** | Provenance and locator coexisting; locator witness disclosed |
+| 5 | EPISODIC | 1 reference — **externally contributed, signed by a live operator key** | absent | §6 three-valued authority, on real data: the key is a live WYRIWE/invinoveritas key, deliberately **not** in `fixture-keys-v1.json`. The same committed bytes resolve to *structurally valid, zero authority* under this fixture's published policy and to *valid and authorized* under a policy that trusts that operator. Contributed via [PR #5](https://github.com/AwareLiquid/ERC-8350/pull/5); the raw signed event ships in `test-vectors/attestation-refs/sequence-5-pending.json`, so the entry stays verifiable offline even though the public relays have since aged it out |
 
 The witness bundle publishes, per transition: the JCS payload, every salt, the exact
 `provenanceBytes` (UTF-8), the canonical reference set **and the raw pre-canonical
