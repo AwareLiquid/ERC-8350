@@ -97,12 +97,12 @@ registry, and the EIP-712 domain already distinguishes them.
 
 ### Sepolia (chainId 11155111) — 2026-07-26
 
-| Contract | Address |
-|---|---|
-| `AgentMemoryStateRegistry` | `0xDdf21937ba80b5fF973610877A0955b320C91241` |
-| `DeletionAttestation` | `0x97cc9b019A089bf7b821d47134020896f9259cc0` |
-| `SpaceDescriptor` | `0x7745e2dDC30e75E1D7B7fBAf4616Fc0F54e571F5` |
-| `AuditGrant` | `0x20145Ab83958CFB321221e8a8C68181C818241B2` |
+| Contract | Address | Source |
+|---|---|---|
+| `AgentMemoryStateRegistry` | `0xDdf21937ba80b5fF973610877A0955b320C91241` | [verified](https://sepolia.etherscan.io/address/0xDdf21937ba80b5fF973610877A0955b320C91241#code) |
+| `DeletionAttestation` | `0x97cc9b019A089bf7b821d47134020896f9259cc0` | [verified](https://sepolia.etherscan.io/address/0x97cc9b019A089bf7b821d47134020896f9259cc0#code) |
+| `SpaceDescriptor` | `0x7745e2dDC30e75E1D7B7fBAf4616Fc0F54e571F5` | [verified](https://sepolia.etherscan.io/address/0x7745e2dDC30e75E1D7B7fBAf4616Fc0F54e571F5#code) |
+| `AuditGrant` | `0x20145Ab83958CFB321221e8a8C68181C818241B2` | [verified](https://sepolia.etherscan.io/address/0x20145Ab83958CFB321221e8a8C68181C818241B2#code) |
 
 Domain separator (binds signatures to this chain + registry): `0x4f36e5833f961f835ccd6ac49572ed105e4cdbf865f8904fe3d020724148b6ac`
 
@@ -115,4 +115,31 @@ cast call 0xDdf21937ba80b5fF973610877A0955b320C91241 "EXPERIENCE_DELTA_TYPEHASH(
 # 0x4f020f86bc06d852f1fde17853b4d92a70214eeab8e09718028124af097d070d
 ```
 
-Deployed at commit `100d6ba` (ERC-8350 sync). Etherscan source verification pending.
+Deployed at commit `100d6ba` (ERC-8350 sync).
+
+## Etherscan source verification
+
+All four contracts are source-verified on Sepolia Etherscan (2026-07-31), compiled with
+`solc 0.8.24+commit.e11b9ed9`, optimizer on, 200 runs — the settings in
+`contracts/foundry.toml`. The three extensions take the registry address as their single
+constructor argument.
+
+```bash
+export ETHERSCAN_API_KEY=...   # never committed; foundry.toml reads it from the env
+cd contracts
+
+forge verify-contract 0xDdf21937ba80b5fF973610877A0955b320C91241 \
+  src/reference/AgentMemoryStateRegistry.sol:AgentMemoryStateRegistry \
+  --chain sepolia --watch
+
+ARGS=$(cast abi-encode "constructor(address)" 0xDdf21937ba80b5fF973610877A0955b320C91241)
+forge verify-contract 0x20145Ab83958CFB321221e8a8C68181C818241B2 \
+  src/extensions/AuditGrant.sol:AuditGrant \
+  --chain sepolia --constructor-args "$ARGS" --watch
+# …same for SpaceDescriptor and DeletionAttestation
+```
+
+Verification is what turns "the bytecode at this address behaves as specified" from a
+claim into something a reader can check: the published source recompiles to the deployed
+bytecode under the stated settings, so the golden-vector agreement above is auditable
+rather than asserted.
