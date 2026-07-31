@@ -1,11 +1,16 @@
 # External Solidity Review Request: ERC-8350 G4-rc1
 
-Status: **open; external review not yet complete**
+Status: **provisional email received; corrections and evidence still required**
 
 ERC-8350 needs one independent Solidity security review before the reference
 contracts can be called a security-ready release candidate. This request is open
 to an established auditor, security researcher, or independent Solidity team
 with no maintainer role in AwareLiquid/ERC-8350.
+
+The 2026-07-31 email review is recorded in
+[`external/REVIEW_INTAKE_2026-07-31.md`](external/REVIEW_INTAKE_2026-07-31.md).
+It does not complete G4 until the scope/API discrepancies are corrected and the
+required reviewer-owned evidence package is published.
 
 Public coordination issue:
 [AwareLiquid/ERC-8350#11](https://github.com/AwareLiquid/ERC-8350/issues/11).
