@@ -20,11 +20,21 @@
       "seed": "erc-8337-fixture-verifier-B-v1-NO-AUTHORITY"
     }
   },
+  "external_verifiers": {
+    "_note": "Live operator key, NOT a fixture key: no published seed, deliberately absent from test-vectors/fixture-keys-v1.json. Sequence 5 exists so a checker can observe the same bytes classify as zero-authority under the fixture policy and as authorized under a policy that trusts this operator (interop note §6).",
+    "invinoveritas": {
+      "pubkey": "6786e18a864893a900bd9858e650f67ccc3513f248fed374b591e2ff6922fbb7",
+      "scheme": "wyriwe/l4-v0",
+      "contributed_in": "AwareLiquid/ERC-8350#5",
+      "key_list": "https://api.babyblueviper.com/.well-known/verifier-keys.json"
+    }
+  },
   "advisory_verify_urls": {
     "f948163bfaf0d0aa1f5de6a2a9f0ee5355fe94dc9e4784d851369a1791d8513f": "https://api.babyblueviper.com/verify-proof",
     "10356f77f4e860512f116e0ad95b6dba2297b31382349e9a85ef7b46dd4d2dc7": "https://api.babyblueviper.com/verify-proof",
     "4fcf89332d0faaad66461fa3edf39deb08899142523ac19bbdf4bbe603df127f": "https://api.babyblueviper.com/verify-proof",
-    "29c227b8d27fd272f2a7f6137aa6b870f425b52ea900768024331954572e413e": "https://api.babyblueviper.com/verify-proof"
+    "29c227b8d27fd272f2a7f6137aa6b870f425b52ea900768024331954572e413e": "https://api.babyblueviper.com/verify-proof",
+    "1eedbb486f549169319af2c351c45d59df6cd12fe71180a36f06441e60b47084": "https://api.babyblueviper.com/verify-proof"
   },
   "events": [
     {
@@ -39,7 +49,7 @@
         ]
       ],
       "content": "{\"artifact_hash\":\"0x3cd2def85bc3365f3484d11cf8d17d49e0cabf6d6327d54c8b8203ade8c71d52\",\"artifact_type\":\"fixture/synthetic\",\"policy_version\":\"l4-v0\",\"source_class\":\"primary\",\"vantage_limitation\":\"none\",\"verdict\":\"approve\"}",
-      "sig": "96d7e288c2ac07a591e64d286fa525168f80142e7ede34db6f6cc6337f85c20e16450decb034c3b76eb25cd72b1508a46a2145b9f7a25ef9ba3d64320194c41a"
+      "sig": "0fc150482db1c73994573b15a5e47cd3e2909afd6ec13e5cf3f7cc86afc9f5bb5dba2fa3cd8dda6e37cb644c9ab37044bb82985705945b0f1d3024a40b7a6c45"
     },
     {
       "id": "10356f77f4e860512f116e0ad95b6dba2297b31382349e9a85ef7b46dd4d2dc7",
@@ -53,7 +63,7 @@
         ]
       ],
       "content": "{\"artifact_hash\":\"0xceb3a9646b0a3291d82dc3776c3977971c0306f2fe550d5687268fb0893117c9\",\"artifact_type\":\"fixture/synthetic\",\"policy_version\":\"l4-v0\",\"source_class\":\"primary\",\"vantage_limitation\":\"none\",\"verdict\":\"approve\"}",
-      "sig": "d81b78a93c9eaf3048bb516d9a447286d0059551ed66edcedf623a7d86265d5d9628e1f630a1cdd01a09b391fbe14f50e59bfeaa13a6369e44acd53c7de2b46f"
+      "sig": "dc6d4b4839d92faa85fde3452080f8cdeea738f5c4842cd545b113b05b97008c4ba0cdf00bfae11df8f126d03c2e205949c1c09c23240cd869367e02c61fda95"
     },
     {
       "id": "4fcf89332d0faaad66461fa3edf39deb08899142523ac19bbdf4bbe603df127f",
@@ -67,7 +77,7 @@
         ]
       ],
       "content": "{\"artifact_hash\":\"0xceb3a9646b0a3291d82dc3776c3977971c0306f2fe550d5687268fb0893117c9\",\"artifact_type\":\"fixture/synthetic\",\"policy_version\":\"l4-v0\",\"source_class\":\"secondary\",\"vantage_limitation\":\"single-run\",\"verdict\":\"approve_with_notes\"}",
-      "sig": "5f88a0968bafcb2566ac36f0c4e237557d146ee811feaa07b60ee67ea945d646d24ba05ee20ac2c12e27aec2df8b7ef9dc13055ddfdd2970c831f2c602b954f5"
+      "sig": "835617aa502b771accd94821024f9b21b32cc7fd0463deefe767d989b93f317ced5b1e4861e45550f74eef5e8705ed69ca383d2286cc61e933d2761360c76347"
     },
     {
       "id": "29c227b8d27fd272f2a7f6137aa6b870f425b52ea900768024331954572e413e",
@@ -81,7 +91,33 @@
         ]
       ],
       "content": "{\"artifact_hash\":\"0x1462114068d2911ac9f9605706fc88ab701db4854103ba281c69735cd63bf5a6\",\"artifact_type\":\"fixture/synthetic\",\"policy_version\":\"l4-v0\",\"source_class\":\"primary\",\"vantage_limitation\":\"none\",\"verdict\":\"approve\"}",
-      "sig": "8c567c7cef5040f7db496e7158288de56be6aeb4b6d38d563129e6591a14f4ebde626b1ad44fbd311bbbb3aabe54effc5cce0b7dd619e5d14ac69b4e9b65da2e"
+      "sig": "17142fce49447c4f7d71f4848e8c699d0b05e36db03813b4b77de2bbad5972241dd32a177dfc602f6aff92e4f9fa2bd50c6c7205ad452cb92395ae1e50c92ecf"
+    },
+    {
+      "id": "1eedbb486f549169319af2c351c45d59df6cd12fe71180a36f06441e60b47084",
+      "pubkey": "6786e18a864893a900bd9858e650f67ccc3513f248fed374b591e2ff6922fbb7",
+      "created_at": 1785344091,
+      "kind": 30078,
+      "tags": [
+        [
+          "d",
+          "invinoveritas-proof-219692a3ae733fd63678a4abca38aaa67fda60c2787242d7ae2ea8909b1ede42-1785344091-339520db"
+        ],
+        [
+          "t",
+          "invinoveritas"
+        ],
+        [
+          "t",
+          "proof"
+        ],
+        [
+          "schema",
+          "invinoveritas.verdict_proof.v1"
+        ]
+      ],
+      "content": "{\"artifact_hash\":\"219692a3ae733fd63678a4abca38aaa67fda60c2787242d7ae2ea8909b1ede42\",\"artifact_type\":\"general\",\"confidence\":0.95,\"conformance_suite\":\"https://github.com/babyblueviper1/preaction-governance-conformance\",\"decision_ref\":\"sha256:f533333a0e55504c982037a1555284903f13617a6b3a6bc870ba17d2e378646a\",\"decision_ref_preimage_fields\":[\"artifact_hash\",\"artifact_type\",\"policy_version\",\"verdict\",\"source_class\",\"vantage_limitation\"],\"decision_ref_preimage_rule\":\"every name in decision_ref_preimage_fields is a key in the hashed preimage object, always -- absent fields (e.g. vantage_limitation when not applicable) are present as JSON null, never omitted from the object.\",\"independent_nodes\":[\"https://invinoveritas-castra.babyblueviper.workers.dev/verify\",\"https://babyblueviper1--2aba75da693711f185891607ee4eb77e.web.val.run\"],\"key_id\":\"6786e18a864893a900bd9858e650f67ccc3513f248fed374b591e2ff6922fbb7\",\"platform\":\"invinoveritas\",\"policy_version\":\"invinoveritas.review.v5\",\"schema\":\"invinoveritas.verdict_proof.v1\",\"source_class\":\"agent_reported\",\"summary_hash\":\"6cc30c1f69fb13f2e58b355a6e045b83049834de70b5198255a88745c852e9ca\",\"verdict\":\"approve\",\"verified_at\":1785344091,\"verifier_keys\":\"https://api.babyblueviper.com/.well-known/verifier-keys.json\",\"verifier_pubkey\":\"6786e18a864893a900bd9858e650f67ccc3513f248fed374b591e2ff6922fbb7\",\"verify_how\":\"Easiest: install the offline verifier above and recompute locally. Or POST this proof's signed `event` to verify_url (or an independent_node), OR run NIP-01 yourself: recompute the Nostr event id = sha256([0,pubkey,created_at,kind,tags,content]), verify the schnorr signature against verifier_pubkey. valid ⇒ invinoveritas issued this, untampered. No trust required.\",\"verify_offline\":\"npm i invinoveritas-verify  ·  pip install invinoveritas-verify  — recompute this proof on your own machine against verifier_pubkey; you never have to call us.\",\"verify_url\":\"https://api.babyblueviper.com/verify-proof\"}",
+      "sig": "1870375059d33d274c3c8fabc40b205262c3b8c5be41cb8ad7f07efbf5135a149010cc55a84c0a3e1ed89538dd4690aa0d7520668b32f907dfa8329673180efe"
     }
   ],
   "verdicts": [
@@ -116,6 +152,39 @@
       "verdict": "approve",
       "source_class": "primary",
       "vantage_limitation": "none"
+    },
+    {
+      "artifact_hash": "219692a3ae733fd63678a4abca38aaa67fda60c2787242d7ae2ea8909b1ede42",
+      "artifact_type": "general",
+      "confidence": 0.95,
+      "conformance_suite": "https://github.com/babyblueviper1/preaction-governance-conformance",
+      "decision_ref": "sha256:f533333a0e55504c982037a1555284903f13617a6b3a6bc870ba17d2e378646a",
+      "decision_ref_preimage_fields": [
+        "artifact_hash",
+        "artifact_type",
+        "policy_version",
+        "verdict",
+        "source_class",
+        "vantage_limitation"
+      ],
+      "decision_ref_preimage_rule": "every name in decision_ref_preimage_fields is a key in the hashed preimage object, always -- absent fields (e.g. vantage_limitation when not applicable) are present as JSON null, never omitted from the object.",
+      "independent_nodes": [
+        "https://invinoveritas-castra.babyblueviper.workers.dev/verify",
+        "https://babyblueviper1--2aba75da693711f185891607ee4eb77e.web.val.run"
+      ],
+      "key_id": "6786e18a864893a900bd9858e650f67ccc3513f248fed374b591e2ff6922fbb7",
+      "platform": "invinoveritas",
+      "policy_version": "invinoveritas.review.v5",
+      "schema": "invinoveritas.verdict_proof.v1",
+      "source_class": "agent_reported",
+      "summary_hash": "6cc30c1f69fb13f2e58b355a6e045b83049834de70b5198255a88745c852e9ca",
+      "verdict": "approve",
+      "verified_at": 1785344091,
+      "verifier_keys": "https://api.babyblueviper.com/.well-known/verifier-keys.json",
+      "verifier_pubkey": "6786e18a864893a900bd9858e650f67ccc3513f248fed374b591e2ff6922fbb7",
+      "verify_how": "Easiest: install the offline verifier above and recompute locally. Or POST this proof's signed `event` to verify_url (or an independent_node), OR run NIP-01 yourself: recompute the Nostr event id = sha256([0,pubkey,created_at,kind,tags,content]), verify the schnorr signature against verifier_pubkey. valid ⇒ invinoveritas issued this, untampered. No trust required.",
+      "verify_offline": "npm i invinoveritas-verify  ·  pip install invinoveritas-verify  — recompute this proof on your own machine against verifier_pubkey; you never have to call us.",
+      "verify_url": "https://api.babyblueviper.com/verify-proof"
     }
   ],
   "transitions": [
@@ -269,6 +338,45 @@
         ],
         "locator": "awareness://fixture/episodic-2",
         "locator_salt": "0xc7b4b1b6a92681548f9e206032ab01663effc151856f4fae8bf8e5baf8e54668"
+      }
+    },
+    {
+      "delta": {
+        "spaceId": "0xfbe20b841e2cb8d5e8094da6a9be9ebe19bb4d52c6155f465b40aa7bf1c13564",
+        "sequence": 5,
+        "prevStateRoot": "0x280889644f1f2748a27bb973df0c1efde465ae2a1334e705f7cb4c7a72ad5bc0",
+        "deltaCommitment": "0x86e981b1416a25beb712964e2318c7ced687cba7eb6db0fe55b4bd3ac9efd211",
+        "provenanceCommitment": "0x341c5403c7372b323505e406eee75d98bf156b8c5bb879f70b914fe86b5c770f",
+        "profileId": "0xac4a313d81b72c5de24109f69fd82139cf5b3df04391fb8e40ad8fde817ed1be",
+        "locatorCommitment": "0x0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "transitionId": "0xbabfa1db25980fe00dfa1c3fc08665ecb81df997f6fd7c439f1c4cc56241ac7d",
+      "nextStateRoot": "0x55b383709c4dbe8ee08d3e229d4f14d0c65659eac4198a44f1810f517dce6699",
+      "witness": {
+        "payload_jcs": "{\"content\":{\"cardKind\":\"memory\",\"event\":\"external attestation accepted from a key outside the fixture policy\"},\"observedAt\":1753488400,\"op\":\"upsert\",\"resourceId\":\"fixture/episodic-3\"}",
+        "delta_salt": "0x8a1b2c6434fe2647fb4644008b4fd7e3d2019ddd731f72bd6de11e08c35b3b14",
+        "provenance_bytes_utf8": "{\"attestation_refs\":[{\"decision_ref\":\"0xf533333a0e55504c982037a1555284903f13617a6b3a6bc870ba17d2e378646a\",\"event_id\":\"1eedbb486f549169319af2c351c45d59df6cd12fe71180a36f06441e60b47084\",\"pubkey\":\"6786e18a864893a900bd9858e650f67ccc3513f248fed374b591e2ff6922fbb7\",\"scheme\":\"wyriwe/l4-v0\",\"verify_url\":\"https://api.babyblueviper.com/verify-proof\"}]}",
+        "provenance_salt": "0xad6bc1296ee266321406609b01c37112f7634c45e64b27a93ccf0018afe637bb",
+        "attestation_refs_canonical": [
+          {
+            "scheme": "wyriwe/l4-v0",
+            "decision_ref": "0xf533333a0e55504c982037a1555284903f13617a6b3a6bc870ba17d2e378646a",
+            "event_id": "1eedbb486f549169319af2c351c45d59df6cd12fe71180a36f06441e60b47084",
+            "pubkey": "6786e18a864893a900bd9858e650f67ccc3513f248fed374b591e2ff6922fbb7",
+            "verify_url": "https://api.babyblueviper.com/verify-proof"
+          }
+        ],
+        "attestation_refs_raw_input": [
+          {
+            "scheme": "wyriwe/l4-v0",
+            "decision_ref": "0xf533333a0e55504c982037a1555284903f13617a6b3a6bc870ba17d2e378646a",
+            "event_id": "1eedbb486f549169319af2c351c45d59df6cd12fe71180a36f06441e60b47084",
+            "pubkey": "6786e18a864893a900bd9858e650f67ccc3513f248fed374b591e2ff6922fbb7",
+            "verify_url": "https://api.babyblueviper.com/verify-proof"
+          }
+        ],
+        "locator": null,
+        "locator_salt": null
       }
     }
   ]

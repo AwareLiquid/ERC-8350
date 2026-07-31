@@ -12,7 +12,7 @@
 // Commitment math is imported from @erc-awar/core — the same code every conforming
 // implementation runs — never reimplemented here.
 
-import {mkdirSync, writeFileSync} from "node:fs";
+import {mkdirSync, writeFileSync, readFileSync} from "node:fs";
 import {sha256} from "@noble/hashes/sha2.js";
 import {schnorr} from "@noble/curves/secp256k1.js";
 import {bytesToHex, utf8ToBytes} from "@noble/hashes/utils.js";
@@ -73,11 +73,21 @@ function deriveSpaceId(controller, salt) {
 const SPACE_ID = deriveSpaceId(CONTROLLER, SPACE_SALT);
 
 // ---------------------------------------------------------------------------
-// JCS (RFC 8785) for the subset used here: objects with string/integer values,
-// arrays, nested one level. Sorted keys, no whitespace, standard JSON escapes.
+// JCS (RFC 8785) for the subset used here: objects with string/integer/null
+// values, arrays, nested one level. Sorted keys, no whitespace, standard JSON
+// escapes.
+//
+// `null` is not decoration: WYRIWE's decision_ref preimage rule requires an
+// inapplicable field (e.g. vantage_limitation) to be present as JSON null rather
+// than omitted, so a serializer that cannot emit null cannot reproduce a real
+// decision_ref at all. Booleans and non-integer numbers stay unsupported on
+// purpose — nothing in this fixture commits them, and silently accepting a float
+// would hide the one JCS rule (ES6 number serialization) this subset does not
+// implement.
 function jcs(value) {
+  if (value === null) return "null";
   if (Array.isArray(value)) return "[" + value.map(jcs).join(",") + "]";
-  if (value !== null && typeof value === "object") {
+  if (typeof value === "object") {
     const keys = Object.keys(value).sort();
     return (
       "{" + keys.map((k) => JSON.stringify(k) + ":" + jcs(value[k])).join(",") + "}"
@@ -175,6 +185,59 @@ const e1 = makeEvent(VERIFIER_A, v1, T0 + 100, "fixture-1");
 const e2 = makeEvent(VERIFIER_A, v2, T0 + 200, "fixture-2");
 const e3 = makeEvent(VERIFIER_B, v3, T0 + 300, "fixture-3");
 const e4 = makeEvent(VERIFIER_B, v4, T0 + 400, "fixture-4");
+
+// ---------------------------------------------------------------------------
+// Transition 5 is different in kind from 1–4: its attestation is NOT synthesized
+// here. It is an externally contributed, really-signed verdict from WYRIWE /
+// invinoveritas (PR #5, ethereum-magicians.org/t/29098), loaded verbatim and
+// verified rather than derived. Its signing key is a live operator key that is
+// deliberately absent from test-vectors/fixture-keys-v1.json — so under the
+// fixture's own published policy the entry is "structurally valid, zero
+// authority", while a consumer that trusts invinoveritas resolves the identical
+// bytes to "valid and authorized". That is §6's three-valued outcome exercised
+// on real data instead of a hypothetical.
+const external5 = JSON.parse(
+  readFileSync("test-vectors/attestation-refs/sequence-5-pending.json", "utf8"),
+);
+const e5 = {event: external5.raw_proof_event};
+const v5 = JSON.parse(e5.event.content);
+const r5 = external5.attestation_refs_canonical_entry;
+
+// Verify the contributed entry before it can influence any committed byte.
+{
+  const serial = JSON.stringify([
+    0, e5.event.pubkey, e5.event.created_at, e5.event.kind, e5.event.tags, e5.event.content,
+  ]);
+  const recomputedId = bytesToHex(sha256(utf8ToBytes(serial)));
+  if (recomputedId !== e5.event.id) {
+    throw new Error(`external event id drift: ${recomputedId} != ${e5.event.id}`);
+  }
+  // decision_ref over the six-field preimage; absent fields are present as null,
+  // never omitted (the rule WYRIWE pinned in writing — load-bearing, not cosmetic).
+  const preimage = {
+    artifact_hash: v5.artifact_hash,
+    artifact_type: v5.artifact_type,
+    policy_version: v5.policy_version,
+    verdict: v5.verdict,
+    source_class: v5.source_class,
+    vantage_limitation: v5.vantage_limitation ?? null,
+  };
+  const recomputedRef = "0x" + bytesToHex(sha256(utf8ToBytes(jcs(preimage))));
+  if (recomputedRef !== r5.decision_ref) {
+    throw new Error(`external decision_ref drift: ${recomputedRef} != ${r5.decision_ref}`);
+  }
+  // §2 normalization: 0x-prefixed lowercase hex is canonical inside a ref set;
+  // the scheme prefix the producer uses in its own systems is presentation only.
+  if (v5.decision_ref.replace(/^sha256:/, "0x") !== r5.decision_ref) {
+    throw new Error("external decision_ref is not the 0x-normalized form of the event's own");
+  }
+  if (r5.event_id !== e5.event.id || r5.pubkey !== e5.event.pubkey) {
+    throw new Error("external entry identity does not match its raw event");
+  }
+  if (VERIFIER_A.pub === e5.event.pubkey || VERIFIER_B.pub === e5.event.pubkey) {
+    throw new Error("external key collides with a zero-authority fixture key");
+  }
+}
 
 const r1 = canonicalEntry(decisionRef(v1), e1);
 const r2 = canonicalEntry(decisionRef(v2), e2);
@@ -281,7 +344,24 @@ const t4 = buildTransition({
   locator: "awareness://fixture/episodic-2", // locator + provenance both present
 });
 
-const transitions = [t1, t2, t3, t4];
+// External attestation from a live authority-bearing key (see the block above).
+const t5 = buildTransition({
+  seq: 5,
+  prevRoot: t4.nextStateRoot,
+  profile: P_EPISODIC,
+  payloadObj: {
+    op: "upsert",
+    resourceId: "fixture/episodic-3",
+    observedAt: T0 + 400,
+    content: {
+      event: "external attestation accepted from a key outside the fixture policy",
+      cardKind: "memory",
+    },
+  },
+  rawEntries: [r5],
+});
+
+const transitions = [t1, t2, t3, t4, t5];
 
 // Self-checks before writing anything.
 if (t3.witness.attestation_refs_canonical.length !== 2) {
@@ -294,8 +374,9 @@ if (!sorted) throw new Error("t3 canonical set is not sorted by decision_ref");
 for (const t of transitions) {
   if (!schnorr) throw new Error("unreachable");
 }
-// Verify every event signature round-trips.
-for (const ev of [e1, e2, e3, e4]) {
+// Verify every event signature round-trips — including the contributed one, whose
+// signature is checked here against the same BIP-340 path as the synthetic keys.
+for (const ev of [e1, e2, e3, e4, e5]) {
   const ok = schnorr.verify(
     hexToBytesStrict(ev.event.sig),
     hexToBytesStrict(ev.event.id),
@@ -318,14 +399,28 @@ const bundle = {
     A: {pubkey: VERIFIER_A.pub, seed: "erc-8337-fixture-verifier-A-v1-NO-AUTHORITY"},
     B: {pubkey: VERIFIER_B.pub, seed: "erc-8337-fixture-verifier-B-v1-NO-AUTHORITY"},
   },
+  external_verifiers: {
+    _note:
+      "Live operator key, NOT a fixture key: no published seed, deliberately absent " +
+      "from test-vectors/fixture-keys-v1.json. Sequence 5 exists so a checker can " +
+      "observe the same bytes classify as zero-authority under the fixture policy and " +
+      "as authorized under a policy that trusts this operator (interop note §6).",
+    invinoveritas: {
+      pubkey: e5.event.pubkey,
+      scheme: r5.scheme,
+      contributed_in: "AwareLiquid/ERC-8350#5",
+      key_list: "https://api.babyblueviper.com/.well-known/verifier-keys.json",
+    },
+  },
   advisory_verify_urls: {
     [e1.event.id]: "https://api.babyblueviper.com/verify-proof",
     [e2.event.id]: "https://api.babyblueviper.com/verify-proof",
     [e3.event.id]: "https://api.babyblueviper.com/verify-proof",
     [e4.event.id]: "https://api.babyblueviper.com/verify-proof",
+    [e5.event.id]: "https://api.babyblueviper.com/verify-proof",
   },
-  events: [e1.event, e2.event, e3.event, e4.event],
-  verdicts: [v1, v2, v3, v4],
+  events: [e1.event, e2.event, e3.event, e4.event, e5.event],
+  verdicts: [v1, v2, v3, v4, v5],
   transitions: transitions.map((t) => ({
     delta: {...t.delta, sequence: Number(t.delta.sequence)},
     transitionId: t.transitionId,
@@ -369,5 +464,5 @@ console.log("verifier B pub: ", VERIFIER_B.pub);
 transitions.forEach((t, i) =>
   console.log(`t${i + 1} transitionId:`, t.transitionId),
 );
-console.log("final stateRoot:", transitions[3].nextStateRoot);
+console.log("final stateRoot:", transitions[transitions.length - 1].nextStateRoot);
 console.log("wrote test-vectors/sepolia-fixture-v1.json and contracts/script/FixtureData.sol");

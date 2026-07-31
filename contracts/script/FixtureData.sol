@@ -39,4 +39,12 @@ library FixtureData {
     bytes32 internal constant LOCATOR_COMMITMENT_4 = 0x2065a4e163948b2408a7cae309a55e1359591ac2f251c488943b40a28951de70;
     bytes32 internal constant EXPECTED_TRANSITION_ID_4 = 0x154c1e643dfec801e4e227f52ae24147a1cca0260533d258916c07337c2bd09d;
     bytes32 internal constant EXPECTED_NEXT_ROOT_4 = 0x280889644f1f2748a27bb973df0c1efde465ae2a1334e705f7cb4c7a72ad5bc0;
+
+    // transition 5
+    bytes32 internal constant DELTA_COMMITMENT_5 = 0x86e981b1416a25beb712964e2318c7ced687cba7eb6db0fe55b4bd3ac9efd211;
+    bytes32 internal constant PROVENANCE_COMMITMENT_5 = 0x341c5403c7372b323505e406eee75d98bf156b8c5bb879f70b914fe86b5c770f;
+    bytes32 internal constant PROFILE_ID_5 = 0xac4a313d81b72c5de24109f69fd82139cf5b3df04391fb8e40ad8fde817ed1be;
+    bytes32 internal constant LOCATOR_COMMITMENT_5 = 0x0000000000000000000000000000000000000000000000000000000000000000;
+    bytes32 internal constant EXPECTED_TRANSITION_ID_5 = 0xbabfa1db25980fe00dfa1c3fc08665ecb81df997f6fd7c439f1c4cc56241ac7d;
+    bytes32 internal constant EXPECTED_NEXT_ROOT_5 = 0x55b383709c4dbe8ee08d3e229d4f14d0c65659eac4198a44f1810f517dce6699;
 }
