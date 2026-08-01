@@ -144,6 +144,38 @@ valid-and-authorized. The fixture Space's synthetic keys are published with thei
 precisely so that checkers can pin them as the canonical "structurally valid, zero
 authority" case.
 
+### 6.1 The same shape, generalized: never collapse "could not check" into "failed"
+
+The three-valued output above is usually read as a fact about authority. It is not.
+It is a fact about **verification outputs**, and it recurred independently in a second
+domain shortly after this note was written: checking that the copy of an attestation
+event served by a relay is byte-identical to the copy a commitment was computed over.
+A first implementation treated a relay connection error the same as a byte mismatch,
+and would have failed an otherwise clean result the moment one relay returned 503
+(observed live — `relay.damus.io`, while two other relays confirmed identity). The fix
+is the same fix: *identical on ≥1 relay and mismatching on none* is confirmation;
+unreachable or not-found is **inconclusive**, not disqualifying.
+
+Stated generally: a verification step MUST distinguish *the check ran and failed* from
+*the check could not run*. A boolean cannot carry that distinction, and the case a
+boolean destroys is invariably the one the consumer needed in order to decide —
+"unauthorized" and "unknown key" call for different actions, as do "tampered" and
+"one relay was down". Two independent arrivals at this shape, in domains as unrelated
+as key authority and network availability, are evidence it is not a property of either
+domain but of checking itself.
+
+Corollary worth stating because it is what forces the distinction into the open:
+**re-verify from the artifact, never from a transcription of it.** Both times this
+mattered here, the ambiguity surfaced only when someone recomputed from source bytes —
+a hand-copied event and the real one stay indistinguishable right up until a hash is
+recomputed over the copy, and at that moment "bad id" reads identically to a genuine
+defect in the original unless the full bytes are compared.
+
+The byte-identity check itself is the stronger of the two properties available and
+SHOULD be preferred over reachability: an id match alone confirms the mesh holds
+*something* answering to that identifier, whereas a full byte comparison confirms it
+holds *that object* — the one the commitment covers.
+
 ## 7. What counts as an acceptable "why" is also consumer policy
 
 A worked ERC-8274 / ERC-8350 composition ([`invinoveritas/examples/erc8274-erc8350-composition`](https://github.com/babyblueviper1/invinoveritas/tree/main/examples/erc8274-erc8350-composition))
