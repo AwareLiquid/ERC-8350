@@ -14,6 +14,10 @@ required reviewer-owned evidence package is published.
 
 Public coordination issue:
 [AwareLiquid/ERC-8350#11](https://github.com/AwareLiquid/ERC-8350/issues/11).
+The consolidated reviewer entry point is
+[`AUDIT_HANDOFF.md`](AUDIT_HANDOFF.md); its
+[`handoff-manifest.json`](handoff-manifest.json) pins the Registry, threat-model,
+test, and deployment evidence without changing the frozen source target.
 
 ## Frozen target
 
@@ -53,6 +57,7 @@ From the branch containing this audit packet:
 
 ```bash
 pnpm install --frozen-lockfile
+pnpm security:handoff
 pnpm security:scope
 pnpm check
 cd contracts
