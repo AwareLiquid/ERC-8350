@@ -1,0 +1,59 @@
+{
+  "_notice": "PUBLIC EVIDENCE ONLY. No raw payload, provenance, locator, salt, or witness hash belongs in this file or in calldata.",
+  "schema": "erc-8350/private-witness-public-evidence/v1",
+  "scenarioId": "support-tool-trace-v1",
+  "onChain": {
+    "space": {
+      "spaceId": "0x9dcc578df03c4fe1a65e5eea4142d4677f1115a64ee491fc85de67c52a2913aa",
+      "controller": "0xe05fcc23807536bee418f142d19fa0d21bb0cff7",
+      "authorizer": "0xe05fcc23807536bee418f142d19fa0d21bb0cff7",
+      "spaceSalt": "0x404bc10ac782bfbdfc1879db7bdd7dfbc8e4d10b34e4b85db7910164228a893d"
+    },
+    "transitions": [
+      {
+        "spaceId": "0x9dcc578df03c4fe1a65e5eea4142d4677f1115a64ee491fc85de67c52a2913aa",
+        "sequence": "1",
+        "prevStateRoot": "0x0000000000000000000000000000000000000000000000000000000000000000",
+        "deltaCommitment": "0xbedbaa7e47d2d7cde26835b63b32527c4eb40bc17c1be3481e796eea51554ac2",
+        "provenanceCommitment": "0x0000000000000000000000000000000000000000000000000000000000000000",
+        "profileId": "0xf847003f2b63074f71c873268d340107107939eb218235cf88ed46caa0905f45",
+        "locatorCommitment": "0xc0082bd9fb40da719341e116b2de3427f32b0060b66b47bc5d18084298d1dabd",
+        "transitionId": "0x397e0a3efbc6bf0f0697e993f7a7b1c0f05e05fda80fd9838b03ffdd6020e9bc",
+        "nextStateRoot": "0xa6000d03b3d390bb626d5136fb25bcaeb56679e20d89f19b8f381fd86b1df51c",
+        "authorizer": "0xe05fcc23807536bee418f142d19fa0d21bb0cff7"
+      },
+      {
+        "spaceId": "0x9dcc578df03c4fe1a65e5eea4142d4677f1115a64ee491fc85de67c52a2913aa",
+        "sequence": "2",
+        "prevStateRoot": "0xa6000d03b3d390bb626d5136fb25bcaeb56679e20d89f19b8f381fd86b1df51c",
+        "deltaCommitment": "0x25753573a84403606ccb7e4d2f05b898ad95a8744af6f041a478b3a66da04540",
+        "provenanceCommitment": "0x3d180a119d29f7b1b5c347d57e7d9bb79860d53399cf1b766f6f7bdd2149ed44",
+        "profileId": "0xf847003f2b63074f71c873268d340107107939eb218235cf88ed46caa0905f45",
+        "locatorCommitment": "0x6a3d72b91545ade7be993e1b736d9b9a5be09fb86cb8544e887cdde6f9b7e624",
+        "transitionId": "0x422804f4a453efe49c0e7f52b629883bc4527b17e0526ad9f1d6b5872f8ffae8",
+        "nextStateRoot": "0xc4357c83a22fdb119a0a2a34677fcf71ee013129f18d0fdffe921a652fcb87fd",
+        "authorizer": "0xe05fcc23807536bee418f142d19fa0d21bb0cff7"
+      }
+    ],
+    "head": {
+      "transitionId": "0x422804f4a453efe49c0e7f52b629883bc4527b17e0526ad9f1d6b5872f8ffae8",
+      "stateRoot": "0xc4357c83a22fdb119a0a2a34677fcf71ee013129f18d0fdffe921a652fcb87fd",
+      "sequence": "2"
+    },
+    "auditGrant": {
+      "grantId": "0x828f699c70bedb8516a2e2b581cd048929d988f9d4e6c329301c6d466def675b",
+      "auditor": "0x00000000000000000000000000000000000ad170",
+      "fromSequence": "2",
+      "toSequence": "2",
+      "witnessSetRoot": "0x8ef3a2f2247a6049dc26fe48472e7373607e85b3d76aa4d50e156b80c3062f9d"
+    }
+  },
+  "disclosurePolicy": {
+    "disclosedSequences": [
+      "2"
+    ],
+    "undisclosedSequences": [
+      "1"
+    ]
+  }
+}

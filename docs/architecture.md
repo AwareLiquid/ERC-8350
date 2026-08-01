@@ -40,6 +40,10 @@ flowchart LR
 The private witness travels only between authorized off-chain systems. It is not
 needed by the registry to enforce ordering or authorization.
 
+The executable [`private-witness evidence demo`](../evidence/private-witness/README.md)
+shows this boundary with two `TOOL_TRACE` transitions and an audit disclosure
+restricted to sequence range `[2,2]`.
+
 ## Layer boundaries
 
 ### Core

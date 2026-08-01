@@ -1,0 +1,107 @@
+{
+  "_warning": "SYNTHETIC FIXTURE ONLY. This file deliberately publishes fake private inputs and salts so the demo is reproducible. Never commit a production witness, salt, locator, credential, customer record, or tool result.",
+  "schema": "erc-8350/private-witness-fixture/v1",
+  "scenarioId": "support-tool-trace-v1",
+  "space": {
+    "controller": "0xe05fcc23807536bee418f142d19fa0d21bb0cff7",
+    "authorizer": "0xe05fcc23807536bee418f142d19fa0d21bb0cff7",
+    "spaceSalt": "0x404bc10ac782bfbdfc1879db7bdd7dfbc8e4d10b34e4b85db7910164228a893d"
+  },
+  "auditor": "0x00000000000000000000000000000000000ad170",
+  "profileUri": "https://awareness.market/profiles/memory/tool-trace/v1",
+  "transitions": [
+    {
+      "sequence": "1",
+      "payload": {
+        "op": "append",
+        "resourceId": "session/support-2026-08-02/tool-trace",
+        "observedAt": 1785632400,
+        "content": {
+          "calls": [
+            {
+              "tool": "crm.lookup_customer",
+              "args": {
+                "email": "ada@example.test"
+              },
+              "result": {
+                "customerId": "CUS-1042",
+                "supportTier": "priority"
+              },
+              "status": "ok",
+              "ts": 1785632400
+            }
+          ]
+        }
+      },
+      "deltaSalt": "0xc29830105e2bdfca99d5e6543367f6171311ae63c6a3cd0f8bcb7a68d99dbf81",
+      "provenance": null,
+      "provenanceSalt": null,
+      "locator": "vault://tool-traces/support-2026-08-02/1",
+      "locatorSalt": "0xccc29b857fa7d3ee2da599779e42b7a4bec1bb9c36f1c359ae2237da02ac3fbd"
+    },
+    {
+      "sequence": "2",
+      "payload": {
+        "op": "append",
+        "resourceId": "session/support-2026-08-02/tool-trace",
+        "observedAt": 1785632460,
+        "content": {
+          "calls": [
+            {
+              "tool": "shipping.get_status",
+              "args": {
+                "orderId": "ORDER-1042"
+              },
+              "result": {
+                "eta": "2026-08-05",
+                "status": "delayed",
+                "warehouse": "SHA-03"
+              },
+              "status": "ok",
+              "ts": 1785632460
+            }
+          ]
+        }
+      },
+      "deltaSalt": "0x5d871b621e666953d439ec415e523791540f9b3dacc6d5b47db776692e9d5360",
+      "provenance": {
+        "channel": "support-chat",
+        "receivedAt": 1785632460,
+        "ticketId": "TCK-1042"
+      },
+      "provenanceSalt": "0x867241643a1d0ecb483e06b327480e5efa7406380b202d32ddfa15b75f2e1fef",
+      "locator": "vault://tool-traces/support-2026-08-02/2",
+      "locatorSalt": "0x7b4df867da8c1049f76f1a0421f4bc7d1abc9d5c8105fa35d3e1fcb9267435af"
+    }
+  ],
+  "disclosure": {
+    "fromSequence": "2",
+    "toSequence": "2",
+    "sequences": [
+      "2"
+    ]
+  },
+  "boundaryAssertions": {
+    "neverPublic": [
+      "ada@example.test",
+      "CUS-1042",
+      "ORDER-1042",
+      "TCK-1042",
+      "SHA-03",
+      "vault://tool-traces/support-2026-08-02/1",
+      "vault://tool-traces/support-2026-08-02/2",
+      "0xc29830105e2bdfca99d5e6543367f6171311ae63c6a3cd0f8bcb7a68d99dbf81",
+      "0xccc29b857fa7d3ee2da599779e42b7a4bec1bb9c36f1c359ae2237da02ac3fbd",
+      "0x5d871b621e666953d439ec415e523791540f9b3dacc6d5b47db776692e9d5360",
+      "0x867241643a1d0ecb483e06b327480e5efa7406380b202d32ddfa15b75f2e1fef",
+      "0x7b4df867da8c1049f76f1a0421f4bc7d1abc9d5c8105fa35d3e1fcb9267435af"
+    ],
+    "notDisclosedToAuditor": [
+      "ada@example.test",
+      "CUS-1042",
+      "vault://tool-traces/support-2026-08-02/1",
+      "0xc29830105e2bdfca99d5e6543367f6171311ae63c6a3cd0f8bcb7a68d99dbf81",
+      "0xccc29b857fa7d3ee2da599779e42b7a4bec1bb9c36f1c359ae2237da02ac3fbd"
+    ]
+  }
+}

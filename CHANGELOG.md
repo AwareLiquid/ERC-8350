@@ -6,6 +6,11 @@ All notable implementation and protocol changes are recorded here.
 
 ### Added
 
+- Reproducible private-witness evidence for a two-transition `TOOL_TRACE`
+  scenario: deterministic public commitments, a sequence-2-only auditor bundle,
+  privacy-boundary assertions, and a Foundry integration test covering relayed
+  EIP-712 authorization, selective `AuditGrant`, tamper rejection, and auditor
+  acknowledgement.
 - Provisional external-review intake and reviewer follow-up for G4, plus focused
   regression tests proving ERC-1271 `STATICCALL` blocks state-changing callbacks
   and invalid ECDSA `v` values are rejected.

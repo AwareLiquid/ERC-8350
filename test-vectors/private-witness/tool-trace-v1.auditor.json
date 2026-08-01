@@ -1,0 +1,56 @@
+{
+  "_warning": "SYNTHETIC OUT-OF-BAND DISCLOSURE. Production auditors receive this privately; it is committed here only so anyone can reproduce the demo.",
+  "schema": "erc-8350/auditor-disclosure/v1",
+  "scenarioId": "support-tool-trace-v1",
+  "range": {
+    "fromSequence": "2",
+    "toSequence": "2"
+  },
+  "items": [
+    {
+      "witness": {
+        "schema": "erc-8350/private-witness-item/v1",
+        "spaceId": "0x9dcc578df03c4fe1a65e5eea4142d4677f1115a64ee491fc85de67c52a2913aa",
+        "sequence": "2",
+        "transitionId": "0x422804f4a453efe49c0e7f52b629883bc4527b17e0526ad9f1d6b5872f8ffae8",
+        "profileId": "0xf847003f2b63074f71c873268d340107107939eb218235cf88ed46caa0905f45",
+        "payload": {
+          "op": "append",
+          "resourceId": "session/support-2026-08-02/tool-trace",
+          "observedAt": 1785632460,
+          "content": {
+            "calls": [
+              {
+                "tool": "shipping.get_status",
+                "args": {
+                  "orderId": "ORDER-1042"
+                },
+                "result": {
+                  "eta": "2026-08-05",
+                  "status": "delayed",
+                  "warehouse": "SHA-03"
+                },
+                "status": "ok",
+                "ts": 1785632460
+              }
+            ]
+          }
+        },
+        "deltaSalt": "0x5d871b621e666953d439ec415e523791540f9b3dacc6d5b47db776692e9d5360",
+        "provenance": {
+          "channel": "support-chat",
+          "receivedAt": 1785632460,
+          "ticketId": "TCK-1042"
+        },
+        "provenanceSalt": "0x867241643a1d0ecb483e06b327480e5efa7406380b202d32ddfa15b75f2e1fef",
+        "locator": "vault://tool-traces/support-2026-08-02/2",
+        "locatorSalt": "0x7b4df867da8c1049f76f1a0421f4bc7d1abc9d5c8105fa35d3e1fcb9267435af"
+      },
+      "encoded": {
+        "payloadUtf8": "{\"content\":{\"calls\":[{\"args\":{\"orderId\":\"ORDER-1042\"},\"result\":{\"eta\":\"2026-08-05\",\"status\":\"delayed\",\"warehouse\":\"SHA-03\"},\"status\":\"ok\",\"tool\":\"shipping.get_status\",\"ts\":1785632460}]},\"observedAt\":1785632460,\"op\":\"append\",\"resourceId\":\"session/support-2026-08-02/tool-trace\"}",
+        "provenanceUtf8": "{\"channel\":\"support-chat\",\"receivedAt\":1785632460,\"ticketId\":\"TCK-1042\"}",
+        "witnessUtf8": "{\"deltaSalt\":\"0x5d871b621e666953d439ec415e523791540f9b3dacc6d5b47db776692e9d5360\",\"locator\":\"vault://tool-traces/support-2026-08-02/2\",\"locatorSalt\":\"0x7b4df867da8c1049f76f1a0421f4bc7d1abc9d5c8105fa35d3e1fcb9267435af\",\"payload\":{\"content\":{\"calls\":[{\"args\":{\"orderId\":\"ORDER-1042\"},\"result\":{\"eta\":\"2026-08-05\",\"status\":\"delayed\",\"warehouse\":\"SHA-03\"},\"status\":\"ok\",\"tool\":\"shipping.get_status\",\"ts\":1785632460}]},\"observedAt\":1785632460,\"op\":\"append\",\"resourceId\":\"session/support-2026-08-02/tool-trace\"},\"profileId\":\"0xf847003f2b63074f71c873268d340107107939eb218235cf88ed46caa0905f45\",\"provenance\":{\"channel\":\"support-chat\",\"receivedAt\":1785632460,\"ticketId\":\"TCK-1042\"},\"provenanceSalt\":\"0x867241643a1d0ecb483e06b327480e5efa7406380b202d32ddfa15b75f2e1fef\",\"schema\":\"erc-8350/private-witness-item/v1\",\"sequence\":\"2\",\"spaceId\":\"0x9dcc578df03c4fe1a65e5eea4142d4677f1115a64ee491fc85de67c52a2913aa\",\"transitionId\":\"0x422804f4a453efe49c0e7f52b629883bc4527b17e0526ad9f1d6b5872f8ffae8\"}"
+      }
+    }
+  ]
+}
