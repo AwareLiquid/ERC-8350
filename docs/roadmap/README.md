@@ -36,6 +36,11 @@ as new `profileId` values with **zero core changes**. The two proofs worth build
 first, because they upgrade "provable trajectory" toward "provable properties of private
 content" without disclosure:
 
+T-009 records the first candidate's questions in
+[`docs/research/t-009-zk-evolution-bound-profile.md`](../research/t-009-zk-evolution-bound-profile.md).
+It is a non-normative research note only: no final profile identifier, circuit, verifier,
+dependency, or implementation has been created.
+
 1. **Evolution-bound proof** — prove the newly committed embedding lies within distance
    ε of the previously committed one. Detects wholesale memory substitution while
    revealing neither vector.
