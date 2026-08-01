@@ -9,6 +9,10 @@ optimizer_runs = 200
 evm_version = "cancun"
 # No external libraries: the reference contracts are dependency-free
 # (EIP-712 / ECDSA implemented inline) so the suite builds offline.
+# Read-only, and scoped to the vectors directory: VectorsV2.t.sol drives the
+# published test-vectors file itself rather than regenerated constants, so the
+# suite fails if the shipped artifact and the implementation ever diverge.
+fs_permissions = [{access = "read", path = "../test-vectors"}]
 
 [fmt]
 line_length = 100
