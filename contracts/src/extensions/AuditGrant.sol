@@ -75,7 +75,9 @@ contract AuditGrant {
         bytes32 witnessSetRoot
     );
 
-    event AuditAcknowledged(bytes32 indexed spaceId, address indexed auditor, bytes32 indexed grantId);
+    event AuditAcknowledged(
+        bytes32 indexed spaceId, address indexed auditor, bytes32 indexed grantId
+    );
 
     event AuditRevoked(bytes32 indexed spaceId, address indexed auditor, bytes32 indexed grantId);
 
