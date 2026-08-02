@@ -2,6 +2,7 @@ name: CI
 
 on:
   push:
+    branches: [main]
   pull_request:
   workflow_dispatch:
 
@@ -13,6 +14,38 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  conformance:
+    name: Clean-checkout conformance gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.7.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: v1.7.1
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install forge-std
+        if: hashFiles('contracts/lib/forge-std/src/Test.sol') == ''
+        run: cd contracts && forge install foundry-rs/forge-std@v1.16.2 --no-git
+      - name: Run conformance gate
+        run: pnpm conformance:gate
+        env:
+          CONFORMANCE_CLEAN_CHECKOUT: "1"
+      - name: Upload conformance record
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: erc-8350-conformance-${{ github.sha }}
+          path: artifacts/conformance/
+          if-no-files-found: error
+
   typescript:
     name: TypeScript and vectors
     runs-on: ubuntu-latest

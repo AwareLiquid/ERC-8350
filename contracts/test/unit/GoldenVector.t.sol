@@ -7,92 +7,123 @@ import {PrivateCommitment} from "../../src/reference/PrivateCommitment.sol";
 import {IAgentMemoryState} from "../../src/interfaces/IAgentMemoryState.sol";
 
 contract GoldenVectorTest is Test {
-    function test_V1GoldenVectorMatchesTypeScript() public {
-        AgentMemoryStateRegistry registry = new AgentMemoryStateRegistry();
-        IAgentMemoryState.ExperienceDelta memory delta = IAgentMemoryState.ExperienceDelta({
-            spaceId: 0xef5037465ae0323637cb58434eb554ae4a1fe1131bcc10888900f2d4cbe349d8,
-            sequence: 1,
-            prevStateRoot: bytes32(0),
-            deltaCommitment: 0x2cf1dc108cc32cfe1617db756a7c793f383b67165ea1bb542f456dc6100f967d,
-            provenanceCommitment: 0x4791ee5d37e8fc775d00f82c3d451e6d313aa5fe16dd94de5efdbbb39dc0f05c,
-            profileId: 0x2f53a8c7cdfafe7559a285db700638113866e8605b81c9454f0936d67ddbd759,
-            locatorCommitment: 0xc5ff571b8429eecd969f718fc45e45017c0d3a217dff401ad1cc752686bac812
-        });
+    AgentMemoryStateRegistry internal registry;
+    string internal vector;
+
+    function setUp() public {
+        registry = new AgentMemoryStateRegistry();
+        vector = vm.readFile(string.concat(vm.projectRoot(), "/../test-vectors/v1.json"));
+    }
+
+    function test_V1GoldenVectorMatchesCanonicalJsonByteForByte() public view {
+        assertEq(vm.parseJsonString(vector, ".schema"), "agent-memory-state/test-vectors/v1");
+
+        IAgentMemoryState.ExperienceDelta memory delta = _delta();
         bytes32 transitionId = registry.hashExperienceDelta(delta);
-        assertEq(
-            registry.EXPERIENCE_DELTA_TYPEHASH(),
-            0x4f020f86bc06d852f1fde17853b4d92a70214eeab8e09718028124af097d070d
-        );
-        assertEq(
-            registry.MEMORY_STATE_TYPEHASH(),
-            0xf3148762556cbf851baf4b9a205e18ff4e6b366a58a3a1ef58e8626ba41beadb
-        );
-        assertEq(
-            registry.MEMORY_SPACE_TYPEHASH(),
-            0x9ae5478f084ad3b841da58a9cb2354d153cddec59ee64d0cb741fa9d08884531
-        );
-        assertEq(
-            registry.deriveSpaceId(
-                0x2222222222222222222222222222222222222222,
-                0xdddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-            ),
-            delta.spaceId
-        );
+
+        _assertPrivateCommitments(delta);
+        _assertTransitionHashes(delta, transitionId);
+        _assertSpaceAuthorization(delta);
+        _assertEip712(transitionId);
+    }
+
+    function _delta() private view returns (IAgentMemoryState.ExperienceDelta memory) {
+        return IAgentMemoryState.ExperienceDelta({
+            spaceId: _bytes32(".delta.spaceId"),
+            sequence: uint64(vm.parseUint(_string(".delta.sequence"))),
+            prevStateRoot: _bytes32(".delta.prevStateRoot"),
+            deltaCommitment: _bytes32(".delta.deltaCommitment"),
+            provenanceCommitment: _bytes32(".delta.provenanceCommitment"),
+            profileId: _bytes32(".delta.profileId"),
+            locatorCommitment: _bytes32(".delta.locatorCommitment")
+        });
+    }
+
+    function _assertPrivateCommitments(IAgentMemoryState.ExperienceDelta memory delta)
+        private
+        view
+    {
         assertEq(
             PrivateCommitment.computeDelta(
-                bytes(
-                    "{\"op\":\"upsert\",\"resourceId\":\"memory-42\",\"value\":\"prefers dark mode\"}"
-                ),
-                0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa,
+                bytes(_string(".commitment.payload")),
+                _bytes32(".commitment.deltaSalt"),
                 delta.profileId
             ),
             delta.deltaCommitment
         );
         assertEq(
             PrivateCommitment.computeProvenance(
-                bytes("{\"inference\":\"0xabcd\",\"input\":\"0x1234\"}"),
-                0xcccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+                bytes(_string(".commitment.provenance")), _bytes32(".commitment.provenanceSalt")
             ),
             delta.provenanceCommitment
         );
         assertEq(
             PrivateCommitment.computeLocator(
-                bytes("ipfs://bafybeigdyrzt5example"),
-                0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+                bytes(_string(".commitment.locator")), _bytes32(".commitment.locatorSalt")
             ),
             delta.locatorCommitment
         );
-        assertEq(transitionId, 0xdd00dd6eb3aec704b5455502647a0caacf23be6c724eda4a60d9645291e7f4e5);
+    }
+
+    function _assertTransitionHashes(
+        IAgentMemoryState.ExperienceDelta memory delta,
+        bytes32 transitionId
+    ) private view {
+        assertEq(
+            registry.EXPERIENCE_DELTA_TYPEHASH(), _bytes32(".expected.experienceDeltaTypehash")
+        );
+        assertEq(registry.MEMORY_STATE_TYPEHASH(), _bytes32(".expected.memoryStateTypehash"));
+        assertEq(registry.MEMORY_SPACE_TYPEHASH(), _bytes32(".expected.memorySpaceTypehash"));
+        assertEq(transitionId, _bytes32(".expected.transitionId"));
         assertEq(
             registry.computeNextStateRoot(delta.prevStateRoot, transitionId),
-            0x9684a8d3571c5cd9c1e3abb1b0c0797b9fef6965e9002aeefba91e8cb1163754
+            _bytes32(".expected.nextStateRoot")
+        );
+    }
+
+    function _assertSpaceAuthorization(IAgentMemoryState.ExperienceDelta memory delta)
+        private
+        view
+    {
+        address controller = vm.parseJsonAddress(vector, ".spaceAuthorization.controller");
+        address authorizer = vm.parseJsonAddress(vector, ".spaceAuthorization.authorizer");
+        assertEq(
+            registry.deriveSpaceId(controller, _bytes32(".spaceAuthorization.spaceSalt")),
+            delta.spaceId
         );
         assertEq(
-            registry.computeDomainSeparator(1, 0x4444444444444444444444444444444444444444),
-            0xc8e1b4a128b4de377427c24ccea92cac6d7c77f8fe55f4b2984432bbc3b3d5b9
-        );
-        assertEq(
-            registry.computeSigningDigest(
-                transitionId, 1, 0x4444444444444444444444444444444444444444
-            ),
-            0xaa76377b6dc395d65e2c346a4ff3176bcbe3d27223e01b68be450f81f0f5f494
-        );
-        assertEq(
-            registry.hashSpaceRegistration(
-                delta.spaceId,
-                0x2222222222222222222222222222222222222222,
-                0x3333333333333333333333333333333333333333
-            ),
-            0x7bea30aa6018c9c8a3e66bd9573377af482dc791994af8c50698e3fc9d4e5d64
+            registry.hashSpaceRegistration(delta.spaceId, controller, authorizer),
+            _bytes32(".spaceAuthorization.registrationId")
         );
         assertEq(
             registry.hashSpaceAuthorization(
                 delta.spaceId,
-                0x2222222222222222222222222222222222222222,
-                0x3333333333333333333333333333333333333333,
-                1
+                controller,
+                authorizer,
+                uint64(vm.parseUint(_string(".spaceAuthorization.updateNonce")))
             ),
-            0xa1fef7a8e52a533f7839f51962fa6e3ef9f8a8081efbac1eb13651801f4d1a92
+            _bytes32(".spaceAuthorization.authorizationId")
         );
+    }
+
+    function _assertEip712(bytes32 transitionId) private view {
+        uint256 chainId = vm.parseUint(_string(".eip712.chainId"));
+        address verifyingContract = vm.parseJsonAddress(vector, ".eip712.verifyingContract");
+        assertEq(
+            registry.computeDomainSeparator(chainId, verifyingContract),
+            _bytes32(".eip712.domainSeparator")
+        );
+        assertEq(
+            registry.computeSigningDigest(transitionId, chainId, verifyingContract),
+            _bytes32(".eip712.signingDigest")
+        );
+    }
+
+    function _bytes32(string memory path) private view returns (bytes32) {
+        return vm.parseJsonBytes32(vector, path);
+    }
+
+    function _string(string memory path) private view returns (string memory) {
+        return vm.parseJsonString(vector, path);
     }
 }
