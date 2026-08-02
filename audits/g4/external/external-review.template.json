@@ -1,0 +1,66 @@
+{
+  "schema": "erc-8350/external-solidity-review/v1",
+  "candidate": "G4-rc1",
+  "reviewer": {
+    "name": "<reviewer name>",
+    "organization": "<organization or independent>",
+    "githubOwner": "<external GitHub owner>",
+    "evidenceRepository": "https://github.com/<external-owner>/<review-repository>",
+    "independentFromProject": true,
+    "conflictDisclosure": "<state none, payment terms, prior work, or other conflicts>"
+  },
+  "scope": {
+    "repository": "https://github.com/AwareLiquid/ERC-8350",
+    "commit": "af5a75fb2db532fd5603554083d8895a825c2de2",
+    "tree": "f8d66277123391ea54de3f53842256e17e2a497e",
+    "manifestPath": "audits/g4/scope.json",
+    "manifestSha256": "c9db7d27957c86386d8842687a2d009c0ca03bc864307e88cfed0ee25f3ae9bf",
+    "riskRegisterPath": "audits/g4/residual-risks.json",
+    "riskRegisterSha256": "307a52eb0bf512aea25565bf604d92fc6b1b2d64eb910595568a5f0c04aa6019"
+  },
+  "report": {
+    "path": "reports/<external-report.pdf>",
+    "url": "https://<public-permanent-report-url>",
+    "sha256": "<64 lowercase hex characters>",
+    "publishedAt": "<ISO-8601 timestamp>"
+  },
+  "methodology": {
+    "manualReview": true,
+    "tools": [
+      "<tool and version>"
+    ],
+    "testCommands": [
+      "cd contracts && forge test -vv"
+    ]
+  },
+  "conclusion": {
+    "status": "pass",
+    "noUnresolvedCriticalOrHigh": true,
+    "unresolved": {
+      "critical": 0,
+      "high": 0,
+      "medium": 0,
+      "low": 0,
+      "informational": 0
+    }
+  },
+  "reviewedResidualRiskIds": [
+    "G4-R-001",
+    "G4-R-002",
+    "G4-R-003",
+    "G4-R-004",
+    "G4-R-005",
+    "G4-R-006",
+    "G4-R-007",
+    "G4-R-008",
+    "G4-R-009",
+    "G4-R-010",
+    "G4-R-011"
+  ],
+  "findings": [],
+  "attestation": {
+    "statement": "I independently reviewed the exact G4 scope and the identified report is my work.",
+    "url": "https://github.com/<external-owner>/<review-repository>/commit/<full-commit>",
+    "signedAt": "<ISO-8601 timestamp>"
+  }
+}

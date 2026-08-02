@@ -42,6 +42,7 @@ contract AuditGrant {
     error ZeroAuditor();
     error GrantExists();
     error UnknownGrant();
+    error WrongSpace(bytes32 expected, bytes32 received);
     error NotAuditor();
     error AlreadyAcknowledged();
     error GrantIsRevoked();
@@ -65,6 +66,7 @@ contract AuditGrant {
     IAgentMemoryState public immutable registry;
 
     mapping(bytes32 grantId => Grant grant) private _grants;
+    mapping(bytes32 grantId => bytes32 spaceId) private _grantSpaces;
 
     event AuditGranted(
         bytes32 indexed spaceId,
@@ -86,8 +88,7 @@ contract AuditGrant {
     }
 
     /// @notice Deterministic identifier for a grant. A given (space, auditor, range) can
-    ///         be granted once; re-disclosing the same range to the same auditor under a
-    ///         different witness set requires revoking first.
+    ///         be granted once. Revocation preserves history and does not make the ID reusable.
     function deriveGrantId(bytes32 spaceId, address auditor, uint64 fromSequence, uint64 toSequence)
         public
         pure
@@ -139,6 +140,7 @@ contract AuditGrant {
             acknowledgedAt: 0,
             revoked: false
         });
+        _grantSpaces[grantId] = spaceId;
 
         emit AuditGranted(spaceId, auditor, grantId, fromSequence, toSequence, witnessSetRoot);
     }
@@ -148,8 +150,7 @@ contract AuditGrant {
     ///      points at one specific disclosure. See the contract-level note on what this
     ///      does and does not prove.
     function acknowledge(bytes32 spaceId, bytes32 grantId, bytes32 computedRoot) external {
-        Grant storage g = _grants[grantId];
-        if (g.witnessSetRoot == bytes32(0)) revert UnknownGrant();
+        Grant storage g = _grantForSpace(spaceId, grantId);
         if (g.revoked) revert GrantIsRevoked();
         if (msg.sender != g.auditor) revert NotAuditor();
         if (g.acknowledgedAt != 0) revert AlreadyAcknowledged();
@@ -162,8 +163,7 @@ contract AuditGrant {
 
     /// @notice Withdraw a grant. History is preserved: prior events remain on chain.
     function revoke(bytes32 spaceId, bytes32 grantId) external {
-        Grant storage g = _grants[grantId];
-        if (g.witnessSetRoot == bytes32(0)) revert UnknownGrant();
+        Grant storage g = _grantForSpace(spaceId, grantId);
         if (g.revoked) revert GrantIsRevoked();
 
         address controller = _controllerOf(spaceId);
@@ -178,6 +178,22 @@ contract AuditGrant {
         Grant memory g = _grants[grantId];
         if (g.witnessSetRoot == bytes32(0)) revert UnknownGrant();
         return g;
+    }
+
+    function spaceOf(bytes32 grantId) external view returns (bytes32 spaceId) {
+        spaceId = _grantSpaces[grantId];
+        if (spaceId == bytes32(0)) revert UnknownGrant();
+    }
+
+    function _grantForSpace(bytes32 spaceId, bytes32 grantId)
+        private
+        view
+        returns (Grant storage g)
+    {
+        g = _grants[grantId];
+        if (g.witnessSetRoot == bytes32(0)) revert UnknownGrant();
+        bytes32 expectedSpaceId = _grantSpaces[grantId];
+        if (spaceId != expectedSpaceId) revert WrongSpace(expectedSpaceId, spaceId);
     }
 
     function _controllerOf(bytes32 spaceId) internal view returns (address controller) {

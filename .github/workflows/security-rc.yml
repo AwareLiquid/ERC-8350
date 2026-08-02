@@ -1,0 +1,62 @@
+name: G4 security-ready RC
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/security-rc.yml"
+      - "audits/g4/**"
+      - "contracts/src/**"
+      - "contracts/test/**"
+      - "contracts/script/Deploy.s.sol"
+      - "contracts/foundry.toml"
+      - "scripts/security-rc-gate.mjs"
+      - "scripts/security-rc-gate.test.mjs"
+      - "package.json"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: security-rc-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  evidence:
+    name: G4 scope and evidence integrity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+          persist-credentials: false
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.7.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: v1.7.1
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install forge-std
+        if: hashFiles('contracts/lib/forge-std/src/Test.sol') == ''
+        run: cd contracts && forge install foundry-rs/forge-std@v1.16.2 --no-git
+      - name: Validate frozen scope and residual risks
+        run: pnpm security:scope
+      - name: Test the security gate
+        run: pnpm security:test
+      - name: Run Solidity tests
+        run: cd contracts && forge test
+      - name: Validate external review when present
+        if: hashFiles('audits/g4/external/external-review.json') != ''
+        run: pnpm security:rc
+      - name: Record pending external review
+        if: hashFiles('audits/g4/external/external-review.json') == ''
+        run: |
+          echo "External Solidity review is still pending." >> "$GITHUB_STEP_SUMMARY"
+          echo "This workflow validates preparation only; release:check remains blocked." >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,68 @@
+{
+  "schema": "erc-8350/internal-static-analysis/v1",
+  "candidate": "G4-rc1",
+  "sourceCommit": "af5a75fb2db532fd5603554083d8895a825c2de2",
+  "recordedAt": "2026-07-31",
+  "tool": {
+    "name": "Slither",
+    "version": "0.11.6",
+    "detectorsRun": 102,
+    "command": "slither . --compile-force-framework foundry --exclude-dependencies --filter-paths 'src/experimental|test|script' --json <output>"
+  },
+  "result": {
+    "detectorResults": 6,
+    "unresolvedCritical": 0,
+    "unresolvedHigh": 0,
+    "actionable": 0
+  },
+  "dispositions": [
+    {
+      "id": "G4-SLITHER-001",
+      "check": "incorrect-equality",
+      "reportedImpact": "medium",
+      "status": "false-positive",
+      "location": "contracts/src/extensions/AuditGrant.sol:179",
+      "rationale": "witnessSetRoot == 0 is an explicit existence sentinel. grant() rejects EmptyWitnessRoot before storage, so a valid grant cannot collide with the sentinel."
+    },
+    {
+      "id": "G4-SLITHER-002",
+      "check": "unused-return",
+      "reportedImpact": "medium",
+      "status": "accepted",
+      "location": "contracts/src/extensions/AuditGrant.sol:128",
+      "rationale": "grant() intentionally reads only headSequence; transitionId and stateRoot are unrelated to range bounds."
+    },
+    {
+      "id": "G4-SLITHER-003",
+      "check": "unused-return",
+      "reportedImpact": "medium",
+      "status": "accepted",
+      "location": "contracts/src/extensions/AuditGrant.sol:200",
+      "rationale": "_controllerOf() intentionally reads only controller from the Registry authorization tuple."
+    },
+    {
+      "id": "G4-SLITHER-004",
+      "check": "timestamp",
+      "reportedImpact": "low",
+      "status": "false-positive",
+      "location": "contracts/src/extensions/AuditGrant.sol:179",
+      "rationale": "The detector traces the Grant struct that also contains timestamps, but the reported comparison is against witnessSetRoot and does not depend on block.timestamp."
+    },
+    {
+      "id": "G4-SLITHER-005",
+      "check": "assembly",
+      "reportedImpact": "informational",
+      "status": "accepted",
+      "location": "contracts/src/ECDSA.sol:18",
+      "rationale": "The bounded assembly reads r, s, and v from a signature whose length was checked as exactly 65 bytes. Low-s and non-zero signer checks follow."
+    },
+    {
+      "id": "G4-SLITHER-006",
+      "check": "low-level-calls",
+      "reportedImpact": "informational",
+      "status": "accepted",
+      "location": "contracts/src/reference/AgentMemoryStateRegistry.sol:330",
+      "rationale": "STATICCALL is required for ERC-1271. The result must succeed, contain at least 32 bytes, and decode to the exact magic value before authorization."
+    }
+  ]
+}
