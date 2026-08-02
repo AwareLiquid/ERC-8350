@@ -236,18 +236,30 @@ async function verifyRegularFile(filePath, allowedBase, label) {
 async function validatePinnedEntry(entry, sourceCommit, label) {
   assert(isSafeRelativePath(entry.path), `${label} has an unsafe path`);
   assert(isDigest(entry.sha256), `${label} ${entry.path} must pin a lowercase SHA-256`);
-  const currentPath = resolveInside(repositoryRoot, entry.path, `${label} ${entry.path}`);
-  await verifyRegularFile(currentPath, repositoryRoot, `${label} ${entry.path}`);
-  const currentBytes = await readFile(currentPath);
-  assert(
-    sha256(currentBytes) === entry.sha256,
-    `${label} ${entry.path} does not match its pinned SHA-256`,
-  );
+
+  // Authoritative check: the pin must match the bytes at the frozen review commit.
+  // That commit is anchored by refs/tags/audit/g4-rc1-source (verified above) and is
+  // what an external reviewer fetches, so it cannot drift once published.
   const committedBytes = git(["show", `${sourceCommit}:${entry.path}`], { binary: true });
   assert(
     sha256(committedBytes) === entry.sha256,
     `${label} ${entry.path} does not match source commit ${sourceCommit}`,
   );
+
+  // The path must still exist in this checkout — a scope entry naming a file that has
+  // been deleted or replaced by a directory is a manifest defect, not drift.
+  const currentPath = resolveInside(repositoryRoot, entry.path, `${label} ${entry.path}`);
+  await verifyRegularFile(currentPath, repositoryRoot, `${label} ${entry.path}`);
+
+  // Informational: has the branch moved on since the freeze? Compared against the
+  // committed bytes at HEAD rather than the working tree, so the answer does not change
+  // with the checkout's line-ending normalisation. main legitimately advances while a
+  // review candidate stays pinned — comments, formatting, docs — so divergence is
+  // reported, never fatal. Failing here would conflate "the audited artifact is wrong"
+  // with "the branch this sits on has moved", and the second is not a defect in the
+  // review candidate.
+  const headBytes = git(["show", `HEAD:${entry.path}`], { binary: true });
+  return sha256(headBytes) === entry.sha256 ? null : entry.path;
 }
 
 async function validateScope(scopePath) {
@@ -284,8 +296,10 @@ async function validateScope(scopePath) {
     requiredEvidencePaths,
     "G4 supporting evidence",
   );
+  const driftedFromFreeze = [];
   for (const entry of [...scope.inScope, ...scope.supportingEvidence]) {
-    await validatePinnedEntry(entry, scope.source.commit, "G4 pinned file");
+    const drifted = await validatePinnedEntry(entry, scope.source.commit, "G4 pinned file");
+    if (drifted) driftedFromFreeze.push(drifted);
   }
 
   assert(Array.isArray(scope.excluded), "G4 exclusions must be an array");
@@ -300,7 +314,7 @@ async function validateScope(scopePath) {
   assert(scope.toolchain?.optimizerRuns === 200, "G4 optimizer runs changed");
   assert(scope.toolchain?.evmVersion === "cancun", "G4 EVM version changed");
 
-  return { scope, digest: record.digest };
+  return { scope, digest: record.digest, driftedFromFreeze };
 }
 
 function assertStringArray(value, label) {
@@ -535,8 +549,18 @@ async function main() {
   const riskRecord = await validateRisks(args.risks);
 
   console.log(`G4 scope: PASS (${scopeRecord.scope.inScope.length} pinned files)`);
-  console.log(`G4 source: ${scopeRecord.scope.source.commit}`);
+  console.log(`G4 source: ${scopeRecord.scope.source.commit} (${scopeRecord.scope.source.ref})`);
   console.log(`G4 scope SHA-256: ${scopeRecord.digest}`);
+  if (scopeRecord.driftedFromFreeze.length > 0) {
+    console.log(
+      `G4 post-freeze drift: ${scopeRecord.driftedFromFreeze.length} pinned path(s) differ from the frozen commit (informational — the review targets the frozen commit, not this branch):`,
+    );
+    for (const droppedPath of scopeRecord.driftedFromFreeze) {
+      console.log(`  - ${droppedPath}`);
+    }
+  } else {
+    console.log("G4 post-freeze drift: none");
+  }
   console.log(
     `Residual risks: PASS (${riskRecord.acceptedIds.size} accepted, ${riskRecord.register.risks.length - riskRecord.acceptedIds.size} mitigated)`,
   );

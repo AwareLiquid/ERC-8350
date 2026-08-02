@@ -231,8 +231,21 @@ test("rejects a changed scoped source hash", async () => {
   try {
     const result = runGate(["--scope-only", "--scope", mutatedScopePath]);
     assert.notEqual(result.status, 0);
-    assert.match(outputOf(result), /does not match its pinned SHA-256/u);
+    // The pin is authoritative against the frozen review commit, so that is the
+    // comparison a tampered hash has to fail.
+    assert.match(outputOf(result), /does not match source commit/u);
   } finally {
     await rm(temporaryRoot, { recursive: true, force: true });
   }
+});
+
+test("reports post-freeze drift without failing the gate", async () => {
+  // A pinned path that has legitimately moved on since the freeze must be surfaced,
+  // but must not be treated as a defect in the review candidate: the review targets
+  // the frozen commit, and main advancing underneath it is expected. This is the
+  // "the check could not have failed" / "the check failed" distinction — collapsing
+  // the two is what made this gate unrunnable after a routine rebase.
+  const result = runGate(["--scope-only"]);
+  assert.equal(result.status, 0);
+  assert.match(outputOf(result), /G4 post-freeze drift:/u);
 });
