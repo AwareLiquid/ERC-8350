@@ -1,0 +1,196 @@
+{
+  "schema": "erc8350.external-reproduction-evidence.v1",
+  "riskId": "R-002",
+  "title": "Independent reproduction evidence",
+  "criteria": {
+    "minimumExecutableSuites": 2,
+    "externalRepositoryRequired": true,
+    "fullCommitShaRequired": true,
+    "sourceDigestRequired": true,
+    "dependencyHashesRequired": true,
+    "machineCheckableExitRequired": true,
+    "importsFromErc8350RepositoryAllowed": false,
+    "minimumIndependentRepositoryOwners": 2
+  },
+  "defaults": {
+    "primaryRpc": "https://sepolia.gateway.tenderly.co",
+    "crossCheckRpc": "https://ethereum-sepolia-rpc.publicnode.com"
+  },
+  "suites": [
+    {
+      "id": "erc8312-sepolia-state-replay",
+      "kind": "live-chain-replay",
+      "maintainer": {
+        "ethereumMagicians": "blockbird",
+        "github": "0x2kNJ",
+        "repositoryOwner": "ERC8312"
+      },
+      "repository": "https://github.com/ERC8312/bounded-agent-actions.git",
+      "sourceUrl": "https://github.com/ERC8312/bounded-agent-actions/tree/cd6100da171e682b1abd6757c12a7df1356f80fa/recompute",
+      "commit": "cd6100da171e682b1abd6757c12a7df1356f80fa",
+      "discussionUrl": "https://ethereum-magicians.org/t/erc-8350-agent-memory-state-registry/29098/6",
+      "discussionPostId": 72318,
+      "discussionVersion": 2,
+      "discussionUpdatedAt": "2026-07-29T15:47:38.706Z",
+      "license": "CC0-1.0",
+      "entrypoint": "recompute/erc8350_sepolia.py",
+      "files": [
+        {
+          "path": "recompute/erc8350_sepolia.py",
+          "sha256": "c6c7d23a2778c511d0c53b8989236555a14e70464320a10d39aa4cf03e8bf6ac"
+        }
+      ],
+      "pythonPackages": [
+        "pycryptodome==3.23.0"
+      ],
+      "pythonPackageHashes": {
+        "pycryptodome==3.23.0": [
+          "187058ab80b3281b1de11c2e6842a357a1f71b42cb1e15bce373f3d238135c27",
+          "cfb5cd445280c5b0a4e6187a7ce8de5a07b5f3f897f235caa11f1f435f182843",
+          "67bd81fcbe34f43ad9422ee8fd4843c8e7198dd88dd3d40e6de42ee65fbe1490",
+          "c8987bd3307a39bc03df5c8e0e3d8be0c4c3518b7f044b0f4c15d1aa78f52575",
+          "aa0698f65e5b570426fc31b8162ed4603b0c2841cbb9088e2b01641e3065915b",
+          "53ecbafc2b55353edcebd64bf5da94a2a2cdf5090a6915bcca6eca6cc452585a",
+          "156df9667ad9f2ad26255926524e1c136d6664b741547deb0a86a9acf5ea631f",
+          "dea827b4d55ee390dc89b2afe5927d4308a8b538ae91d9c6f7a5090f397af1aa",
+          "507dbead45474b62b2bbe318eb1c4c8ee641077532067fec9c1aa82c31f84886",
+          "c75b52aacc6c0c260f204cbdd834f76edc9fb0d8e0da9fbf8352ef58202564e2",
+          "11eeeb6917903876f134b56ba11abe95c0b0fd5e3330def218083c7d98bbcb3c",
+          "447700a657182d60338bab09fdb27518f8856aecd80ae4c6bdddb67ff5da44ef"
+        ]
+      },
+      "assertions": [
+        {
+          "id": "non-empty-chain",
+          "pattern": "^TransitionCommitted [1-9][0-9]* logs across [1-9][0-9]* Memory Spaces$"
+        },
+        {
+          "id": "second-rpc-agrees",
+          "pattern": "^cross-check\\s+.+ agrees$"
+        },
+        {
+          "id": "all-spaces-verified",
+          "pattern": "^RESULT: ALL SPACES VERIFIED-GOOD$"
+        }
+      ],
+      "scope": [
+        "Recomputes every emitted transitionId from the ERC-8350 type string",
+        "Recomputes every nextStateRoot and checks gapless sequence/root linkage",
+        "Walks account and storage proofs to compare the materialized head",
+        "Rebuilds the observation block header and cross-checks a second RPC"
+      ],
+      "nonClaims": [
+        "Does not prove that one RPC did not omit an entire Memory Space",
+        "Assumes the published reference contract storage layout",
+        "Is not a Solidity security audit or a full independent ERC-8350 client"
+      ]
+    },
+    {
+      "id": "invinoveritas-composition-recompute",
+      "kind": "saved-artifact-recompute",
+      "maintainer": {
+        "ethereumMagicians": "babyblueviper1",
+        "github": "babyblueviper1",
+        "repositoryOwner": "babyblueviper1"
+      },
+      "repository": "https://github.com/babyblueviper1/invinoveritas.git",
+      "sourceUrl": "https://github.com/babyblueviper1/invinoveritas/tree/81a2e0f7898e429d2d15ec421379f3446ae6869c/examples/erc8274-erc8350-composition",
+      "commit": "81a2e0f7898e429d2d15ec421379f3446ae6869c",
+      "discussionUrl": "https://ethereum-magicians.org/t/erc-8350-agent-memory-state-registry/29098/13",
+      "discussionPostId": 72381,
+      "discussionVersion": 1,
+      "discussionUpdatedAt": "2026-07-30T16:48:38.658Z",
+      "license": "Apache-2.0",
+      "entrypoint": "examples/erc8274-erc8350-composition/compose_and_verify.py",
+      "arguments": [
+        "--verify"
+      ],
+      "files": [
+        {
+          "path": "examples/erc8274-erc8350-composition/README.md",
+          "sha256": "65ca8696fd073aa4227616ebb32518b7897336d455c76c48dbcdf75823f6da87"
+        },
+        {
+          "path": "examples/erc8274-erc8350-composition/compose_and_verify.py",
+          "sha256": "3407f79c77d8ef2f5aedc31780824baa0e6f7a7cf7c8f12d6db2822f0b19bb6b"
+        },
+        {
+          "path": "examples/erc8274-erc8350-composition/output.json",
+          "sha256": "e820e0d9d349bf7ccb0e377a8968feb32a08801fcecbf011f156e3ad75a8fac2"
+        }
+      ],
+      "pythonPackages": [
+        "eth-hash==0.8.0",
+        "pycryptodome==3.23.0"
+      ],
+      "pythonPackageHashes": {
+        "eth-hash==0.8.0": [
+          "523718a51b369ab89866b929a5c93c52978cd866ea309192ad980dd8271f9fac",
+          "b009752b620da2e9c7668014849d1f5fadbe4f138603f1871cc5d4ca706896b1"
+        ],
+        "pycryptodome==3.23.0": [
+          "187058ab80b3281b1de11c2e6842a357a1f71b42cb1e15bce373f3d238135c27",
+          "cfb5cd445280c5b0a4e6187a7ce8de5a07b5f3f897f235caa11f1f435f182843",
+          "67bd81fcbe34f43ad9422ee8fd4843c8e7198dd88dd3d40e6de42ee65fbe1490",
+          "c8987bd3307a39bc03df5c8e0e3d8be0c4c3518b7f044b0f4c15d1aa78f52575",
+          "aa0698f65e5b570426fc31b8162ed4603b0c2841cbb9088e2b01641e3065915b",
+          "53ecbafc2b55353edcebd64bf5da94a2a2cdf5090a6915bcca6eca6cc452585a",
+          "156df9667ad9f2ad26255926524e1c136d6664b741547deb0a86a9acf5ea631f",
+          "dea827b4d55ee390dc89b2afe5927d4308a8b538ae91d9c6f7a5090f397af1aa",
+          "507dbead45474b62b2bbe318eb1c4c8ee641077532067fec9c1aa82c31f84886",
+          "c75b52aacc6c0c260f204cbdd834f76edc9fb0d8e0da9fbf8352ef58202564e2",
+          "11eeeb6917903876f134b56ba11abe95c0b0fd5e3330def218083c7d98bbcb3c",
+          "447700a657182d60338bab09fdb27518f8856aecd80ae4c6bdddb67ff5da44ef"
+        ]
+      },
+      "assertions": [
+        {
+          "id": "transition-id",
+          "pattern": "^\\s*OK\\s+transitionId_matches$"
+        },
+        {
+          "id": "next-state-root",
+          "pattern": "^\\s*OK\\s+nextStateRoot_matches$"
+        },
+        {
+          "id": "provenance-commitment",
+          "pattern": "^\\s*OK\\s+provenanceCommitment_matches$"
+        },
+        {
+          "id": "provenance-bytes",
+          "pattern": "^\\s*OK\\s+provenanceBytes_sha256_matches$"
+        },
+        {
+          "id": "cross-standard-transition-id",
+          "pattern": "^\\s*OK\\s+erc8274_side_agrees_with_erc8350_transitionId$"
+        },
+        {
+          "id": "all-checks",
+          "pattern": "^ALL CHECKS PASS$"
+        }
+      ],
+      "scope": [
+        "Recomputes provenanceCommitment from a saved signed-verdict artifact",
+        "Recomputes transitionId and nextStateRoot without importing ERC-8350 code",
+        "Checks ERC-8274 event data against the independently derived transitionId"
+      ],
+      "nonClaims": [
+        "Does not implement controller, authorizer, sequence, or signature enforcement",
+        "Uses a saved public example rather than private production memory",
+        "Is not a full implementation of the ERC-8350 registry interface"
+      ]
+    }
+  ],
+  "attestations": [
+    {
+      "id": "magicians-spec-vector-recompute",
+      "maintainer": "babyblueviper1",
+      "discussionUrl": "https://ethereum-magicians.org/t/erc-8350-agent-memory-state-registry/29098/2",
+      "discussionPostId": 72132,
+      "discussionVersion": 1,
+      "discussionUpdatedAt": "2026-07-26T08:41:37.509Z",
+      "scope": "ExperienceDelta, MemoryState, and MemorySpace typehashes plus the EIP-712 domain separator were recomputed from the published specification and matched byte-for-byte.",
+      "machineExecutable": false
+    }
+  ]
+}

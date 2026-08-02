@@ -22,6 +22,8 @@
 
 1. 发布 Ethereum Magicians 讨论帖并替换 `discussions-to` 占位 URL。
 2. 确认作者和 champion 后向 `ethereum/ERCs` 提交，正式编号由编辑分配。
-3. 邀请另一个组织维护第三方实现并运行 Golden Vector。仓库内的隔离实现证明
+3. `R-002`“无外部独立复现证据”已解决：两个外部仓库的固定提交可分别重放
+   Sepolia 状态链和重算跨 ERC 组合，见 `docs/interop/external-reproduction.md`。
+4. 邀请另一个组织维护完整第三方实现并直接运行 Golden Vector。仓库内的隔离实现证明
    技术独立性，但不能被描述成外部生态采用。
-4. 在公开测试网验证事件、索引器和钱包流程，并完成外部安全审计。
+5. 在公开测试网验证事件、索引器和钱包流程，并完成外部安全审计。

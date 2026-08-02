@@ -16,6 +16,7 @@ items graduate only by moving up a label.
 | Behavioral recording as commitments — actions enter `deltaCommitment` payloads (`TOOL_TRACE` / `EPISODIC` profiles), ordering pinned by `sequence` | Core + adapter vocabulary |
 | Selective, provably-complete audit disclosure — `AuditGrant` binds a `[from,to]` range to one `witnessSetRoot`; withholding or substituting any witness changes the root | Sepolia `0x20145Ab83958CFB321221e8a8C68181C818241B2` |
 | **First production adopter** — Awareness (awareness.market) anchors real knowledge-card state from its local daemon: pull-based snapshot diff → outbox → CLI-signed broadcast, witnesses never leaving the user machine | Live on Sepolia 2026-07-28: Space `0xfdd18b37…`, tx `0x98f1cf76…`, head verified byte-for-byte against local precomputation by three independent paths |
+| **Independent reproduction evidence (R-002)** — externally maintained, commit-pinned Python implementations replay the public state machine and recompute a cross-ERC composition without importing this repository | ERC8312 Sepolia replay + Invinoveritas saved-artifact recompute; both clean-checkout suites pass, see `docs/interop/external-reproduction.md` |
 | Opt-in space description | `SpaceDescriptor`, Sepolia `0x7745e2dDC30e75E1D7B7fBAf4616Fc0F54e571F5` |
 | Deletion attestation (commitment-only calldata) | Sepolia `0x97cc9b019A089bf7b821d47134020896f9259cc0` |
 

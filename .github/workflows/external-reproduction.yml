@@ -1,0 +1,50 @@
+name: External reproduction evidence
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/external-reproduction.yml"
+      - "scripts/external-reproduction-gate.mjs"
+      - "evidence/external-reproductions/**"
+      - "docs/interop/external-reproduction.md"
+      - "package.json"
+  workflow_dispatch:
+  schedule:
+    - cron: "17 3 * * 1"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: external-reproduction-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  reproduce:
+    name: R-002 independent reproduction
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate evidence manifest
+        run: node scripts/external-reproduction-gate.mjs --validate-only
+      - name: Run pinned external reproductions
+        run: >-
+          node scripts/external-reproduction-gate.mjs
+          --output artifacts/external-reproductions/${{ github.sha }}
+      - name: Upload external reproduction record
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: erc-8350-external-reproduction-${{ github.run_id }}
+          path: artifacts/external-reproductions/
+          if-no-files-found: error
+          retention-days: 90
