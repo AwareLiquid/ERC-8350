@@ -164,6 +164,38 @@ boolean destroys is invariably the one the consumer needed in order to decide �
 as key authority and network availability, are evidence it is not a property of either
 domain but of checking itself.
 
+The second arrival is executable rather than anecdotal:
+[`tools/broadcast_byte_diff.py`](https://github.com/babyblueviper1/preaction-governance-conformance/commit/03a421d)
+audits the relay copies of a published proof against the bytes its commitment was
+computed over. Its per-relay vocabulary keeps the two apart that a boolean would fuse —
+`byte_identical`, `byte_mismatch (field=…)`, `not_found`, `error: …` — and the
+aggregation is stated as a rule rather than a tally: **at least one relay identical and
+no relay mismatching**, so an unreachable relay abstains instead of vetoing. Run against
+a live proof it reproduced the original ambiguity without being defeated by it — one
+relay unreachable, two byte-identical, and the verdict still confirmation:
+
+```json
+{
+  "relays": {
+    "wss://relay.damus.io": "error: server rejected WebSocket connection: HTTP 503",
+    "wss://nos.lol": "byte_identical",
+    "wss://relay.primal.net": "byte_identical"
+  },
+  "all_byte_identical": true
+}
+```
+
+Where that tool sits carries the second half of the lesson. It is deliberately kept out
+of its own repository's conformance runner and CI: every other checker there is offline
+and zero-dependency, and this one needs a network hop and a WebSocket library. Rather
+than dilute the offline guarantee to accommodate it, it lives in a separate `tools/`
+directory that records why. The split generalizes, and it is the same distinction one
+level up: an offline gate and a network-dependent gate make different claims, so a
+suite that merges them can no longer say which kind of claim a red result refutes. A
+network-dependent check that could not reach the network has not failed — and a CI job
+that reports it as a failure has destroyed precisely the information this section is
+about.
+
 Corollary worth stating because it is what forces the distinction into the open:
 **re-verify from the artifact, never from a transcription of it.** Both times this
 mattered here, the ambiguity surfaced only when someone recomputed from source bytes —
