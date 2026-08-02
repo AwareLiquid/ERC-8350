@@ -78,8 +78,12 @@ contract VectorsV2Test is Test {
             vm.prank(authorizer);
             (bytes32 transitionId, bytes32 nextStateRoot) = registry.commitTransition(d, "");
 
-            assertEq(transitionId, json.readBytes32(string.concat(e, ".transitionId")), "transitionId");
-            assertEq(nextStateRoot, json.readBytes32(string.concat(e, ".nextStateRoot")), "nextStateRoot");
+            assertEq(
+                transitionId, json.readBytes32(string.concat(e, ".transitionId")), "transitionId"
+            );
+            assertEq(
+                nextStateRoot, json.readBytes32(string.concat(e, ".nextStateRoot")), "nextStateRoot"
+            );
 
             (, bytes32 headRoot, uint64 headSeq) = registry.head(spaceId);
             assertEq(headRoot, nextStateRoot, "head root advanced");
@@ -141,7 +145,9 @@ contract VectorsV2Test is Test {
         d.sequence = expected + 1;
         vm.prank(authorizer);
         vm.expectRevert(
-            abi.encodeWithSelector(AgentMemoryStateRegistry.BadSequence.selector, expected, expected + 1)
+            abi.encodeWithSelector(
+                AgentMemoryStateRegistry.BadSequence.selector, expected, expected + 1
+            )
         );
         registry.commitTransition(d, "");
     }
@@ -153,7 +159,9 @@ contract VectorsV2Test is Test {
         d.sequence = expected - 1;
         vm.prank(authorizer);
         vm.expectRevert(
-            abi.encodeWithSelector(AgentMemoryStateRegistry.BadSequence.selector, expected, expected - 1)
+            abi.encodeWithSelector(
+                AgentMemoryStateRegistry.BadSequence.selector, expected, expected - 1
+            )
         );
         registry.commitTransition(d, "");
     }
@@ -169,7 +177,9 @@ contract VectorsV2Test is Test {
         d.prevStateRoot = staleRoot;
         vm.prank(authorizer);
         vm.expectRevert(
-            abi.encodeWithSelector(AgentMemoryStateRegistry.BadPreviousState.selector, headRoot, staleRoot)
+            abi.encodeWithSelector(
+                AgentMemoryStateRegistry.BadPreviousState.selector, headRoot, staleRoot
+            )
         );
         registry.commitTransition(d, "");
     }
@@ -206,7 +216,9 @@ contract VectorsV2Test is Test {
         bytes32 claimed = keccak256("not-derived");
         vm.prank(controller);
         vm.expectRevert(
-            abi.encodeWithSelector(AgentMemoryStateRegistry.InvalidSpaceId.selector, spaceId, claimed)
+            abi.encodeWithSelector(
+                AgentMemoryStateRegistry.InvalidSpaceId.selector, spaceId, claimed
+            )
         );
         registry.registerSpace(claimed, controller, authorizer, spaceSalt, "");
     }

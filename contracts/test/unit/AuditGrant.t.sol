@@ -58,7 +58,9 @@ contract AuditGrantTest is Test {
     function test_FoldMatchesManualComputation() public view {
         bytes32 witnessHash = keccak256(abi.encode("witness", uint256(0)));
         bytes32 expected = keccak256(
-            abi.encode(extension.AUDIT_WITNESS_TYPEHASH(), bytes32(0), transitionIds[0], witnessHash)
+            abi.encode(
+                extension.AUDIT_WITNESS_TYPEHASH(), bytes32(0), transitionIds[0], witnessHash
+            )
         );
         assertEq(extension.foldWitnessRoot(bytes32(0), transitionIds[0], witnessHash), expected);
     }
