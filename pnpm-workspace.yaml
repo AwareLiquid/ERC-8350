@@ -6,3 +6,9 @@ onlyBuiltDependencies:
   - esbuild
 allowBuilds:
   esbuild: true
+
+# postcss <=8.5.17: GHSA-r28c-9q8g-f849 (path traversal via sourceMappingURL).
+# Reached only through vite/vitest devDependencies — no runtime surface in this
+# repository — but it fails the audit gate in `pnpm check`, so pin it forward.
+overrides:
+  postcss: ">=8.5.18"
