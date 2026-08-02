@@ -112,15 +112,16 @@ contract FixtureSpace is Script {
         bytes32 wantId,
         bytes32 wantRoot
     ) private returns (bytes32) {
-        IAgentMemoryState.ExperienceDelta memory delta = IAgentMemoryState.ExperienceDelta({
-            spaceId: spaceId,
-            sequence: seq,
-            prevStateRoot: prevRoot,
-            deltaCommitment: deltaCommitment,
-            provenanceCommitment: provenanceCommitment,
-            profileId: profileId,
-            locatorCommitment: locatorCommitment
-        });
+        IAgentMemoryState.ExperienceDelta memory delta =
+            IAgentMemoryState.ExperienceDelta({
+                spaceId: spaceId,
+                sequence: seq,
+                prevStateRoot: prevRoot,
+                deltaCommitment: deltaCommitment,
+                provenanceCommitment: provenanceCommitment,
+                profileId: profileId,
+                locatorCommitment: locatorCommitment
+            });
         (bytes32 gotId, bytes32 gotRoot) = registry.commitTransition(delta, "");
         if (gotId != wantId) revert UnexpectedTransitionId(seq, gotId, wantId);
         if (gotRoot != wantRoot) revert UnexpectedStateRoot(seq, gotRoot, wantRoot);
