@@ -24,6 +24,7 @@ const expected = {
   sourceRef: "refs/tags/audit/g4-rc1-source",
   evidenceCommit: "31f4fbb3732652884dac8f66fcc7a3655113c969",
   evidenceTree: "b9baf6f6b4337b72d79c5343f5d178a4dc80f589",
+  evidenceRef: "refs/tags/audit/g4-rc1-evidence",
   scopePath: "audits/g4/scope.json",
   scopeDigest: "c9db7d27957c86386d8842687a2d009c0ca03bc864307e88cfed0ee25f3ae9bf",
   riskPath: "audits/g4/residual-risks.json",
@@ -139,13 +140,12 @@ async function verifyRegularFile(filePath, label) {
 async function verifyPinnedFile(entry, evidenceCommit) {
   assert(typeof entry.category === "string" && entry.category.length > 0, "Evidence category is required");
   assert(isDigest(entry.sha256), `Evidence ${entry.path} must pin a lowercase SHA-256`);
+  // The path must still exist here — a manifest naming a deleted file is a defect.
   const filePath = resolveInside(entry.path, `Evidence ${entry.path}`);
   await verifyRegularFile(filePath, `Evidence ${entry.path}`);
-  const currentBytes = await readFile(filePath);
-  assert(
-    sha256(currentBytes) === entry.sha256,
-    `Evidence ${entry.path} does not match its pinned SHA-256`,
-  );
+  // Authoritative: the bytes committed at the evidence revision. That is what a
+  // reviewer fetches. Reading the working tree instead makes the answer depend on the
+  // checkout's line-ending normalisation, which has nothing to do with the handoff.
   const committedBytes = git(["show", `${evidenceCommit}:${entry.path}`], {
     binary: true,
   });
@@ -160,13 +160,14 @@ async function verifyAnchor(anchor, expectedPath, expectedDigest, evidenceCommit
   assert(anchor?.sha256 === expectedDigest, `${label} digest changed`);
   const filePath = resolveInside(anchor.path, label);
   await verifyRegularFile(filePath, label);
-  const currentBytes = await readFile(filePath);
-  assert(sha256(currentBytes) === anchor.sha256, `${label} current bytes changed`);
   const committedBytes = git(["show", `${evidenceCommit}:${anchor.path}`], {
     binary: true,
   });
   assert(sha256(committedBytes) === anchor.sha256, `${label} evidence bytes changed`);
-  return JSON.parse(currentBytes.toString("utf8"));
+  // Parse the bytes that were just verified, not a second read of the working tree —
+  // otherwise the digest check and the value actually used could describe different
+  // files, and the check would be attesting to something it never inspected.
+  return JSON.parse(committedBytes.toString("utf8"));
 }
 
 async function main() {
@@ -204,9 +205,20 @@ async function main() {
   const evidenceRevision = manifest.evidenceRevision ?? {};
   assert(evidenceRevision.commit === expected.evidenceCommit, "Evidence revision changed");
   assert(evidenceRevision.tree === expected.evidenceTree, "Evidence tree changed");
+  assert(evidenceRevision.ref === expected.evidenceRef, "Evidence revision ref changed");
   assert(
     evidenceRevision.relationship === "descendant-with-no-in-scope-source-changes",
     "Evidence/source relationship changed",
+  );
+  // The evidence revision must be anchored by a tag, for the same reason the frozen
+  // source is. A commit reachable only from a review branch stops being reachable the
+  // moment that branch is rebased or squash-merged — the object survives for a while,
+  // and a checkout that still has it locally reports PASS while a fresh clone cannot
+  // resolve it at all. Requiring the ref makes that failure impossible to reach by
+  // accident rather than merely unlikely.
+  assert(
+    git(["rev-parse", `${evidenceRevision.ref}^{commit}`]) === evidenceRevision.commit,
+    "Evidence revision tag does not resolve to the pinned evidence commit",
   );
   assert(
     git(["rev-parse", `${evidenceRevision.commit}^{tree}`]) === evidenceRevision.tree,

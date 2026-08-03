@@ -17,6 +17,7 @@
   },
   "evidenceRevision": {
     "commit": "31f4fbb3732652884dac8f66fcc7a3655113c969",
+    "ref": "refs/tags/audit/g4-rc1-evidence",
     "tree": "b9baf6f6b4337b72d79c5343f5d178a4dc80f589",
     "relationship": "descendant-with-no-in-scope-source-changes"
   },

@@ -25,7 +25,7 @@ continues to fail until a qualifying reviewer publishes and attests a report.
 | Scope SHA-256 | `c9db7d27957c86386d8842687a2d009c0ca03bc864307e88cfed0ee25f3ae9bf` |
 | Residual-risk register | [`residual-risks.json`](residual-risks.json) |
 | Risk SHA-256 | `307a52eb0bf512aea25565bf604d92fc6b1b2d64eb910595568a5f0c04aa6019` |
-| Evidence revision | `31f4fbb3732652884dac8f66fcc7a3655113c969` |
+| Evidence revision | `31f4fbb3732652884dac8f66fcc7a3655113c969` (`refs/tags/audit/g4-rc1-evidence`) |
 | Evidence tree | `b9baf6f6b4337b72d79c5343f5d178a4dc80f589` |
 
 The evidence revision is a descendant of the source commit and does not change any
