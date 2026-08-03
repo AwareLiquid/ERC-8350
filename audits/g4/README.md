@@ -83,7 +83,9 @@ finding, and zero unresolved Critical or High findings.
 6. Map accepted non-Critical/High findings to `residual-risks.json`.
 7. Run `pnpm security:rc`, `pnpm check`, and the clean-checkout conformance gate.
 8. Obtain maintainer approval of reviewer identity and report quality, then mark
-   G4 complete and create the RC tag.
+   G4 complete, update every workspace package to the RC SemVer, and create the
+   matching `v<version>` tag. The release workflow will re-run the full gate before
+   publishing the GitHub prerelease.
 
 The script checks evidence integrity. It cannot establish reviewer competence or
 independence on its own; those remain explicit human approval duties.
