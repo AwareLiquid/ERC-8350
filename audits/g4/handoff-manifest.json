@@ -1,0 +1,137 @@
+{
+  "schema": "erc-8350/external-audit-handoff/v1",
+  "candidate": "G4-rc1",
+  "repository": "https://github.com/AwareLiquid/ERC-8350",
+  "source": {
+    "commit": "af5a75fb2db532fd5603554083d8895a825c2de2",
+    "tree": "f8d66277123391ea54de3f53842256e17e2a497e",
+    "ref": "refs/tags/audit/g4-rc1-source",
+    "scopeManifest": {
+      "path": "audits/g4/scope.json",
+      "sha256": "c9db7d27957c86386d8842687a2d009c0ca03bc864307e88cfed0ee25f3ae9bf"
+    },
+    "residualRiskRegister": {
+      "path": "audits/g4/residual-risks.json",
+      "sha256": "307a52eb0bf512aea25565bf604d92fc6b1b2d64eb910595568a5f0c04aa6019"
+    }
+  },
+  "evidenceRevision": {
+    "commit": "31f4fbb3732652884dac8f66fcc7a3655113c969",
+    "ref": "refs/tags/audit/g4-rc1-evidence",
+    "tree": "b9baf6f6b4337b72d79c5343f5d178a4dc80f589",
+    "relationship": "descendant-with-no-in-scope-source-changes"
+  },
+  "evidence": [
+    {
+      "category": "security-policy",
+      "path": "SECURITY.md",
+      "sha256": "a8b3a030d3fe10b9e6753cedb921ab0f8af7b32c23068ccbaab8cbce162f66bc"
+    },
+    {
+      "category": "registry-architecture",
+      "path": "docs/architecture.md",
+      "sha256": "cfd59b8afeed99b1207c8261c6f117974e783db615c307145fb7d61f59801b72"
+    },
+    {
+      "category": "threat-model",
+      "path": "docs/threat-model.md",
+      "sha256": "c518f9c048557d33c7fc3e148e28e1441df9120def6a66daff9cfbb7c183d34f"
+    },
+    {
+      "category": "deployment-evidence",
+      "path": "docs/deployment.md",
+      "sha256": "19f63de3a3ae6688dccd5654adddf21865855c763170243fc46b2544c48ce1c9"
+    },
+    {
+      "category": "residual-risk-narrative",
+      "path": "docs/security/residual-risks.md",
+      "sha256": "c68527e32165b33decc066e14912f8603762ec012e6dc8beda6f62c3fb2a8290"
+    },
+    {
+      "category": "internal-review",
+      "path": "audits/g4/INTERNAL_REVIEW.md",
+      "sha256": "0d619cf7056b9cc6ac352695a6ae0aa8df56bdd37763745bede98bfd582f5c01"
+    },
+    {
+      "category": "static-analysis",
+      "path": "audits/g4/internal/slither-summary.json",
+      "sha256": "f5fd5dad6acec9bb31b56b4ad2b283e9e46104dea5789557c02b3439adaf6bd4"
+    },
+    {
+      "category": "golden-vector",
+      "path": "test-vectors/v1.json",
+      "sha256": "09b865b082b198606b0b005eec0df995d277f76f1e6b06550907472a9dcd2872"
+    },
+    {
+      "category": "registry-tests",
+      "path": "contracts/test/unit/AgentMemoryStateRegistry.t.sol",
+      "sha256": "09a8d658f1e24b598235ae808b59d7ec3086e38a8d68c06f4878ad206ed8a474"
+    },
+    {
+      "category": "audit-grant-tests",
+      "path": "contracts/test/unit/AuditGrant.t.sol",
+      "sha256": "c409d590f94df5bd426a4980c957fe6b3656ce0a77598fc0afe3be19e3e4904b"
+    },
+    {
+      "category": "authorization-boundary-tests",
+      "path": "contracts/test/unit/AuthorizationBoundary.t.sol",
+      "sha256": "17c2f802bf11126cc73ea132e4dee85e7ab989ea50573dda54a1d5e1e5132c21"
+    },
+    {
+      "category": "deletion-attestation-tests",
+      "path": "contracts/test/unit/DeletionAttestation.t.sol",
+      "sha256": "68c3db12eb291668014d5639c9fbf04fd921bfd3868799719c83f3aed63d4340"
+    },
+    {
+      "category": "space-descriptor-tests",
+      "path": "contracts/test/unit/SpaceDescriptor.t.sol",
+      "sha256": "27feb82310afe76b84fc7a307717cfb4458ec0913c81114ed5a6c25a71e7b332"
+    },
+    {
+      "category": "solidity-golden-vector-tests",
+      "path": "contracts/test/unit/GoldenVector.t.sol",
+      "sha256": "2b01e3b599f622f01df2580aee7cfeefa4ce6be68548626c6720edca0c47beb4"
+    },
+    {
+      "category": "state-machine-invariants",
+      "path": "contracts/test/invariant/StateMachineInvariant.t.sol",
+      "sha256": "e20069adbc3ca4c5da375dffadb8e0e78d241497b661277a6afd109f642c447d"
+    },
+    {
+      "category": "release-gate",
+      "path": "scripts/security-rc-gate.mjs",
+      "sha256": "61f432ca4e33daa545a1fc3f31e5cbebdb4bb9a94ff772e43facc217493ed3ed"
+    },
+    {
+      "category": "release-gate-tests",
+      "path": "scripts/security-rc-gate.test.mjs",
+      "sha256": "a664b6be9200a523484cebe2b48b045f2110c4978cdc6a9b0e61cfae3966b2dd"
+    }
+  ],
+  "reproduction": {
+    "install": "pnpm install --frozen-lockfile",
+    "handoff": "pnpm security:handoff",
+    "scope": "pnpm security:scope",
+    "gateTests": "pnpm security:test",
+    "workspace": "pnpm check",
+    "cleanCheckout": "pnpm conformance:clean",
+    "solidity": "cd contracts && forge test -vv"
+  },
+  "deployment": {
+    "correctedCandidateDeployed": false,
+    "legacySepolia": {
+      "chainId": 11155111,
+      "sourceCommit": "100d6ba",
+      "registry": "0xDdf21937ba80b5fF973610877A0955b320C91241",
+      "auditGrant": "0x20145Ab83958CFB321221e8a8C68181C818241B2",
+      "auditGrantDeprecated": true
+    }
+  },
+  "externalReview": {
+    "coordinationIssue": "https://github.com/AwareLiquid/ERC-8350/issues/11",
+    "implementationPullRequest": "https://github.com/AwareLiquid/ERC-8350/pull/10",
+    "requiredEvidenceSchema": "erc-8350/external-solidity-review/v1",
+    "requiredEvidencePath": "audits/g4/external/external-review.json"
+  }
+}
+

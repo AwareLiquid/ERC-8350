@@ -10,6 +10,12 @@ and evidence package require correction before acceptance. See the
 is accepted, `pnpm security:rc` and `pnpm release:check` fail by design, and no
 artifact from this branch may be described as security-ready or production-ready.
 
+Start an independent review with the consolidated
+[`AUDIT_HANDOFF.md`](AUDIT_HANDOFF.md). Its machine-readable
+[`handoff-manifest.json`](handoff-manifest.json) pins the Registry context,
+threat model, tests, deployment evidence, and gate material to an evidence
+revision that does not alter the frozen Solidity scope.
+
 - Implementation and evidence PR:
   [AwareLiquid/ERC-8350#10](https://github.com/AwareLiquid/ERC-8350/pull/10)
 - Public independent-review request:
@@ -20,9 +26,10 @@ artifact from this branch may be described as security-ready or production-ready
 | Requirement | Evidence | Status |
 |---|---|---:|
 | Frozen Solidity target | [`scope.json`](scope.json), commit `af5a75f` | Pass |
+| Reproducible reviewer handoff | [`AUDIT_HANDOFF.md`](AUDIT_HANDOFF.md), `pnpm security:handoff` | Pass |
 | Internal review and regression fix | [`INTERNAL_REVIEW.md`](INTERNAL_REVIEW.md) | Pass |
 | Remaining risks explicitly registered | [`residual-risks.json`](residual-risks.json) | Pass |
-| Scope/evidence gate has adversarial tests | `scripts/security-rc-gate*.mjs` | Pass |
+| Scope/evidence gates have adversarial tests | `scripts/security-rc-gate*.mjs`, `scripts/security-audit-handoff*.mjs` | Pass |
 | Independent external Solidity report | Preliminary email received; [`intake`](external/REVIEW_INTAKE_2026-07-31.md) | **Pending corrections/evidence** |
 | No unresolved Critical/High external findings | Requires accepted external report | **Pending** |
 | G4 full gate | `pnpm security:rc` | **Blocked by unaccepted review** |
@@ -45,6 +52,9 @@ requires a new candidate plus external review of the changed target.
 ```bash
 # Passes now: validates exact source, scope, and risk registration.
 pnpm security:scope
+
+# Passes now: validates all packaged Registry, threat, test, and deployment evidence.
+pnpm security:handoff
 
 # Passes now: attacks the gate's trust assumptions and failure paths.
 pnpm security:test

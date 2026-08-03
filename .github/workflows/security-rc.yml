@@ -9,6 +9,8 @@ on:
       - "contracts/test/**"
       - "contracts/script/Deploy.s.sol"
       - "contracts/foundry.toml"
+      - "scripts/security-audit-handoff.mjs"
+      - "scripts/security-audit-handoff.test.mjs"
       - "scripts/security-rc-gate.mjs"
       - "scripts/security-rc-gate.test.mjs"
       - "package.json"
@@ -46,7 +48,7 @@ jobs:
       - name: Install forge-std
         if: hashFiles('contracts/lib/forge-std/src/Test.sol') == ''
         run: cd contracts && forge install foundry-rs/forge-std@v1.16.2 --no-git
-      - name: Validate frozen scope and residual risks
+      - name: Validate frozen scope and audit handoff
         run: pnpm security:scope
       - name: Test the security gate
         run: pnpm security:test
