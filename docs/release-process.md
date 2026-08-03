@@ -9,7 +9,7 @@ the draft an accepted ERC and do not imply that contracts are production ready.
 - `1.0.0-beta.x`: v1 encoding is frozen and at least one external implementation
   has passed the golden vectors.
 - `1.0.0-rc.x`: editor feedback is incorporated, testnet deployments are public,
-  and an external security review has no unresolved critical findings.
+  and an external security review has no unresolved Critical or High findings.
 - `1.0.0`: the team declares the implementation stable. ERC status remains the
   status shown in the official ERC repository.
 
@@ -29,8 +29,11 @@ the draft an accepted ERC and do not imply that contracts are production ready.
 8. Manually verify reviewer identity, expertise, conflict disclosure, report
    quality, and the public attestation. Passing JSON validation alone is not an
    audit.
-9. Create a signed `v*` tag. The release workflow builds package tarballs,
-   contract sources, and SHA-256 checksums without publishing automatically.
+9. Update every workspace package to the same SemVer, then create a signed tag
+   whose name is exactly `v<version>`. The release workflow re-runs the gates,
+   builds package tarballs, contract sources, the normative specification,
+   vectors, security evidence, and SHA-256 checksums, then creates a GitHub
+   prerelease for pre-release versions. It does not publish npm packages.
 10. Attach audit and testnet deployment references before labeling an artifact
    production ready.
 

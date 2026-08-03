@@ -31,12 +31,14 @@
     "security:scope": "node scripts/security-rc-gate.mjs --scope-only && pnpm security:handoff",
     "security:test": "node --test scripts/security-rc-gate.test.mjs scripts/security-audit-handoff.test.mjs",
     "security:rc": "pnpm security:handoff && node scripts/security-rc-gate.mjs",
+    "release:metadata": "node scripts/release-metadata-gate.mjs",
+    "release:test": "node --test scripts/release-metadata-gate.test.mjs",
     "test": "pnpm test:ts && pnpm check:vectors && pnpm test:contracts",
-    "check": "pnpm clean && pnpm build && pnpm -r --if-present typecheck && pnpm -r --if-present test && pnpm check:erc-assets && pnpm check:vectors && pnpm check:private-witness && pnpm evidence:validate && pnpm evidence:test && pnpm security:scope && pnpm security:test && pnpm format:check && pnpm test:contracts",
+    "check": "pnpm clean && pnpm build && pnpm -r --if-present typecheck && pnpm -r --if-present test && pnpm check:erc-assets && pnpm check:vectors && pnpm check:private-witness && pnpm evidence:validate && pnpm evidence:test && pnpm security:scope && pnpm security:test && pnpm release:test && pnpm format:check && pnpm test:contracts",
     "conformance:gate": "node scripts/conformance-gate.mjs",
     "conformance:clean": "node scripts/clean-checkout-conformance.mjs",
     "audit": "pnpm audit --audit-level=moderate",
-    "release:check": "pnpm conformance:gate && pnpm security:rc && pnpm audit --audit-level=moderate"
+    "release:check": "pnpm release:metadata && pnpm release:test && pnpm conformance:gate && pnpm security:rc && pnpm audit --audit-level=moderate"
   },
   "devDependencies": {
     "@noble/curves": "^2.2.0",

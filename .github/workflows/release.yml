@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   package:
@@ -34,19 +34,51 @@ jobs:
         env:
           CONFORMANCE_CLEAN_CHECKOUT: "1"
       - run: mkdir -p release-artifacts
+      - name: Record release metadata
+        run: pnpm release:metadata --output release-artifacts/release-metadata.json
       - name: Include conformance record
         run: tar -czf release-artifacts/erc-8350-conformance.tar.gz -C artifacts conformance
       - run: pnpm --dir packages/core pack --pack-destination ../../release-artifacts
       - run: pnpm --dir packages/reference-engine pack --pack-destination ../../release-artifacts
       - run: pnpm --dir packages/awareness-adapter pack --pack-destination ../../release-artifacts
+      - run: pnpm --dir implementations/minimal-ts pack --pack-destination ../../release-artifacts
       - name: Package contract sources
         run: >-
           tar -czf release-artifacts/agent-memory-state-contracts.tar.gz
           contracts/src contracts/foundry.toml contracts/remappings.txt
+      - name: Package normative specification and vectors
+        run: >-
+          tar -czf release-artifacts/erc-8350-specification.tar.gz
+          erc/erc-8350.md erc/assets/erc-8350 SPEC.md
+          test-vectors/v1.json test-vectors/v2.json LICENSE
+      - name: Package G4 security evidence
+        run: >-
+          tar -czf release-artifacts/erc-8350-g4-security-evidence.tar.gz
+          audits/g4 SECURITY.md docs/security
       - name: Generate checksums
         run: cd release-artifacts && sha256sum * > SHA256SUMS
       - uses: actions/upload-artifact@v4
         with:
-          name: erc-awar-${{ github.run_id }}
+          name: erc-8350-${{ github.run_id }}
           path: release-artifacts/
           if-no-files-found: error
+      - name: Publish GitHub release
+        if: github.ref_type == 'tag'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          prerelease_args=()
+          if [[ "${GITHUB_REF_NAME#v}" == *-* ]]; then
+            prerelease_args+=(--prerelease)
+          fi
+
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" release-artifacts/* --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" release-artifacts/* \
+              --verify-tag \
+              --generate-notes \
+              --title "ERC-8350 ${GITHUB_REF_NAME#v}" \
+              "${prerelease_args[@]}"
+          fi
