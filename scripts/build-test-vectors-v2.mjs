@@ -15,8 +15,18 @@
 // can confirm both files describe the same protocol.
 //
 // Everything is derived from fixed public constants — no randomness, no timestamps.
-// Re-running this script MUST reproduce the file byte-for-byte; that property is
-// itself tested (see the reproducibility check at the end).
+// Re-running this script MUST reproduce the file byte-for-byte.
+//
+// Run with `--check` to assert that without writing: the bundle is rebuilt in memory
+// and compared against the committed file, exiting non-zero on any drift. `pnpm check`
+// runs it that way.
+//
+// This header previously claimed the property was "itself tested (see the
+// reproducibility check at the end)". No such check existed. The property had only
+// ever been confirmed by hand, once, by regenerating and running `git diff` — and a
+// comment was written asserting a machine did it. That is the exact defect this
+// repository's own interop note §6.3 is about: a claim no check consumes reads
+// identically to a checked one until the moment it stops being true.
 
 import {writeFileSync, readFileSync} from "node:fs";
 import {
@@ -397,8 +407,36 @@ for (let i = 1; i < chain.length; i++) {
 const ids = new Set(chain.map((c) => c.expected.transitionId));
 if (ids.size !== chain.length) throw new Error("transitionId collision within the chain");
 
-writeFileSync("test-vectors/v2.json", JSON.stringify(bundle, null, 2) + "\n");
+const OUT = "test-vectors/v2.json";
+const serialized = JSON.stringify(bundle, null, 2) + "\n";
+
+if (process.argv.includes("--check")) {
+  // Compare against the committed bytes without writing. Reading the file we are
+  // about to compare against is the point: it fails if the generator drifted from
+  // the artifact, in either direction.
+  let onDisk;
+  try {
+    onDisk = readFileSync(OUT, "utf8");
+  } catch {
+    console.error(`FAIL ${OUT} does not exist; run without --check to generate it`);
+    process.exit(1);
+  }
+  if (onDisk !== serialized) {
+    // Report the first differing line rather than dumping two 600-line files.
+    const a = onDisk.split("\n");
+    const b = serialized.split("\n");
+    const i = a.findIndex((line, n) => line !== b[n]);
+    console.error(`FAIL ${OUT} is not what this generator produces (first difference at line ${i + 1})`);
+    console.error(`  committed: ${a[i]}`);
+    console.error(`  generated: ${b[i]}`);
+    process.exit(1);
+  }
+  console.log(`PASS ${OUT} reproduces byte-for-byte (${serialized.length} bytes)`);
+  process.exit(0);
+}
+
+writeFileSync(OUT, serialized);
 console.log(`spaceId:      ${SPACE_ID}`);
 console.log(`chain:        ${chain.length} transitions, head root ${head.expected.nextStateRoot}`);
 console.log(`rejections:   ${rejections.length} cases`);
-console.log("wrote test-vectors/v2.json");
+console.log(`wrote ${OUT}`);

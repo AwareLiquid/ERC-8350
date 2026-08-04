@@ -270,6 +270,61 @@ value into *invalid*; another found it collapsing into *valid*. The second is th
 that ships, and the example above is useful precisely because it occurs somewhere a
 reader would not think to look for it.
 
+### 6.3 The value no check consumes
+
+§6.1 and §6.2 are both about a check that ran: one collapsed *could not run* into
+failure, the other ran correctly against the wrong referent. A fourth arrival, from a
+third thread, is about neither — it is about a value **no check ever read**.
+
+The three occurrences are unrelated in domain and were found independently:
+
+| the value | what it looked like | what nothing established |
+|---|---|---|
+| the registry address in a transition reference | present, correct, adjacent to the id | that any signature had been checked against the domain it keys |
+| a pinned commit in an evidence manifest | present, a full 40-hex SHA | that the published repository still resolves it |
+| a declared lineage in a provenance record | present, well-formed | that the ancestry it asserts exists |
+
+Stated generally: **a field a reader is expected to eyeball is a stand-in for a check
+that was never run.** An asserted value and a machine-checked one are byte-identical in
+the happy path and diverge only when something has gone wrong — which is the single
+moment the distinction was ever for. Correctness under inspection is therefore not
+evidence of anything: it is the condition under which both possibilities look the same.
+
+The operational test is mutation, not review: **corrupt the field and see whether
+anything turns red.** If nothing does, the field is decoration carrying the typography
+of evidence, and its presence in a document is weaker than its absence would be —
+absence at least prompts someone to ask.
+
+This note's own repository supplied the sharpest instance while this section was being
+written, and it is recorded here rather than quietly fixed, because a principle
+demonstrated on someone else's code is the easy version. The generator for
+`test-vectors/v2.json` carried this in its header:
+
+> Re-running this script MUST reproduce the file byte-for-byte; that property is
+> itself tested (see the reproducibility check at the end).
+
+There was no such check. The property had been confirmed once, by hand, by regenerating
+and running `git diff` — and then a comment was written asserting that a machine did it.
+The file was authored specifically to raise the evidentiary bar for external
+implementers, which is what makes it a fair example rather than a careless one: the
+failure mode is not inattention, it is that a claim and a checked claim are
+indistinguishable to the person writing them. Worse than a decorative data field, a
+pointer to a check that does not exist actively instructs a reader not to look.
+
+Both generators now take `--check`, rebuild in memory, compare against the committed
+artifacts, and exit non-zero on drift; `pnpm check:reproducible` runs them. Each was
+verified by mutation before being trusted — altering one byte of a vector, one constant
+value, and deleting one constant, confirming each turns the check red.
+
+One caveat the fix itself surfaced, which generalizes: the generated Solidity constants
+file has two writers, this repository's generator and `forge fmt`, and formatters
+disagree across versions. A byte comparison there would assert something that is not the
+claim — it would make reproducibility contingent on imitating one formatter's line
+wrapping, and would fail on a correct file. So that artifact is compared by its 33
+constants instead. **Pin the check to the property being claimed, not to the most
+stringent comparison available**; an over-strict check that fails on correct inputs gets
+disabled, and a disabled check is the decorative field again.
+
 ## 7. What counts as an acceptable "why" is also consumer policy
 
 A worked ERC-8274 / ERC-8350 composition ([`invinoveritas/examples/erc8274-erc8350-composition`](https://github.com/babyblueviper1/invinoveritas/tree/main/examples/erc8274-erc8350-composition))

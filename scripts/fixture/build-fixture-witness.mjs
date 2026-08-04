@@ -439,8 +439,18 @@ const bundle = {
   })),
 };
 
+// `--check` asserts the published artifacts still reproduce, without writing.
+// The header of this file claims everything here is reproducible from public seeds.
+// Until 2026-08-04 nothing consumed that claim: the BIP-340 aux defect (signatures
+// differing on every run) survived precisely because the only values anyone compared
+// were the ones that happened to be stable. A claim about an artifact needs a check
+// that fails when it stops holding, or it is prose.
+const CHECK = process.argv.includes("--check");
+const outputs = [];
+const emit = (path, contents) => outputs.push({path, contents});
+
 mkdirSync("test-vectors", {recursive: true});
-writeFileSync("test-vectors/sepolia-fixture-v1.json", JSON.stringify(bundle, null, 2));
+emit("test-vectors/sepolia-fixture-v1.json", JSON.stringify(bundle, null, 2));
 
 // Solidity constants for the on-chain commit script.
 const sol = `// SPDX-License-Identifier: Apache-2.0
@@ -466,7 +476,74 @@ ${transitions
   .join("\n\n")}
 }
 `;
-writeFileSync("contracts/script/FixtureData.sol", sol);
+emit("contracts/script/FixtureData.sol", sol);
+
+// Extract `NAME = 0x…;` pairs regardless of how the declaration is wrapped. Used for
+// the generated Solidity file, whose layout is owned by `forge fmt` rather than by
+// this script — see the comment in CHECK below.
+function solidityConstants(source) {
+  const out = new Map();
+  const re = /constant\s+([A-Z0-9_]+)\s*=\s*(0x[0-9a-fA-F]+)\s*;/g;
+  for (const m of source.matchAll(re)) out.set(m[1], m[2].toLowerCase());
+  return out;
+}
+
+if (CHECK) {
+  let failed = 0;
+  const norm = (s) => s.replace(/\r\n/g, "\n");
+  for (const {path, contents} of outputs) {
+    let onDisk;
+    try {
+      onDisk = readFileSync(path, "utf8");
+    } catch {
+      console.error(`FAIL ${path} is missing`);
+      failed++;
+      continue;
+    }
+
+    if (path.endsWith(".sol")) {
+      // This file has two writers: this script emits it, and `forge fmt` re-wraps it
+      // (CI pins Foundry v1.7.1, and formatters disagree across versions). A
+      // byte comparison would therefore assert something that is not the claim — it
+      // would make reproducibility depend on imitating one formatter's line wrapping,
+      // and would fail on a correct file whose 33 constants are identical. What this
+      // artifact asserts is its constants, so that is what is compared.
+      const want = solidityConstants(contents);
+      const got = solidityConstants(onDisk);
+      const diffs = [];
+      for (const [k, val] of want) {
+        if (!got.has(k)) diffs.push(`${k}: missing from the committed file`);
+        else if (got.get(k) !== val) diffs.push(`${k}: committed ${got.get(k)}, generated ${val}`);
+      }
+      for (const k of got.keys()) if (!want.has(k)) diffs.push(`${k}: present only in the committed file`);
+      if (diffs.length) {
+        console.error(`FAIL ${path} constants differ`);
+        for (const d of diffs.slice(0, 8)) console.error(`  ${d}`);
+        failed++;
+      } else {
+        console.log(`PASS ${path} reproduces (${want.size} constants; layout owned by forge fmt)`);
+      }
+      continue;
+    }
+
+    // Normalize line endings only: a CRLF checkout must not be reported as content
+    // drift. Everything else is compared byte-for-byte.
+    if (norm(onDisk) !== norm(contents)) {
+      const a = norm(onDisk).split("\n");
+      const b = norm(contents).split("\n");
+      const i = a.findIndex((line, n) => line !== b[n]);
+      console.error(`FAIL ${path} does not reproduce (first difference at line ${i + 1})`);
+      console.error(`  committed: ${a[i]}`);
+      console.error(`  generated: ${b[i]}`);
+      failed++;
+    } else {
+      console.log(`PASS ${path} reproduces byte-for-byte`);
+    }
+  }
+  process.exit(failed === 0 ? 0 : 1);
+}
+
+for (const {path, contents} of outputs) writeFileSync(path, contents);
 
 console.log("spaceId:        ", SPACE_ID);
 console.log("verifier A pub: ", VERIFIER_A.pub);
