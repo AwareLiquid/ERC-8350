@@ -52,7 +52,8 @@ prevStateRoot + ExperienceDelta v1
 
 ## 关键文档
 
-- `docs/interop/fixture-space.md`: Sepolia 公开 fixture Space（4 条自验证转换 + 全公开见证，供外部 conformance checker 使用）
+- **`docs/implementing.md`: 写一个独立实现（外部实现者入口 — 什么算通过、要实现哪些面、`test-vectors/v2.json` 怎么跑）**
+- `docs/interop/fixture-space.md`: Sepolia 公开 fixture Space（5 条自验证转换 + 全公开见证，供外部 conformance checker 使用）
 - `docs/interop/attestation-refs.md`: 与 WYRIWE（ERC-8299）联合的 attestation_refs 互操作说明（informative，双向零依赖）
 - `docs/interop/external-reproduction.md`: R-002 外部独立复现证据、固定来源与可执行验证方法
 - `evidence/private-witness/README.md`: TOOL_TRACE 私有输入 → 承诺 → 授权 transition → `[2,2]` selective audit 的端到端证据
