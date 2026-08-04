@@ -208,6 +208,68 @@ SHOULD be preferred over reachability: an id match alone confirms the mesh holds
 *something* answering to that identifier, whereas a full byte comparison confirms it
 holds *that object* — the one the commitment covers.
 
+### 6.2 Verifying against a stand-in, and the third value in every output
+
+Both arrivals above collapse *could not run* into **failure**. That is the survivable
+sign. A third arrival, from this repository's own CI, produced **success**, and it is
+worth recording because the mechanism is not the one the earlier two would lead a
+reader to look for.
+
+The G4 audit handoff gate pins an evidence revision and verifies every pinned file
+against `git show <commit>:<path>`. Rebasing the review branch left that commit
+reachable from no ref. On a fresh clone the gate cannot resolve it and exits non-zero.
+On the machine where the rebase happened it printed `PASS (17 pinned evidence files)`,
+because that clone still held the commit as a dangling object.
+
+It is tempting to describe this as "the check could not run and said it passed". That
+is not what happened, and the difference is the whole point. The check ran. It
+completed without error and returned the correct bytes. `git show` gave a correct
+answer to the wrong question: it answers about the local object store, and the claim
+being made was about the published repository. No exception was raised, so no
+`try`/`except` discipline anywhere in the gate would have caught it — the failure
+mode is *ran cleanly against an input that should not have been reachable*, not *ran
+and crashed*.
+
+Seen that way, the CRLF defect in the same gate is not a second lesson but the same
+one. It compared working-tree bytes, so on a CRLF checkout every pinned text file
+"changed" while git reported no difference at all. Both are **verification against a
+stand-in**:
+
+| what was verified | what the claim was about |
+|---|---|
+| working-tree bytes | the committed object |
+| a dangling object in one clone | the published repository |
+| a hand-copied event | the original event |
+| a re-fetch assumed identical | the copy the mesh actually holds |
+
+Four stand-ins, one shape. §6.1's corollary — re-verify from the artifact, never from a
+transcription of it — covers all of them once "transcription" is read as *anything
+standing in for the thing the claim is about*, including a local checkout and a local
+object store. The relay tool embodies this already: it byte-diffs the copy a relay
+actually serves rather than a re-fetch presumed equal.
+
+Fail-closed shape is not evenly distributed, which is why this is worth stating rather
+than leaving to care. A signature check is naturally fail-closed — an exception *is* a
+mismatch, definitionally — so the collapse is hard to reach there. A gate whose input
+is resolved by a tool that succeeds against local state has no such protection, and
+looks correct while it does the wrong thing.
+
+The structural fix follows from the table rather than from vigilance: pin verification
+to something that is a property of the published artifact, not of whoever is running
+the check. The frozen *source* commit carried a tag and survived the rebase; the
+*evidence* commit carried none and did not. Anchoring it
+(`refs/tags/audit/g4-rc1-evidence`) and asserting that the ref still resolves changes
+the question from "is this object present" — answerable from local state — to "does
+this repository still publish this object", which is not.
+
+Stated once, generally: **verification is three-valued — ran-and-passed,
+ran-and-failed, could-not-run — and the third value needs its own distinguishable
+string in every check's output, not only in the ones built around a network call where
+it is the obvious case to handle.** One arrival found a boolean collapsing that third
+value into *invalid*; another found it collapsing into *valid*. The second is the one
+that ships, and the example above is useful precisely because it occurs somewhere a
+reader would not think to look for it.
+
 ## 7. What counts as an acceptable "why" is also consumer policy
 
 A worked ERC-8274 / ERC-8350 composition ([`invinoveritas/examples/erc8274-erc8350-composition`](https://github.com/babyblueviper1/invinoveritas/tree/main/examples/erc8274-erc8350-composition))
