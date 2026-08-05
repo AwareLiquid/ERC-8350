@@ -1,0 +1,22 @@
+# Normalize line endings to LF in the working tree on every platform.
+#
+# Several conformance scripts (private-witness-demo.mjs, clean-checkout-conformance.mjs)
+# compare generated output against committed files byte-for-byte. On Windows,
+# core.autocrlf=true rewrote those files to CRLF on checkout, making the byte
+# comparison fail even though the committed blobs are correct (CI on Linux is
+# green). Forcing eol=lf keeps the working tree identical to the committed
+# blobs everywhere, so the contribution chain runs on any platform.
+
+* text=auto eol=lf
+
+# Binary assets must never be touched by line-ending normalization.
+*.pdf binary
+*.png binary
+*.jpg binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+*.solc binary
