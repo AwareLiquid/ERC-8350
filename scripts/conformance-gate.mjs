@@ -28,6 +28,12 @@ function run(command, args, options = {}) {
   return spawnSync(command, args, {
     cwd: options.cwd ?? root,
     encoding: "utf8",
+    // Windows: `pnpm.cmd` is a batch script and spawnSync can only execute
+    // .cmd files through cmd.exe — without this, the pnpm-based checks fail
+    // with empty output. git/forge are real executables and must NOT go
+    // through a shell: `git rev-parse HEAD^{tree}` would be mangled by cmd
+    // brace expansion. Gate the flag on the command, not the platform.
+    shell: process.platform === "win32" && command === "pnpm.cmd",
     env: { ...process.env, ...(options.env ?? {}) },
     maxBuffer: 32 * 1024 * 1024,
   });

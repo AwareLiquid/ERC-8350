@@ -14,6 +14,10 @@ function run(command, args, options = {}) {
   const result = spawnSync(command, args, {
     cwd: options.cwd ?? root,
     encoding: "utf8",
+    // Windows: pnpm.cmd is a batch script and requires cmd.exe; forge.exe /
+    // git.exe are real executables and must stay shell-free (cmd would mangle
+    // arguments like HEAD^{tree}).
+    shell: process.platform === "win32" && command === "pnpm.cmd",
     env: { ...process.env, ...(options.env ?? {}) },
     stdio: options.stdio ?? "pipe",
     maxBuffer: 32 * 1024 * 1024,
