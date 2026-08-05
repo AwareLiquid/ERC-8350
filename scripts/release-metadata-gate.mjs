@@ -1,7 +1,16 @@
 import { execFileSync } from "node:child_process";
-import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
+import { access, mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+
+async function fileExists(filePath) {
+  try {
+    await access(filePath);
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const defaultRepositoryRoot = path.resolve(scriptDirectory, "..");
@@ -63,7 +72,13 @@ async function collectPackageManifests(repositoryRoot) {
     });
     for (const entry of entries) {
       if (entry.isDirectory()) {
-        manifestPaths.push(path.join(parent, entry.name, "package.json"));
+        const candidate = path.join(parent, entry.name, "package.json");
+        if (fileExists(path.join(repositoryRoot, candidate))) {
+          manifestPaths.push(candidate);
+        }
+        // Directories without a package.json (stray node_modules, .vite cache)
+        // are not workspace packages; skipping them keeps `pnpm check` runnable
+        // in a dirty local checkout instead of failing with ENOENT.
       }
     }
   }
